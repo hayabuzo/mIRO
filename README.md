@@ -22,7 +22,7 @@
 ![image](https://user-images.githubusercontent.com/38255514/169022148-9793b82e-c018-44f2-9e44-9f91a0f81adb.png)
 ## Settings
 ![image](https://user-images.githubusercontent.com/38255514/169022779-f89b60b9-be10-4e90-818f-dbefb9886ebe.png)
-- **Remember Setting** - save these settings as default and load them at startup
+- **Remember Setting** - save current settings as default and load them at startup
 - **Camera Resolution** - set resolution of the camera stream 
 - **Canvas Resize** - upscale or downscale canvas for better quality or performance
 - **Frontal Camera** - enable frontal camera
