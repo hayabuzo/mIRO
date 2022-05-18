@@ -1,6 +1,10 @@
 # mIRO)))
 ![image](https://user-images.githubusercontent.com/38255514/169018816-031b5d0a-fb80-495b-bfab-2cebc55c0d02.png)
 
+🚀 [Run at GitHub](https://hayabuzo.github.io/mIRO/)
+
+💬 [Supporting Chat](https://t.me/mIRO_support)
+
 ## Features
 - 📝 Shader editor to write and compile filters
 - 📺 Real-time processing of the camera stream 
@@ -14,6 +18,7 @@
 - 📚 Built-in library of GLSL functions
 - 💾 Import/export filters as text files
 - ✨ Collection of filter presets
+- 📣 Open and commented source code
 
 
 ## Shooting mode
