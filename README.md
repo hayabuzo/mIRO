@@ -17,11 +17,11 @@
 
 
 ## Shooting mode
-![image](https://user-images.githubusercontent.com/38255514/169018647-ecd93a36-f4a7-4ada-ad12-4e3dcbc31270.png)
+![image](https://user-images.githubusercontent.com/38255514/169022343-ddc08879-c318-4ee9-8ce5-0ccdde6c9870.png)
 ## Shader Editor
-![image](https://user-images.githubusercontent.com/38255514/169018691-fb91e702-e717-486f-963c-5e39eee81633.png)
+![image](https://user-images.githubusercontent.com/38255514/169022148-9793b82e-c018-44f2-9e44-9f91a0f81adb.png)
 ## Settings
-![image](https://user-images.githubusercontent.com/38255514/169017410-a9752304-e404-48cd-84d5-1012fc765987.png)
+![image](https://user-images.githubusercontent.com/38255514/169022779-f89b60b9-be10-4e90-818f-dbefb9886ebe.png)
 - **Remember Setting** - save these settings as default and load them at startup
 - **Camera Resolution** - set resolution of the camera stream 
 - **Canvas Resize** - upscale or downscale canvas for better quality or performance
