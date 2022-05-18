@@ -1,7 +1,7 @@
 # mIRO)))
 ![image](https://user-images.githubusercontent.com/38255514/169018816-031b5d0a-fb80-495b-bfab-2cebc55c0d02.png)
 
-**Features:**
+## Features
 - 📝 Shader editor to write and compile filters
 - 📺 Real-time processing of the camera stream 
 - 🖼 Processing of images from the user's device
