@@ -1,5 +1,5 @@
 # mIRO)))
-mIRO is a shader editor for the real-time camera effects and generative photography.
+mIRO is a mobile shader editor for the real-time camera effects and generative photography.
 
 ## Shooting mode
 ![image](https://user-images.githubusercontent.com/38255514/168994145-7cfc7872-dca6-4942-8302-f17d04073213.png)
