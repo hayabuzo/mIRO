@@ -1,5 +1,6 @@
 # mIRO)))
 ![image](https://user-images.githubusercontent.com/38255514/169018816-031b5d0a-fb80-495b-bfab-2cebc55c0d02.png)
+This app allows to write and run camera shaders anywhere using mobile devices and explore the generative photography.
 
 🚀 [Run at GitHub](https://hayabuzo.github.io/mIRO/)
 
