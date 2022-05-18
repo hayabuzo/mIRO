@@ -167,7 +167,7 @@ vec2 uv2brl( vec2 uv, float pwr ) {
   uv = md2xy(xy2md(uv - 0.5) + vec2(pwr-0.5,0.0)) + 0.5;
   uv.y = uv.y * (WIDTH/HEIGHT);  
   return uv; }
-	
+  
 /* Glass Brick Distortion */
 vec2 uv2gbr( vec2 uv, float s, float pwr ) {
   return mix(uv,uv-sin((mod(uv,s)/s-0.5)*TWO_PI),pwr*s*0.15) ; }
@@ -177,7 +177,7 @@ vec2 uv2rot( vec2 uv, float ang ) {
   return uv *= mat2( 
   cos(ang), -sin(ang),
   sin(ang),  cos(ang)); }
-	
+  
 /* Transform */
 vec2 uv2tr( vec2 uv, vec2 anchor, float angle, float resize ) {
   uv.y /= H2W;
@@ -189,7 +189,7 @@ vec2 uv2tr( vec2 uv, vec2 anchor, float angle, float resize ) {
   uv += anchor;
   uv.y *= H2W;
   return uv; }
-	
+  
 /* Skew */
 vec2 uv2skew( vec2 uv, vec2 skew ) {
   return uv *= mat2( 

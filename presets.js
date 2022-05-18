@@ -340,7 +340,7 @@ float kx = H2W;
 vec2  uvc = uv;
       uvc = uvc-vec2(0.5,0.5);
       uvc.x*= kx;  
-      uvc = mix(uv2rot(uvc,PI*0.5),uvc,A);			
+      uvc = mix(uv2rot(uvc,PI*0.5),uvc,A);      
 
 vec2  uvr = xy2md(uvc); 
       uvr.y/=TWO_PI;
@@ -428,7 +428,7 @@ Periskop
 
 vec2  uv = vTexCoord; 
       uv.y = 1.0 - uv.y;
-			
+      
 float kz = 1.0 - MY;
 vec2  uvz = uv2exp( uv, 1.0-kz*kz, 0.0, 0.0);
 vec4  imz = texture2D(TXP, uvz );
@@ -519,7 +519,7 @@ float h = 0.2*MY;
       img.a = mix(
         f2slit(img2avg(img),z2f(sin(FRC)),h,h),
         f2slit(img2avg(img),R1,h*0.5,h*0.5), A);
-				
+        
       gl_FragColor = img; 
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
@@ -561,7 +561,7 @@ Uffie
 
 vec2  uv = vTexCoord; 
       uv.y = 1.0 - uv.y;
-			
+      
 vec4  imb = tx2d(TXB,uv);
 float ky = mix(f2z(MY),0.0,C);
 float kx = mix(f2z(MX),0.0,C);
@@ -600,7 +600,7 @@ vec4  imf = texture2D(TXF,uv);
       img = mix(img,imf.ggga,mxv).rgba;
       img.rgb = rgb2ht(img.rgb,MX);
       img.rgb = mix(img.rgb,abs(vec3(0.5)-img.rgb)*vec3(2.0),A);
-			
+      
       gl_FragColor = img;
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
@@ -630,7 +630,7 @@ Xenakis
 
 vec2  uv = vTexCoord; 
       uv.y = 1.0 - uv.y;
-			
+      
 vec4  imc = texture2D(TXP, uv);
 vec4  imb = texture2D(TXB, uv);
 float v = (1.0-distance(uv.y,0.5)*2.0);
@@ -687,11 +687,11 @@ vec2  uv  = vec2(vtc.x, 1.0-vtc.y);
 vec4  img = texture2D(TXP, uv);
       img.rgb *= vec3(5.0);
       img.rgb = mod(img.rgb,vec3(1.0));
-			
+      
 float a = img2avg(img);
       a = step(a,0.5);
       img.rgb = mix(vec3(a),1.0-vec3(a),B);
-			
+      
 vec4  imf = texture2D(TXF, uv);
       img.rgb = mix(img.rgb, img.rgb + vec3(1.0-imf.rgb),B);
       imf.g = 1.0 - (img.g + imf.g);
