@@ -1,6 +1,5 @@
 # mIRO)))
 ![image](https://user-images.githubusercontent.com/38255514/169018816-031b5d0a-fb80-495b-bfab-2cebc55c0d02.png)
-This app allows to explore the generative photography using mobile devices.
 
 🚀 [Run at GitHub](https://hayabuzo.github.io/mIRO/)
 
@@ -23,7 +22,7 @@ This app allows to explore the generative photography using mobile devices.
 
 
 ## Shooting mode
-![image](https://user-images.githubusercontent.com/38255514/169022343-ddc08879-c318-4ee9-8ce5-0ccdde6c9870.png)
+![image](https://user-images.githubusercontent.com/38255514/169052138-81983510-2998-48c8-98d0-9a36e79892c2.png)
 ## Shader Editor
 ![image](https://user-images.githubusercontent.com/38255514/169022148-9793b82e-c018-44f2-9e44-9f91a0f81adb.png)
 ## Settings
