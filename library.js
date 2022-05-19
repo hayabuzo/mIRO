@@ -103,7 +103,9 @@ float z2z ( float z ) {
 
 /* Float to Random */
 float f2rand( float f ) { 
-  return fract(sin(f) * 43758.5453123); }
+  f = floor(sin(f)*9462.7)*0.0136;
+	f = floor(cos(f)*7294.6)*0.0178;
+  return fract(f); }
   
 /* Float to Slit */
 float f2slit ( float f, float lvl, float len, float smt ) { 
@@ -120,10 +122,9 @@ float f2map(float value, float min1, float max1, float min2, float max2) {
 │                                 │
 └—————————————————————————————————┘*/
 
-/* Random Grid */
-vec2 uv2rand(vec2 st) {
-  st = vec2( dot(st,vec2(127.1,311.7)), dot(st,vec2(269.5,183.3)));
-  return -1.0 + 2.0*fract(sin(st)*43758.5453123); }
+/* Grid to Float Random  */
+float uv2frand(vec2 uv) {
+  return f2rand(dot(uv,vec2((uv.x+f2rand(uv.y)),(uv.y*f2rand(uv.x))))); }
 
 /* Expand Grid */
 vec2 uv2exp ( vec2 uv, float mz, float mx, float my ) {
@@ -207,8 +208,24 @@ vec2 cnv2abs ( vec2 uv ) {
   return 1.0-abs(mod(uv,2.0)-1.0); }
 
 /* Modulo Canvas */
-vec2 cnv2mod (vec2 uv) {
+vec2 cnv2mod ( vec2 uv ) {
   return mod(uv,1.0); }
+	
+/**┌—————————————————————————————————┐
+│                                 │
+│             Figures             │
+│                                 │
+└—————————————————————————————————┘*/
+
+/* Centered Rectangle */
+float fg2rect ( vec2 uv, vec2 pos, float d, float s ) {
+  d *= 0.5;  s = d*s;  uv.y /= H2W;  pos.y /= H2W;
+  return (smoothstep(pos.x-d-s,pos.x-d+s,uv.x) - smoothstep(pos.x+d-s,pos.x+d+s,uv.x))
+       * (smoothstep(pos.y-d-s,pos.y-d+s,uv.y) - smoothstep(pos.y+d-s,pos.y+d+s,uv.y)); }
+
+/* Centered Circle */
+float fg2circ ( vec2 uv, vec2 pos, float d, float s) {
+  return (1.0-distance(uv/vec2(1.0,H2W),vec2(pos.x,pos.y/H2W))*(1.0/d))*(1.0/s); }
 
 /**┌—————————————————————————————————┐
 │                                 │

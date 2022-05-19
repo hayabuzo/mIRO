@@ -1,5 +1,5 @@
 const sketch = 'mIRO'
-const ver    = 'v.220518' 
+const ver    = 'v.220519' 
 
 function setup() {                                           // preparing sketch
   

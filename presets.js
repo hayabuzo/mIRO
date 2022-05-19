@@ -251,7 +251,7 @@ float mask = f2slit ( img2avg(ima), R1, R2*0.05, R2*0.05 );
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
 Interpol
-@ // v4
+@ // v5
 
 vec2  uv = vTexCoord; 
       uv.y = 1.0 - uv.y;
@@ -268,7 +268,10 @@ vec2  shft = vec2(mod(c.r+MX,1.0),1.0-c.b);
 vec2  uvs = uv+r-shft;
 vec4  img = texture2D(TXP, cnv2abs(uvs));
 
-      img.a = f2slit(uv.x,shft.x,s,mix(0.0,s*0.1,B))*f2slit(uv.y,shft.y,s*H2W,mix(0.0,s*0.1*H2W,B));
+      img.a = step(uv.x,shft.x+s)
+            * step(shft.x-s,uv.x)
+            * step(uv.y,shft.y+s*H2W)
+            * step(shft.y-s*H2W,uv.y);
 
       gl_FragColor = img; 
 

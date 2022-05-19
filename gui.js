@@ -58,7 +58,8 @@ class gui {           // create graphic user interface
     else {
       push();
       textAlign(LEFT,CENTER).noFill().stroke(150).textSize(80).text( "mIRO"+(frameCount%80<20?'':frameCount%80<40?')':frameCount%80<60?'))':')))') , width/2-150, height/2-20 );
-      textStyle(ITALIC).textAlign(LEFT,CENTER).fill(150).noStroke().textSize(12).text( "NOW LOADING "+ (frameCount%60<20?'/':frameCount%60<40?'–':'\\') ,width/2-50, height/2+20 ); pop();
+      textStyle(ITALIC).textAlign(LEFT,CENTER).fill(150).noStroke().textSize(12).text( "NOW LOADING "+ (frameCount%60<20?'/':frameCount%60<40?'–':'\\') ,width/2-50, height/2+20 ); 
+			pop();
     }
     
     
