@@ -20,7 +20,7 @@ class button {                     // here is a button class
 
         // make a stroke bolder when we clicking the button                     
         if (this.pressed)   { noFill();    if (this.bgc!=null) fill(color(this.bgc));    this.sw = 5;     }
-        else                 { noFill();   if (this.bgc!=null) fill(color(this.bgc));    this.sw = 1;     }
+        else                { noFill();    if (this.bgc!=null) fill(color(this.bgc));    this.sw = 1;     }
         stroke(skin[profile.theme].btn).strokeWeight(this.sw).rect(this.x+this.sw/2, this.y+this.sw/2, this.w-this.sw+1, this.h-this.sw+1); 
 
         // draw a crossaim to track mouse position over the button                     
@@ -38,26 +38,26 @@ class button {                     // here is a button class
     if(this.txt[3]!=null) textAlign(LEFT,   BOTTOM).text(this.txt[3],this.x+10,        this.y+this.h-10+this.tsize/5 );
     if(this.txt[4]!=null) textAlign(RIGHT,  BOTTOM).text(this.txt[4],this.x+this.w-10, this.y+this.h-10+this.tsize/5 );
     pop(); 
-    
+
     if (this.clickable) { // some calculations to track pressing and clicking on the button 
-      
+
       // check if mouse is over the button
       if (mouseX>this.x && mouseX<this.x+this.w && mouseY>this.y && mouseY<this.y+this.h) this.over = true; else this.over = false;
-      
+
       // if we are pressing outside the button and releasing over the button we need to block this button behavior
       if (!this.over && mouseIsPressed) this.ignore = true; else if (!mouseIsPressed) this.ignore = false;
-      
+
            // calculations to distinguish pressing and clicking on the button
            if ( this.over && !this.ignore &&  mouseIsPressed)    this.pressed = true;   
       else if ( this.over && this.pressed && !mouseIsPressed) {  this.pressed = false; this.clicked = true; } 
       else if (!this.over && this.pressed && !mouseIsPressed)    this.pressed = false;   
       else                                                       this.clicked = false;
-      
+
       // calculate and normalize mouse position
       if (this.pressed && this.over) { this.xm = (mouseX-this.x)/this.w; this.ym = (mouseY-this.y)/this.h; }
-      
+
     }
-      
+
   }
 
 }

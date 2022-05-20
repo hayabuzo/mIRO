@@ -7,8 +7,9 @@ class gui {           // create graphic user interface
     
     // set default values for some object variables and create camera
     this.w = w;        this.stream  = {};        this.showhelp = false;        this.x0 = (width-this.w)*0.5;        this.kfps = 1.0;  
-    this.h = h;        this.buttons = {};        this.timestamp = '';          this.horient = false;                this.createCamera();  
-    this.trig = [0,0,0];
+    this.h = h;        this.buttons = {};        this.timestamp = '';          this.horient = false;                this.frc = 0.0;
+		this.createCamera();
+		this.trig = [0,0,0];
     
     // set camera stabilization values
     this.shake = {};     this.shake.array = [];     this.shake.average = 0;     this.shake.steps = 10; 
@@ -229,8 +230,8 @@ class gui {           // create graphic user interface
     
     try {  // we try to run the shaders and send them uniforms, then paint 'run' button with 'success' color
       for (let i = 0; i < glsl.frags.length; i++) { this.unisend(i); this.stream.imgx.shader(this.stream.shader[i]).rect(0,0,1,1); }
-      if (this.frame == "F2") this.buttons.f2.run.bgc = skin[profile.theme].run; } 
-    
+      if (this.frame == "F2") this.buttons.f2.run.bgc = skin[profile.theme].run; 
+      if (this.frame == "F1") this.frc ++; } 
     // if we cannot run the shaders we paint 'run' button with 'error' color
     catch(e) { if (this.frame == "F2") this.buttons.f2.run.bgc = skin[profile.theme].err; } 
     
@@ -285,7 +286,7 @@ class gui {           // create graphic user interface
     // sending random and noise uniforms
     for (let n = 1; n<=5; n++) {
       if(str(sCode.value()).search('R'+n)>0) this.stream.shader[i].setUniform( 'R'+n , Math.random() ); 
-      if(str(sCode.value()).search('N'+n)>0) this.stream.shader[i].setUniform( 'N'+n , 1.0-abs(1.0 - abs(noise(frameCount*0.003+n*1000)*2.0-0.5)) ); 
+      if(str(sCode.value()).search('N'+n)>0) this.stream.shader[i].setUniform( 'N'+n , 1.0-abs(1.0 - abs(noise(frameCount*(0.003*n)+n*1000)*2.0-0.5)) ); 
     }
     
     // sending image size as uniforms
@@ -295,7 +296,7 @@ class gui {           // create graphic user interface
     
     // sending time uniforms
     this.stream.shader[i].setUniform( 'MLS' , (millis()/1000) ); 
-    this.stream.shader[i].setUniform( 'FRC' , (frameCount/60) ); 
+    this.stream.shader[i].setUniform( 'FRC' , (this.frc/60) ); 
     this.stream.shader[i].setUniform( 'FSK' , this.kfps ); 
     
     // sending control uniforms

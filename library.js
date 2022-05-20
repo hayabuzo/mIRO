@@ -225,6 +225,7 @@ float fg2rect ( vec2 uv, vec2 pos, float d, float s ) {
 
 /* Centered Circle */
 float fg2circ ( vec2 uv, vec2 pos, float d, float s) {
+  d *= 0.5; d *= 1.0+s*0.5;
   return (1.0-distance(uv/vec2(1.0,H2W),vec2(pos.x,pos.y/H2W))*(1.0/d))*(1.0/s); }
 
 /**┌—————————————————————————————————┐
