@@ -104,7 +104,7 @@ float z2z ( float z ) {
 /* Float to Random */
 float f2rand( float f ) { 
   f = floor(sin(f)*9462.7)*0.0136;
-	f = floor(cos(f)*7294.6)*0.0178;
+  f = floor(cos(f)*7294.6)*0.0178;
   return fract(f); }
   
 /* Float to Slit */
@@ -171,13 +171,14 @@ vec2 uv2brl( vec2 uv, float pwr ) {
   
 /* Glass Brick Distortion */
 vec2 uv2gbr( vec2 uv, float s, float pwr ) {
-  return mix(uv,uv-sin((mod(uv,s)/s-0.5)*TWO_PI),pwr*s*0.15) ; }
+  return mix(uv,uv-sin((mod(uv,s)/s-0.5)*TWO_PI),pwr*s*0.15); }
   
 /* Rotation */
 vec2 uv2rot( vec2 uv, float ang ) {
-  return uv *= mat2( 
-  cos(ang), -sin(ang),
-  sin(ang),  cos(ang)); }
+  uv -= 0.5; uv.y /= H2W;
+  uv *= mat2(cos(ang), -sin(ang), sin(ang),  cos(ang));
+  uv.y *= H2W; uv += 0.5; 
+	return uv; }
   
 /* Transform */
 vec2 uv2tr( vec2 uv, vec2 anchor, float angle, float resize ) {

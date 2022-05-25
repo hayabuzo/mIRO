@@ -268,8 +268,8 @@ vec2  pos = vec2(mod(c.r+MX,1.0),1.0-c.b);
 vec2  uvs = uv+r-pos;
 vec4  img = texture2D(TXP, cnv2abs(uvs));
 
-           if (A==0.0) img.a = fg2rect(uv,pos,s,mix(0.0,1.0,B));
-      else if (A==1.0) img.a = fg2circ(uv,pos,s,mix(0.0,1.0,B));
+           if (A==0.0) img.a = fg2rect(uv,pos,s,mix(0.01,1.0,B));
+      else if (A==1.0) img.a = fg2circ(uv,pos,s,mix(0.01,1.0,B));
 
       gl_FragColor = img; 
 
@@ -329,8 +329,8 @@ float e = f2slit(img2bw(img),0.5,0.01,0.05);
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
-Locussolus
-@ // v2
+Locussolus 
+@ // v3
 
 vec2  uv = vTexCoord;
       uv.y = 1.0 - uv.y;
@@ -341,7 +341,9 @@ float kx = H2W;
 vec2  uvc = uv;
       uvc = uvc-vec2(0.5,0.5);
       uvc.x*= kx;  
-      uvc = mix(uv2rot(uvc,PI*0.5),uvc,A);      
+float ang = PI*0.5;
+mat2  rot = mat2(cos(ang), -sin(ang), sin(ang),  cos(ang));
+      uvc = mix(uvc*rot,uvc,A);      
 
 vec2  uvr = xy2md(uvc); 
       uvr.y/=TWO_PI;
@@ -558,7 +560,7 @@ vec4  img = texture2D(TXP, uvf);
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
 Uffie
-@ // v7
+@ // v8
 
 vec2  uv = vTexCoord; 
       uv.y = 1.0 - uv.y;
@@ -568,10 +570,13 @@ float ky = mix(f2z(MY),0.0,C);
 float kx = mix(f2z(MX),0.0,C);
 float kd = distance(uv/vec2(1.0,H2W),vec2(0.5+kx,0.5/H2W+ky))+ky;
       uv.y = mix(kd,1.0-kd,A);
-      uv = mix(uv,cnv2abs(uv2rot(uv,MY*f2z(imb.r))),C);
+float ang = MY*f2z(imb.r);
+mat2  rot = mat2(cos(ang), -sin(ang), sin(ang),  cos(ang));
+      uv = mix(uv,cnv2abs(uv*rot),C);
 vec4  img = texture2D(TXP, cnv2abs(uv));
 
       gl_FragColor = img; 
+
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
