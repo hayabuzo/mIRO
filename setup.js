@@ -1,5 +1,5 @@
 const sketch = 'mIRO'
-const ver    = 'v.220520' 
+const ver    = 'v.220526' 
 
 function setup() {                                           // preparing sketch
   
@@ -57,4 +57,5 @@ function open_file(file) {                                      // when opening 
   if (file.type === 'image') gui.createImage(file);             // we can open an image and put it for shader processing
   if (profile.opening) gui.frame = "F1L";                       // if quick opening is on, return to the main frame
   gui.compile();                                                // compile filter after loading
+	file_input.value('');	                                        // clear file input to allow reopen the same file
 } 

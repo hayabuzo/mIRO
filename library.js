@@ -116,6 +116,9 @@ float f2slit ( float f, float lvl, float len, float smt ) {
 float f2map(float value, float min1, float max1, float min2, float max2) {
   return min2 + (value - min1) * (max2 - min2) / (max1 - min1); }
 
+float f2scrv(float f, float amt, float shft) {
+  return f - sin(f*TWO_PI+shft*PI)*0.3*amt; }
+
 /**┌—————————————————————————————————┐
 │                                 │
 │              Grid               │
@@ -184,7 +187,7 @@ vec2 uv2rot( vec2 uv, float ang ) {
 vec2 uv2tr( vec2 uv, vec2 anchor, float angle, float resize ) {
   uv.y /= H2W;
   anchor.y /= H2W;
-  uv -= 0.5;
+  uv -= anchor;
   uv *= mat2(cos(angle) , -sin(angle) ,
              sin(angle) ,  cos(angle) );
   uv /= resize; 
