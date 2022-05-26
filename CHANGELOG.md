@@ -1,3 +1,5 @@
+- v.220526: fixed uv2tr() vertical shift;
+- v.220526: fixed file input to allow reopen the same file;
 - v.220525: fixed uv2rot() aspect ratio and centered;
 - v.220525: preset Locussolus⇨v3 according to change uv2rot();
 - v.220525: preset Uffie⇨v8 according to change uv2rot();
