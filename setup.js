@@ -1,5 +1,5 @@
 const sketch = 'mIRO'
-const ver    = 'v.220526' 
+const ver    = 'v.220527' 
 
 function setup() {                                           // preparing sketch
   
@@ -17,7 +17,7 @@ function createHtml() {                                                         
   sCode = createElement('textarea', profile.code);                                     // create text area for shader code 
   sCode.position(gui.x0+4,gui.h*0.1).size(gui.w-15,gui.h*0.8-50);                      // set area position and size
   sCode.style('color:'+skin[profile.theme].txt);                                       // set text color
-  sCode.style('background-color', skin[profile.theme].bgr);                            // set text area background color
+  sCode.style('background-color', 'transparent');                                      // set text area background transparent
   sCode.style('font-size', 14+'px');  sCode.style('font-family:monospace');            // set text size and font
   sCode.style('text-align:left');     sCode.style('white-space:pre');                  // set text align
   sCode.style('visibility:hidden');   sCode.id('sCode');                               // hide text area until we need it
@@ -29,10 +29,10 @@ function createHtml() {                                                         
   pre_sel = createSelect();                                                            // create preset selector
   pre_sel.position(gui.x0+4,gui.h*0.9-40).size(gui.w-8,40);                            // set preset selector position and size
   pre_sel.style('color:'+skin[profile.theme].txt);                                     // set preset selector text color
-  pre_sel.style('background-color', skin[profile.theme].bgr);                          // set preset selector background color
   pre_sel.style('font-size', 14+'px');  pre_sel.style('font-family:monospace');        // set preset selector size and font
   pre_sel.style('text-align:left');     pre_sel.style('white-space:pre');              // set preset selector align
   pre_sel.style('visibility:hidden');   pre_sel.changed(load_preset);                  // hide preset selector until we need it
+  pre_sel.style('background-color',gui.mobile?'transparent':skin[profile.theme].bgr);  // set preset selector background color
   pre_sel.id('mySel');                                                                 // set the element id, to find it later
 
   pre_sel.option('> Load Preset');                                                                 // create first line of selector
@@ -49,13 +49,11 @@ function load_preset() {                                        // when loading 
   sCode.value(glsl.parray[mySel.selectedIndex-1].slice(2));     // because we will delete first 2 symbols of preset text which used for better formating      
   gui.compile(); mySel.selectedIndex = 0;                       // compile preset after loading and reset selector  
   for (let i in gui.trig) { gui.trig[i] = false; }              // reset shader controls
-  if (profile.opening) gui.frame = "F1L";                       // if quick opening is on, return to the main frame
 }
 
 function open_file(file) {                                      // when opening a file via "load" button
   if (file.type === 'text') sCode.value(file.data);             // we can open a text file and put it in a shader code
   if (file.type === 'image') gui.createImage(file);             // we can open an image and put it for shader processing
-  if (profile.opening) gui.frame = "F1L";                       // if quick opening is on, return to the main frame
   gui.compile();                                                // compile filter after loading
 	file_input.value('');	                                        // clear file input to allow reopen the same file
 } 

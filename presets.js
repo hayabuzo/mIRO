@@ -37,7 +37,7 @@ vec4  imo = mix(imd, ima, A);
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
 Bluejuice
-@ // v1
+@ // v6
 
 vec2  vtc = vTexCoord;
 vec2  uv  = vec2(vtc.x, 1.0-vtc.y);
@@ -51,7 +51,7 @@ vec4  img = texture2D(TXP, uvp);
 
       k*=0.5;
 vec4  imp = texture2D(TXP, cnv2abs(uv2p(
-        uv2dspmd(uv,imb.r*k,imb.g*k),
+        uv2dspmd(uv,imb.r*k*PI,imb.g*k),
         MY*f2z(img.g) )));
       imp.rgb = rgb2ht(imp.rgb,imp.g);
       imp.rgb = mod(rgb2lt(imp.rgb,img.r),1.0);
@@ -60,11 +60,13 @@ vec2  uvo = mix(
         cnv2mod(uv2exp(uv,f2z(imp.r),f2z(imp.g),f2z(imp.b))),
         cnv2mod(uv2mrr(uv,imp.rgb,f2z(imp.g),f2z(imp.b))), A);
 vec4  imo = texture2D(TXP,uvo);
+      if (C==1.0) imo = mix(tx2d(TXF,uvo),tx2d(TXP,uv),step(f2rand(img.g),0.1+R5*0.1));
 
 vec4  imj = texture2D(TXP, uv);
       imj.g = f2f(sin( imj.g * TWO_PI * (0.5+MY) ));
-      imo = mix(imo, mix2scr(imj.ggga,imo,1.0), B);
-
+      if (B==1.0 && (C==0.0 || R4>0.5)) imo = mix2scr(imj.ggga,imo,1.0);
+      else if (B==1.0 && C==1.0) imo = mix2dfr(imj.ggga,imo,1.0);
+  
       gl_FragColor = imo;
       
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`

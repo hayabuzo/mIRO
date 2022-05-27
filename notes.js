@@ -1,5 +1,10 @@
 /*
 
+v.200527: fixed fg2circ() value range is clamped to (0.0,1.0);
+v.220527: preset Bluejuice⇨v6 added recursion;
+v.220527: added "create new filter" hint on editor button;
+v.220527: added livecoding mode in shader editor;
+
 v.220526: fixed uv2tr() vertical shift;
 v.220526: fixed file input to allow reopen the same file;
 

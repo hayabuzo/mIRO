@@ -25,9 +25,9 @@ LIST OF FUNCTIONS
   HEIGHT  - Height of image in pixels 
   H2W     - Ratio of width to height
   R1...R5 - Random floats [0...1]
-  N1...N5 - Noise floats [0...1]
+  N1...N5 - Noise floats [0...1], from slow N1 to fast N5
   MLS     - Milliseconds: millis()/1000
-  FRC     - Frame Count: frameCount/60 
+  FRC     - Processed Frame Count: frameCount/60 
   FSK     - Frame Skip: 60/frameRate()
   MX      - Mouse X regarding PLAY button [0...1]  
   MY      - Mouse Y regarding PLAY button [0...1]
@@ -221,7 +221,7 @@ vec2 cnv2mod ( vec2 uv ) {
 │                                 │
 └—————————————————————————————————┘*/
 
-/* Centered Rectangle */
+/* Centered Square */
 float fg2rect ( vec2 uv, vec2 pos, float d, float s ) {
   d *= 0.5;  s = d*s;  uv.y /= H2W;  pos.y /= H2W;
   return (smoothstep(pos.x-d-s,pos.x-d+s,uv.x) - smoothstep(pos.x+d-s,pos.x+d+s,uv.x))
@@ -230,7 +230,7 @@ float fg2rect ( vec2 uv, vec2 pos, float d, float s ) {
 /* Centered Circle */
 float fg2circ ( vec2 uv, vec2 pos, float d, float s) {
   d *= 0.5; d *= 1.0+s*0.5;
-  return (1.0-distance(uv/vec2(1.0,H2W),vec2(pos.x,pos.y/H2W))*(1.0/d))*(1.0/s); }
+  return clamp((1.0-distance(uv/vec2(1.0,H2W),vec2(pos.x,pos.y/H2W))*(1.0/d))*(1.0/s),0.0,1.0); }
 
 /**┌—————————————————————————————————┐
 │                                 │

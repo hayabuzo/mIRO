@@ -6,7 +6,7 @@ class gui {           // create graphic user interface
     this.mobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) ? true : false;
     
     // set default values for some object variables and create camera
-    this.w = w;        this.stream  = {};        this.showhelp = false;        this.x0 = (width-this.w)*0.5;        this.kfps = 1.0;  
+    this.w = w;        this.stream  = {};        this.showhelp = false;        this.x0 = (width-this.w)*0.5;        this.kfps = 1.0;      this.compiled = false;
     this.h = h;        this.buttons = {};        this.timestamp = '';          this.horient = false;                this.frc = 0.0;
 		this.createCamera();
 		this.trig = [0,0,0];
@@ -81,7 +81,7 @@ class gui {           // create graphic user interface
       
       // create all buttons for the frame
       this.frame = "F1"; this.buttons.f1 = {}; 
-        this.buttons.f1.code = new button( this.x0, this.h*0.0, this.w-this.h*(glsl.n*0.1), this.h*0.1 , 10); this.buttons.f1.code.txt[1] = this.getName();
+        this.buttons.f1.code = new button( this.x0, this.h*0.0, this.w-this.h*(glsl.n*0.1), this.h*0.1 , 10); this.buttons.f1.code.txt[1] = (this.getName()=="myShaderName"?"Create New Filter":this.getName());
         this.buttons.f1.play = new button( this.x0, this.h*0.1, this.w    , this.h*0.4 , 10); this.buttons.f1.play.txt[4] = "PLAY"; this.buttons.f1.play.cross = true;
         this.buttons.f1.save = new button( this.x0, this.h*0.5, this.w    , this.h*0.4 , 10); this.buttons.f1.save.txt[4] = "SAVE"; this.buttons.f1.save.txt[1] = this.stream.stack.width+'x'+this.stream.stack.height;
         this.buttons.f1.dir  = new button( this.x0, this.h*0.9, this.h*0.1, this.h*0.1 , 10); this.buttons.f1.dir .txt[0] = this.horient?"→":"↑"; this.buttons.f1.dir.tsize = 30;
@@ -99,7 +99,7 @@ class gui {           // create graphic user interface
     else if (this.frame=="F1") {  // showing frame #1 (main frame)
       
       // in each frame we update the main image, in every second we recount and update the FPS value 
-      imageMode(CENTER); image(this.stream.stack, width*0.5, height*0.5, this.stream.stack.width*this.stream.scale, this.stream.stack.height*this.stream.scale);
+      this.preview();
       if (frameCount%floor(frameRate())==0) { this.kfps = 60 / frameRate();  this.buttons.f1.play.txt[1] = nfs(frameRate(),2,2); }
       this.buttons.f1.play.txt[3] = profile.clicking? "" : nfs(this.shake.average,1,2);
       
@@ -133,7 +133,14 @@ class gui {           // create graphic user interface
     }
 
     else if (this.frame=="F2") {  // showing frame #2 (shader editor)
-      
+			
+      if (profile.livecode) {  // livecoding mode draws preview under coding textarea
+			  this.preview();
+        if (this.compiled && frameCount%20==0) { this.process(); this.stream.stack.image(this.stream.imgx,0,0); }
+			  let clr = color(skin[profile.theme].bgr); clr.setAlpha(180);
+			  noStroke().fill(clr).rect(0,0,width,height);
+      }
+			
       if (!this.showhelp) {  // text area is in the shader edit mode
 
         // change text field and buttons according to mode
@@ -168,7 +175,7 @@ class gui {           // create graphic user interface
       
       // create all buttons for the frame
       this.frame = "F3"; textFont('Monospace');
-        this.buttons.f3 = {head:0,auto:0,camr:0,canv:0,fron:0,stab:0,ftyp:0,floa:0,open:0,wind:0,skin:0,okay:0}; let n=0;
+        this.buttons.f3 = {head:0,auto:0,camr:0,canv:0,fron:0,stab:0,ftyp:0,floa:0,live:0,wind:0,skin:0,okay:0}; let n=0;
         for (let i in this.buttons.f3) { 
           this.buttons.f3[i] = new button( this.x0, 15+this.h*0.07*n, this.w, this.h*0.07 , 10);  
           this.buttons.f3[i].showborder = false; 
@@ -195,8 +202,8 @@ class gui {           // create graphic user interface
         this.buttons.f3.fron.txt[1] = "    Frontal Camera: " + (profile.frontal  ? "ON" : "OFF");                  
         this.buttons.f3.stab.txt[1] = "     Stabilization: " + (profile.stablevel > 0 ? nfs(profile.stablevel,1,2).slice(1) : "OFF");  
         this.buttons.f3.ftyp.txt[1] = "         File Type: " + profile.filetype.toUpperCase();                  
-        this.buttons.f3.floa.txt[1] = "     Force Loading: " + (profile.forcing  ? "ON" : "OFF");     
-        this.buttons.f3.open.txt[1] = "     Quick Opening: " + (profile.opening  ? "ON" : "OFF");  
+        this.buttons.f3.floa.txt[1] = "     Force Loading: " + (profile.forcing  ? "ON" : "OFF"); 
+        this.buttons.f3.live.txt[1] = "       Live Coding: " + (profile.livecode  ? "ON" : "OFF"); 
         this.buttons.f3.wind.txt[1] = "      Preview Size: " + nfs(profile.window,1,2).slice(1);   
         this.buttons.f3.skin.txt[1] = "             Theme: " + (profile.theme == 0 ? "Dark" : "Light");    
         this.buttons.f3.okay.txt[0] = "OK";
@@ -209,7 +216,7 @@ class gui {           // create graphic user interface
         if (this.buttons.f3.stab.clicked) profile.stablevel  = profile.stablevel <= 0.0 ? 0.5 : ceil(profile.stablevel*100 - 5)/100;
         if (this.buttons.f3.ftyp.clicked) profile.filetype   = profile.filetype == 'jpg' ? 'png' : 'jpg';
         if (this.buttons.f3.floa.clicked) profile.forcing    = !profile.forcing;
-        if (this.buttons.f3.open.clicked) profile.opening    = !profile.opening;
+        if (this.buttons.f3.live.clicked) profile.livecode   = !profile.livecode;
         if (this.buttons.f3.wind.clicked) profile.window     = profile.window >= 1.0 ? 0.25 : profile.window += 0.25;
 
         if (this.buttons.f3.okay.clicked) {  // recreate camera or rescale window if needed and return to frame #1
@@ -221,7 +228,10 @@ class gui {           // create graphic user interface
       
     }  
     
-  }    
+  }
+	
+	// show stack image on screen
+  preview() {	imageMode(CENTER); image(this.stream.stack, width*0.5, height*0.5, this.stream.stack.width*this.stream.scale, this.stream.stack.height*this.stream.scale);	}
   
   // try to compile and run the shaders
   compile() { buildShader(); this.createShader(); this.process(); this.saveProfile(); } 
@@ -231,9 +241,10 @@ class gui {           // create graphic user interface
     try {  // we try to run the shaders and send them uniforms, then paint 'run' button with 'success' color
       for (let i = 0; i < glsl.frags.length; i++) { this.unisend(i); this.stream.imgx.shader(this.stream.shader[i]).rect(0,0,1,1); }
       if (this.frame == "F2") this.buttons.f2.run.bgc = skin[profile.theme].run; 
-      if (this.frame == "F1") this.frc ++; } 
+      if (this.frame == "F1") this.frc ++; 
+			this.compiled = true; } 
     // if we cannot run the shaders we paint 'run' button with 'error' color
-    catch(e) { if (this.frame == "F2") this.buttons.f2.run.bgc = skin[profile.theme].err; } 
+    catch(e) { if (this.frame == "F2") { this.buttons.f2.run.bgc = skin[profile.theme].err; } this.compiled = false; } 
     
     // after each processing we take the timestamp to save it as the processed image name 
     this.timestamp = year()+nf(month(),2)+nf(day(),2)+" - "+nf(hour(),2)+nf(minute(),2)+nf(second(),2);

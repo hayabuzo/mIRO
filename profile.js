@@ -13,7 +13,7 @@ function getProfile() {          // load profile with program settings
     stablevel:  0.0,             // stabilization off
     filetype:   "jpg",           // save files in 'jpg'
     forcing:    false,           // do not use force loading
-    opening:    true,            // quick opening enabled
+    livecode:   true,            // livecoding enabled;
     window:     1,               // do not reduce window size
     code:       glsl.default,    // load default shader code
     theme:      0                // load dark skin
