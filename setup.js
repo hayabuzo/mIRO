@@ -1,5 +1,5 @@
 const sketch = 'mIRO'
-const ver    = 'v.220527' 
+const ver    = 'v.220530' 
 
 function setup() {                                           // preparing sketch
   
@@ -32,10 +32,9 @@ function createHtml() {                                                         
   pre_sel.style('font-size', 14+'px');  pre_sel.style('font-family:monospace');        // set preset selector size and font
   pre_sel.style('text-align:left');     pre_sel.style('white-space:pre');              // set preset selector align
   pre_sel.style('visibility:hidden');   pre_sel.changed(load_preset);                  // hide preset selector until we need it
-  pre_sel.style('background-color',gui.mobile?'transparent':skin[profile.theme].bgr);  // set preset selector background color
   pre_sel.id('mySel');                                                                 // set the element id, to find it later
 
-  pre_sel.option('> Load Preset');                                                                 // create first line of selector
+  pre_sel.option('Load Preset');                                                                   // create first line of selector
   glsl.parray = glsl.presets.split("###").slice(1);                                                // create array of presets
   glsl.parray.sort(function(a,b){return a.toLowerCase().localeCompare(b.toLowerCase());});         // sort it case-insensetive
   for(let i=0; i<glsl.parray.length; i++) { pre_sel.option(glsl.parray[i].split(char(10))[2]); }   // put presets names into selector
@@ -47,8 +46,11 @@ function draw() {  background(color(skin[profile.theme].bgr)); gui.run(); }     
 function load_preset() {                                        // when loading a preset via selector
   glsl.parray[-1] = 'xx'+profile.code;                          // we need to store current shader text with 2 extra characters          
   sCode.value(glsl.parray[mySel.selectedIndex-1].slice(2));     // because we will delete first 2 symbols of preset text which used for better formating      
-  gui.compile(); mySel.selectedIndex = 0;                       // compile preset after loading and reset selector  
+  gui.compile();                                                // compile preset
+	mySel.selectedIndex = 0;                                      // reset selector in shader editor
+	if (gui.frame=="F1") gui.frame="F1L";                         // recalculate buttons size to align controls
   for (let i in gui.trig) { gui.trig[i] = false; }              // reset shader controls
+	document.getElementById('mySel').blur();                      // set the focus out of selector
 }
 
 function open_file(file) {                                      // when opening a file via "load" button

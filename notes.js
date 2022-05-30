@@ -1,9 +1,16 @@
 /*
 
+v.200530: fixed uniform TXF first frame issue;
+v.200530: added preset selection button in the shooting mode;
+v.200530: changed shader editor button label to </>;
+
 v.200527: fixed fg2circ() value range is clamped to (0.0,1.0);
 v.220527: preset Bluejuice⇨v6 added recursion;
 v.220527: added "create new filter" hint on editor button;
 v.220527: added livecoding mode in shader editor;
+v.220527: removed "quick opening" option; 
+v.220527: fixed fg2circ() division by zero;
+v.220527: button "run" resets processed framecount;
 
 v.220526: fixed uv2tr() vertical shift;
 v.220526: fixed file input to allow reopen the same file;

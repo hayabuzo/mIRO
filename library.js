@@ -116,6 +116,7 @@ float f2slit ( float f, float lvl, float len, float smt ) {
 float f2map(float value, float min1, float max1, float min2, float max2) {
   return min2 + (value - min1) * (max2 - min2) / (max1 - min1); }
 
+/* Float to S-Curve */
 float f2scrv(float f, float amt, float shft) {
   return f - sin(f*TWO_PI+shft*PI)*0.3*amt; }
 
@@ -229,7 +230,7 @@ float fg2rect ( vec2 uv, vec2 pos, float d, float s ) {
 
 /* Centered Circle */
 float fg2circ ( vec2 uv, vec2 pos, float d, float s) {
-  d *= 0.5; d *= 1.0+s*0.5;
+  d *= 0.5; d *= 1.0+s*0.5; d += 0.0001; s += 0.0001;
   return clamp((1.0-distance(uv/vec2(1.0,H2W),vec2(pos.x,pos.y/H2W))*(1.0/d))*(1.0/s),0.0,1.0); }
 
 /**┌—————————————————————————————————┐
