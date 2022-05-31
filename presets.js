@@ -1,5 +1,7 @@
 glsl.presets = `
 
+`+/* ============================================ FIRST PACK ============================================ */`
+
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
 Autechre
@@ -706,5 +708,56 @@ vec4  imf = texture2D(TXF, uv);
 vec4  imo = mix(img,imf.ggga,A);
 
       gl_FragColor = imo;
+
+`+/* ============================================ SECOND PACK ============================================ */`
+
+`+/*-------------------------------------------------------------------------------------------------------*/`###`+`
+
+Pictures
+@ // v9.8
+
+vec2  uv = vTexCoord; 
+      uv.y = 1.0 - uv.y;
+vec4  img = texture2D(TXP, uv);
+vec2  pos = vec2(R1,R2);
+
+vec2  uvw = uv;
+float kx = (1.0-C*0.5)*R4+C*0.5; 
+float ky = (1.0-C*0.5)*R5+C*0.5;
+float t = R3*10.0+C*1000.0;
+      kx = kx*2.0+0.01;
+vec2  t1 = vec2(kx,ky);
+vec2  t2 = uvw;
+      for(int i=1; i<10; i++) {
+        t2.x+=0.3/float(i)*sin(float(i)*3.0*t2.y+t*kx)+t1.x;
+        t2.y+=0.3/float(i)*cos(float(i)*3.0*t2.x+t*kx)+t1.y; }
+vec3  tc1;
+      tc1.r = cos(t2.x+t2.y+1.0)*0.5+0.5;
+      tc1.g = sin(t2.x+t2.y+1.0)*0.5+0.5;
+      tc1.b =(sin(t2.x+t2.y)+cos(t2.x+t2.y))*0.5+0.5;
+      uvw = uvw +(tc1.rb*vec2(2.0)-vec2(1.0))*ky;
+      uvw = cnv2abs(uvw);
+
+float a = fg2circ(mix(uv,uvw,max(B,C)),pos,R4*0.4+0.1,mix(1.0-R5*0.5*max(B,C),0.1,A));
+      img.a = a;
+      gl_FragColor = img; 
+
+`+/*-------------------------------------------------------------------------------------------------------*/`###`+`
+
+Spirallianz
+@ // v14
+
+vec2  uv = vTexCoord; 
+      uv.y = 1.0 - uv.y;
+float r = distance(vec2(0.5),vec2(MX,MY))*-sign(MX-0.5)*sign(MY-0.5);
+vec2  uvr = uv2tr(uv,vec2(MX,MY),r,0.8);
+vec4  img = texture2D(TXP, uv);
+vec4  imf = tx2d(TXF,mix(cnv2abs(uvr),cnv2mod(uvr),B));
+vec2  m = vec2(f2z(MX)*0.3,f2z(MY)*0.3);
+float k = 0.3;
+float a = clamp(fg2circ(uv,vec2(0.5)+m,1.2+distance(vec2(0.5),vec2(MX,MY)),k*A),0.0,1.0);
+      if (C==1.0) a -= clamp(fg2circ(uv,vec2(0.5),0.4,k*A),0.0,1.0);
+      img = mix(img,imf,a);
+      gl_FragColor = img; 
 
 `+/* -------------------------- END OF PRESETS LIST -------------------------- */``;

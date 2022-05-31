@@ -1,5 +1,5 @@
 const sketch = 'mIRO'
-const ver    = 'v.220530' 
+const ver    = 'v.220531' 
 
 function setup() {                                           // preparing sketch
   
@@ -9,7 +9,7 @@ function setup() {                                           // preparing sketch
   gui = new gui(min(width,height),height);                   // create graphic user interface with limited width
   createHtml();                                              // create html elements
   buildShader();                                             // build shaders from the text
-  
+
 }
 
 function createHtml() {                                                                // create text area and file input elements
@@ -34,7 +34,7 @@ function createHtml() {                                                         
   pre_sel.style('visibility:hidden');   pre_sel.changed(load_preset);                  // hide preset selector until we need it
   pre_sel.id('mySel');                                                                 // set the element id, to find it later
 
-  pre_sel.option('Load Preset');                                                                   // create first line of selector
+  pre_sel.option('> Load Preset');                                                                 // create first line of selector
   glsl.parray = glsl.presets.split("###").slice(1);                                                // create array of presets
   glsl.parray.sort(function(a,b){return a.toLowerCase().localeCompare(b.toLowerCase());});         // sort it case-insensetive
   for(let i=0; i<glsl.parray.length; i++) { pre_sel.option(glsl.parray[i].split(char(10))[2]); }   // put presets names into selector

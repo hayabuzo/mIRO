@@ -26,7 +26,7 @@ class gui {           // create graphic user interface
     this.stream.settings.video.width.ideal  = profile.resolution == "min" ? 640 : profile.resolution == "max" ? 4000 : 1280;
     this.stream.settings.video.height.ideal = profile.resolution == "min" ? 480 : profile.resolution == "max" ? 3000 : 960;         
     this.stream.camera = createCapture(this.stream.settings).hide(); this.stream.camera.loaded = false;
-    this.stream.camera.width = 1; // this allows to load both camera stream and image file as the same object
+    this.stream.camera.width = 1; // this trick allows to load both camera stream and image file as the same object
 
   }
   
@@ -49,6 +49,8 @@ class gui {           // create graphic user interface
     this.stream.h2w    = this.stream.stack.width / this.stream.stack.height;
     this.stream.camera.loaded = true;  this.createShader();  this.frame = "F1L";
     
+		if (getURLParams().f!=null) { document.getElementById("mySel").value = getURLParams().f; load_preset(); }
+		
   }
   
   run() {  // operations for every frame of sketch
@@ -67,13 +69,13 @@ class gui {           // create graphic user interface
   }  
   
   createShader() {  // creation of shaders array
-    
+		
     this.stream.shader = []; // create an empty array and fill it with shaders created from all fragments code we have
     for (let i=0;i<glsl.frags.length;i++) { this.stream.shader[i] = this.stream.imgx.createShader(glsl.vert, glsl.frags[i]); }  
-    
+		
   }
   
-  show() {  // what will be shown when gui is running: there are several frames (F1,F2...) and each frame must be loaded (F1L,F2L...) before being shown
+  show() {  // what will be shown when gui is running: there are several frames (F1,F2...) and each frame must be loaded before being shown (F1L,F2L...).
   
     // ----------------------------------------------------------- F1
     
@@ -86,7 +88,7 @@ class gui {           // create graphic user interface
         this.buttons.f1.dir  = new button( this.x0, this.h*0.9, this.h*0.1, this.h*0.1 , 10); this.buttons.f1.dir .txt[0] = this.horient?"→":"↑"; this.buttons.f1.dir.tsize = 30;
         this.buttons.f1.mode = new button( this.x0+this.h*0.1,  this.h*0.9, this.h*0.1, this.h*0.1 , 10); this.buttons.f1.mode.txt[0]=profile.clicking?">":">>>";
 			  this.buttons.f1.edit = new button( this.x0,             this.h*0.0, this.h*0.1, this.h*0.1 , 10); this.buttons.f1.edit.txt[0] = "</>";
-			  this.buttons.f1.pres = new button( this.x0+this.h*0.1, this.h*0.0, this.w-this.h*(glsl.n*0.1+0.1), this.h*0.1 , 10); this.buttons.f1.pres.txt[0] = (this.getName()=="myShaderName"?"> Load Preset":this.getName());
+			  this.buttons.f1.pres = new button( this.x0+this.h*0.1, this.h*0.0, this.w-this.h*(glsl.n*0.1+0.1), this.h*0.1 , 10); this.buttons.f1.pres.txt[0] = (this.getName()=="myShaderName"?"Load Preset":this.getName().substring(0,12)+(this.getName().length>12?"…":"") );
         this.buttons.f1.set  = new button( this.x0+this.h*0.2, this.h*0.9, this.w-this.h*0.2, this.h*0.1 , 10); this.buttons.f1.set .txt[4] = "SETTINGS";
         this.buttons.f1.a    = new button( this.x0+this.w-this.h*0.1*glsl.n              , glsl.a ? 0.0 : - this.h , this.h*0.1, this.h*0.1 , 10); this.buttons.f1.a.txt[0] = "A";  this.buttons.f1.a.tsize = this.trig[0] ? 30 : 15;
         this.buttons.f1.b    = new button( this.x0+this.w-this.h*0.1*(glsl.n-int(glsl.a)), glsl.b ? 0.0 : - this.h , this.h*0.1, this.h*0.1 , 10); this.buttons.f1.b.txt[0] = "B";  this.buttons.f1.b.tsize = this.trig[1] ? 30 : 15;
