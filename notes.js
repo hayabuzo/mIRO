@@ -1,13 +1,17 @@
 /*
 
-v.200531: preview is fit between header and footer buttons;
-v.200531: displayed filter name is limited with 12 chars;
-v.200531: added Pictures preset;
-v.200531: added Spirallianz preset;
+v.220602: added uv2wav() and tested on a mobile device;
 
-v.200530: fixed uniform TXF first frame issue;
-v.200530: added preset selection button in the shooting mode;
-v.200530: changed shader editor button label to </>;
+v.220531: preview is fitted between header and footer buttons;
+v.220531: displayed filter name is limited with 12 chars;
+v.220531: added new Pictures preset;
+v.220531: added new Spirallianz preset;
+v.220531: added filter loading via URl params "?f=...";
+v.220531: licension changed to Apache 2.0;
+
+v.220530: fixed uniform TXF first frame issue;
+v.220530: added preset selection button in the shooting mode;
+v.220530: changed shader editor button label to </>;
 
 v.200527: fixed fg2circ() value range is clamped to (0.0,1.0);
 v.220527: preset Bluejuice⇨v6 added recursion;
@@ -31,7 +35,7 @@ v.220520: preset Interpol⇨v6 added form controls;
 v.220520: fixed fg2circ() blurred circle size;
 
 v.220519: fixed f2rand() for better mobile performance;
-v.220519: added uv2frand() and tested on mobile device;
+v.220519: added uv2frand() and tested on a mobile device;
 v.220519: preset Interpol⇨v5 fixed mobile issue;
 v.220519: added fg2rect();
 v.220519: added fg2circ();

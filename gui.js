@@ -49,6 +49,7 @@ class gui {           // create graphic user interface
     this.stream.h2w    = this.stream.stack.width / this.stream.stack.height;
     this.stream.camera.loaded = true;  this.createShader();  this.frame = "F1L";
     
+		// check URL parameters if there are filter name to load
 		if (getURLParams().f!=null) { document.getElementById("mySel").value = getURLParams().f; load_preset(); }
 		
   }
@@ -255,7 +256,7 @@ class gui {           // create graphic user interface
   compile() { buildShader(); this.createShader(); this.process(); this.saveProfile(); } 
   
   process() {  // check is it possible to run the shaders
-    
+
     try {  // we try to run the shaders and send them uniforms, then paint 'run' button with 'success' color
       for (let i = 0; i < glsl.frags.length; i++) { this.unisend(i); this.stream.imgx.shader(this.stream.shader[i]).rect(0,0,1,1); }
       if (this.frame == "F2") this.buttons.f2.run.bgc = skin[profile.theme].run; 

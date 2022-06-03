@@ -1,5 +1,8 @@
+// Copyright 2022, Sergey Egorov
+// Licensed under the Apache License, Version 2.0
+
 const sketch = 'mIRO'
-const ver    = 'v.220531' 
+const ver    = 'v.220602' 
 
 function setup() {                                           // preparing sketch
   

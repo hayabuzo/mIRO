@@ -201,6 +201,17 @@ vec2 uv2skew( vec2 uv, vec2 skew ) {
   return uv *= mat2( 
   1.0 , tan(skew.x) ,
   tan(skew.y), 1.0 ); }
+	
+/* Wave Distortion */
+vec2 uv2wav( vec2 uv, float pwr, float time, float seed ) {
+  vec2 amp = vec2(0.0); float frq = 1.0; 
+	pwr *= 0.25; time *= 10.0;
+  for (float i = 1.0; i<4.0; i+=1.0) {
+    frq *= i+f2rand(i*seed);
+    amp.x += cos( uv.y * frq + time * f2rand(frq) );
+    amp.y += sin( uv.x * frq + time * f2rand(frq+seed) );
+    uv += vec2(amp.x,amp.y*H2W)*pwr;
+  } return uv; }
 
 /**┌—————————————————————————————————┐
 │                                 │
