@@ -1,5 +1,10 @@
 /*
 
+v.220603: added fg2rect() with vec2(size), mobile tested;
+v.220603: added f2img();
+v.220603: added fg2dash();
+v.220603: added fg2drop();
+
 v.220602: added uv2wav() and tested on a mobile device;
 
 v.220531: preview is fitted between header and footer buttons;

@@ -113,12 +113,16 @@ float f2slit ( float f, float lvl, float len, float smt ) {
          smoothstep(lvl+len*0.5    ,lvl+len*0.5+smt,f); }
          
 /* Float to Map */
-float f2map(float value, float min1, float max1, float min2, float max2) {
+float f2map( float value, float min1, float max1, float min2, float max2 ) {
   return min2 + (value - min1) * (max2 - min2) / (max1 - min1); }
 
 /* Float to S-Curve */
-float f2scrv(float f, float amt, float shft) {
+float f2scrv( float f, float amt, float shft ) {
   return f - sin(f*TWO_PI+shft*PI)*0.3*amt; }
+
+/* Float to Image */
+vec4 f2img (float f) {
+  return vec4(f,f,f,1.0); }
 
 /**┌—————————————————————————————————┐
 │                                 │
@@ -127,7 +131,7 @@ float f2scrv(float f, float amt, float shft) {
 └—————————————————————————————————┘*/
 
 /* Grid to Float Random  */
-float uv2frand(vec2 uv) {
+float uv2frand( vec2 uv ) {
   return f2rand(dot(uv,vec2((uv.x+f2rand(uv.y)),(uv.y*f2rand(uv.x))))); }
 
 /* Expand Grid */
@@ -155,13 +159,13 @@ vec3 rgb2p( vec3 rgb, vec3 s ) {
   return rgb-mod(rgb,s); }
 
 /* Cartesian to Polar */
-vec2 xy2md(vec2 xy) {
+vec2 xy2md( vec2 xy ) {
   return vec2( 
     sqrt( pow(xy.x,2.0) + pow(xy.y,2.0) ) ,
     atan(xy.y,xy.x) ); }
 
 /* Polar to Cartesian */
-vec2 md2xy(vec2 md) {
+vec2 md2xy( vec2 md ) {
   return vec2( 
     md.x * cos(md.y) ,
     md.x * sin(md.y) ); }
@@ -205,13 +209,29 @@ vec2 uv2skew( vec2 uv, vec2 skew ) {
 /* Wave Distortion */
 vec2 uv2wav( vec2 uv, float pwr, float time, float seed ) {
   vec2 amp = vec2(0.0); float frq = 1.0; 
-	pwr *= 0.25; time *= 10.0;
+  pwr *= 0.25; time *= 10.0;
   for (float i = 1.0; i<4.0; i+=1.0) {
     frq *= i+f2rand(i*seed);
     amp.x += cos( uv.y * frq + time * f2rand(frq) );
     amp.y += sin( uv.x * frq + time * f2rand(frq+seed) );
     uv += vec2(amp.x,amp.y*H2W)*pwr;
   } return uv; }
+	
+/* Watercolor Distortion */
+// Based on the code by Victor Li http://viclw17.github.io/2018/06/12/GLSL-Practice-With-Shadertoy/
+vec2 uv2wtr( vec2 uv, float kx, float ky, float t) {
+  kx = kx*2.0+0.01;
+  vec2 t1 = vec2(kx,ky);
+  vec2 t2 = uv;
+  for(int i=1; i<10; i++) {
+    t2.x+=0.3/float(i)*sin(float(i)*3.0*t2.y+t*kx)+t1.x;
+    t2.y+=0.3/float(i)*cos(float(i)*3.0*t2.x+t*kx)+t1.y; }
+  vec3 tc1;
+  tc1.r=cos (t2.x+t2.y+1.0)*0.5+0.5;
+  tc1.g=sin (t2.x+t2.y+1.0)*0.5+0.5;
+  tc1.b=(sin(t2.x+t2.y)+cos(t2.x+t2.y))*0.5+0.5;
+  uv = uv +(tc1.rb*vec2(2.0)-vec2(1.0))*ky;
+  return uv; }
 
 /**┌—————————————————————————————————┐
 │                                 │
@@ -233,6 +253,12 @@ vec2 cnv2mod ( vec2 uv ) {
 │                                 │
 └—————————————————————————————————┘*/
 
+/* Centered Rectangle */
+float fg2rect ( vec2 uv, vec2 pos, vec2 d,  float s ) {
+  d *= 0.5;  s = (d.x+d.y)*0.5*s;  pos.y /= H2W; uv.y /= H2W;  d.y /= H2W;
+  return (smoothstep(pos.x-d.x-s,pos.x-d.x+s,uv.x) - smoothstep(pos.x+d.x-s,pos.x+d.x+s,uv.x))
+       * (smoothstep(pos.y-d.y-s,pos.y-d.y+s,uv.y) - smoothstep(pos.y+d.y-s,pos.y+d.y+s,uv.y)); }
+
 /* Centered Square */
 float fg2rect ( vec2 uv, vec2 pos, float d, float s ) {
   d *= 0.5;  s = d*s;  uv.y /= H2W;  pos.y /= H2W;
@@ -243,6 +269,22 @@ float fg2rect ( vec2 uv, vec2 pos, float d, float s ) {
 float fg2circ ( vec2 uv, vec2 pos, float d, float s) {
   d *= 0.5; d *= 1.0+s*0.5; d += 0.0001; s += 0.0001;
   return clamp((1.0-distance(uv/vec2(1.0,H2W),vec2(pos.x,pos.y/H2W))*(1.0/d))*(1.0/s),0.0,1.0); }
+	
+/* Random Dashes */
+float fg2dash ( vec2 uv, float seed, float pwr, float d, float s) {
+  float r1 = f2rand(seed + 0.1);  float r2 = f2rand(seed + 0.2);
+  float r3 = f2rand(seed + 0.3);  float r4 = f2rand(seed + 0.4);
+  float r5 = f2rand(seed + 0.5);
+  vec2 uvw = uv2wtr(uv, r1, r2*pwr*5.0+pwr, r3);
+  return fg2circ (cnv2abs(uvw),vec2(r4, r5), d, s); }
+	
+/* Random Drops */
+float fg2drop ( vec2 uv, float seed, float pwr, float d, float s) {
+  float r1 = f2rand(seed + 0.1);  float r2 = f2rand(seed + 0.2);
+  float r3 = f2rand(seed + 0.3);  float r4 = f2rand(seed + 0.4);
+  float r5 = f2rand(seed + 0.5);
+  vec2 uvw = uv2wav(uv, r1*pwr*2.0+pwr, r2, r3);
+  return fg2circ (cnv2abs(uvw),vec2(r4, r5), d, s); }
 
 /**┌—————————————————————————————————┐
 │                                 │
@@ -403,22 +445,6 @@ vec2 uv2mrr( vec2 uv, vec3 rgb, float m, float d) {
   vec2 t2 = xy2md(uv - shift);
   uv = md2xy(vec2(t2.x,t2.y + angle*d*PI) + shift);
   uv.y = uv.y * (WIDTH/HEIGHT);  
-  return uv; }
-  
-/* Watercolor Distortion */
-// Based on the code by Victor Li http://viclw17.github.io/2018/06/12/GLSL-Practice-With-Shadertoy/
-vec2 uv2wtr( vec2 uv, float kx, float ky, float t) {
-  kx = kx*2.0+0.01;
-  vec2 t1 = vec2(kx,ky);
-  vec2 t2 = uv;
-  for(int i=1; i<10; i++) {
-    t2.x+=0.3/float(i)*sin(float(i)*3.0*t2.y+t*kx)+t1.x;
-    t2.y+=0.3/float(i)*cos(float(i)*3.0*t2.x+t*kx)+t1.y; }
-  vec3 tc1;
-  tc1.r=cos (t2.x+t2.y+1.0)*0.5+0.5;
-  tc1.g=sin (t2.x+t2.y+1.0)*0.5+0.5;
-  tc1.b=(sin(t2.x+t2.y)+cos(t2.x+t2.y))*0.5+0.5;
-  uv = uv +(tc1.rb*vec2(2.0)-vec2(1.0))*ky;
   return uv; }
 
 `;
