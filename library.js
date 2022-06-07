@@ -205,7 +205,7 @@ vec2 uv2skew( vec2 uv, vec2 skew ) {
   return uv *= mat2( 
   1.0 , tan(skew.x) ,
   tan(skew.y), 1.0 ); }
-	
+
 /* Wave Distortion */
 vec2 uv2wav( vec2 uv, float pwr, float time, float seed ) {
   vec2 amp = vec2(0.0); float frq = 1.0; 
@@ -216,7 +216,7 @@ vec2 uv2wav( vec2 uv, float pwr, float time, float seed ) {
     amp.y += sin( uv.x * frq + time * f2rand(frq+seed) );
     uv += vec2(amp.x,amp.y*H2W)*pwr;
   } return uv; }
-	
+
 /* Watercolor Distortion */
 // Based on the code by Victor Li http://viclw17.github.io/2018/06/12/GLSL-Practice-With-Shadertoy/
 vec2 uv2wtr( vec2 uv, float kx, float ky, float t) {
@@ -228,7 +228,6 @@ vec2 uv2wtr( vec2 uv, float kx, float ky, float t) {
     t2.y+=0.3/float(i)*cos(float(i)*3.0*t2.x+t*kx)+t1.y; }
   vec3 tc1;
   tc1.r=cos (t2.x+t2.y+1.0)*0.5+0.5;
-  tc1.g=sin (t2.x+t2.y+1.0)*0.5+0.5;
   tc1.b=(sin(t2.x+t2.y)+cos(t2.x+t2.y))*0.5+0.5;
   uv = uv +(tc1.rb*vec2(2.0)-vec2(1.0))*ky;
   return uv; }

@@ -709,7 +709,129 @@ vec4  imo = mix(img,imf.ggga,A);
 
       gl_FragColor = imo;
 
+`+/* ===================================================================================================== */`
+`+/* ===================================================================================================== */`
 `+/* ============================================ SECOND PACK ============================================ */`
+`+/* ===================================================================================================== */`
+`+/* ===================================================================================================== */`
+
+`+/*-------------------------------------------------------------------------------------------------------*/`###`+`
+
+Aeroplane
+@ // v10
+
+vec2  uv = vTexCoord; 
+      uv.y = 1.0 - uv.y;
+vec2  uve = uv;
+      uve = uv2exp(uv,-0.1*MY,0.0,0.0);
+vec4  ime = tx2d(TXF, uve);
+vec4  img = texture2D(TXP, uv);
+vec2  uvw = cnv2abs(uv2wtr(uv,R4,R5,C*1000.0+0.5));
+vec4  imw = texture2D(TXP, uvw);
+float s = fg2circ(uvw,vec2(R1,R2),0.5*R3,0.1+A*0.5);
+      s = mix(s,f2slit(imw.g,R3,0.1,0.1+A*0.5),B);
+float a = 1.0-fg2rect(uve,vec2(0.5),vec2(1.0),A*0.3+0.01);
+      img = mix(ime,img,clamp(a+s,0.0,1.0));
+      gl_FragColor = img; 
+
+`+/*-------------------------------------------------------------------------------------------------------*/`###`+`
+
+Enduser
+@ // v10
+
+vec2  uv = vTexCoord; 
+      uv.y = 1.0 - uv.y;
+vec4  img = texture2D(TXP, uv);
+vec4  imf = tx2d(TXF, uv);
+
+vec3  hsb = rgb2hsb(img.rgb);
+      hsb.r = mod(hsb.r+MX,1.0);
+float a = step(pow(1.0-MY,2.0),hsb.r*hsb.g*abs(sin(hsb.b*PI-PI/6.0)));
+
+vec4  bgr = vec4(0.941, 0.866, 0.835, 1.0);
+      bgr.rgb *= 1.0+f2z(uv2frand(uv-R2))*0.05;
+      if (A==1.0) img = mix(bgr,img,a);
+
+      hsb = rgb2hsb(imf.rgb);
+      hsb.r = mod(hsb.r+MX,1.0);
+      a = step(pow(1.0-MY,2.0),hsb.r*hsb.g*abs(sin(hsb.b*PI-PI/6.0)));
+
+      if (B==1.0) imf.rgb = rgb2ht(imf.rgb,-0.01);
+      if (C==1.0) imf.rgb -= (imf.rgb-vec3(1.0))*0.05;
+      imf.rgb = clamp(imf.rgb,vec3(0.0),vec3(2.0));
+      img = mix(img,imf,a);
+      gl_FragColor = img; 
+
+`+/*-------------------------------------------------------------------------------------------------------*/`###`+`
+
+Gas
+@ // v4
+
+vec2  uv = vTexCoord; 
+      uv.y = 1.0 - uv.y;
+
+vec2  uve = uv2exp(uv,-3.0,0.0,0.0);
+vec4  img = texture2D(TXP, uve);
+
+vec2  uvf = uv2exp(uv,MY*0.1,0.0,0.0);
+      if(C==1.0) uvf = uv2rot(uvf,0.05);
+vec4  imf = texture2D(TXF, uvf);
+
+float f;
+      if (B==0.0) f = fg2circ(uve,vec2(0.5) ,0.9,A*0.5+0.01);
+      else        f = fg2rect(uve,vec2(0.5) ,0.9,A*0.5+0.01);
+			
+      img = mix(imf,img,f);
+      gl_FragColor = img;
+
+`+/*-------------------------------------------------------------------------------------------------------*/`###`+`
+
+Meanderthals
+@ // v4
+
+vec2  uv = vTexCoord; 
+      uv.y = 1.0 - uv.y;
+vec2  uve = uv2exp(uv,-0.8,0.0,0.0);
+vec2  uvs = uv2rot(uv2exp(uv,-0.1,0.0,0.0),R4*PI)+vec2(R1);
+      if (A==1.0) uvs = cnv2abs(uvs);
+      else        uvs = cnv2mod(uvs);
+vec4  ime = texture2D(TXP, uve);
+vec4  ims = texture2D(TXF, uvs);
+float a = f2slit(ime.g,R2,0.5*R3,0.1);
+vec4  imo = mix(ims,ime,a2cnv(uve)*mix(a,1.0,B));
+      gl_FragColor = imo; 
+
+`+/*-------------------------------------------------------------------------------------------------------*/`###`+`
+
+Morphine
+@ // v15
+
+vec2  uv = vTexCoord; 
+      uv.y = 1.0 - uv.y;
+			
+float l = img2bw(texture2D(TXB, uv));
+
+vec2  uvr = uv;
+      if (A==1.0) uvr = uv2rot(uv,f2z(mix(N4,R4,B))*PI);
+
+vec2  uve = uv2exp(uvr,-5.0*R1,f2z(R2),f2z(R3));
+      uve = uv2wav(uve,0.015,R2,R3);
+vec4  img = texture2D(TXP, uve);
+
+vec2  uvf = uv2exp(uv,f2z(MY)*0.04,0.0,0.0);
+vec4  imf = texture2D(TXF, uvf);
+
+float s = f2slit(img.g,R5,R4*0.1,R4*0.1);
+float r = fg2rect(uve,vec2(0.5),1.1/H2W,0.02);
+      r = clamp(r+1.0-a2cnv(uvf),0.0,1.0);
+float d = fg2dash(uve,R1,0.75,0.05,0.1);
+float q = fg2drop(uve,R1,1.0,0.075,0.1);
+
+float a = clamp(s-r+(q*R4+d*R5),0.0,1.0);
+      img.rgb *= 1.0 + f2z(l)*0.5 + (1.0-l)*f2z(uv2frand(uv-R2))*0.15;
+
+      img = mix ( mix(imf,img,a) , mix2ovr(imf,img,a) , step(R3*R5,0.2)*(1.0-2.0*distance(img2avg(imf),0.5)));
+      gl_FragColor = img; 
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 

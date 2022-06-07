@@ -1,9 +1,15 @@
 /*
 
+v.220607: added new Aeroplane preset;
+v.220607: added new Enduser preset;
+v.220607: added new Gas preset;
+v.220607: added new Meanderthals preset;
+v.220607: added new Morphine preset;
+
 v.220603: added fg2rect() with vec2(size), mobile tested;
-v.220603: added f2img();
-v.220603: added fg2dash();
-v.220603: added fg2drop();
+v.220603: added f2img(), mobile tested;
+v.220603: added fg2dash(), mobile tested;
+v.220603: added fg2drop(), mobile tested;
 
 v.220602: added uv2wav() and tested on a mobile device;
 
