@@ -3,6 +3,8 @@
 
 🚀 [Run at GitHub](https://hayabuzo.github.io/mIRO/)
 
+📅 [Changelog](https://github.com/hayabuzo/mIRO/blob/main/notes.js)
+
 💬 [Supporting Chat](https://t.me/mIRO_support)
 
 ## Features
