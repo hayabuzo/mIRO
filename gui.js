@@ -98,7 +98,7 @@ class gui {           // create graphic user interface
 			pre_sel.style('visibility:visible'); 
       pre_sel.style('background-color:transparent').style('color:transparent');
       pre_sel.position(this.x0+this.h*0.1+5, this.h*0.0+6).size(this.w-this.h*(glsl.n*0.1+0.1)-10, this.h*0.1-9); 
-			sCode.style('visibility:hidden'); 
+			txtar.style('visibility:hidden'); 
 			
       this.process(); this.saveProfile();  // process and save the setting profile each time we enter the main frame
       
@@ -144,7 +144,7 @@ class gui {           // create graphic user interface
         this.buttons.f2.save = new button( this.x0+this.w*0.666, this.h*0.9, this.w*0.333, this.h*0.1 , 10); this.buttons.f2.save.txt[0] = "SAVE";
 			  pre_sel.style('background-color:transparent').style('color',skin[profile.theme].txt);
 			  pre_sel.position(this.x0+4,this.h*0.9-40).size(this.w-8,40);
-        profile.code = sCode.value(); sCode.style('visibility:visible');
+        profile.code = txtar.value(); txtar.style('visibility:visible');
     }
 
     else if (this.frame=="F2") {  // showing frame #2 (shader editor)
@@ -159,8 +159,8 @@ class gui {           // create graphic user interface
       if (!this.showhelp) {  // text area is in the shader edit mode
 
         // change text field and buttons according to mode
-        document.getElementById("sCode").disabled=false; pre_sel.style('visibility:visible'); 
-        sCode.size(gui.w-15,this.h*0.8-50);  profile.code = sCode.value();
+        document.getElementById("txtar").disabled=false; pre_sel.style('visibility:visible'); 
+        txtar.size(gui.w-15,this.h*0.8-50);  profile.code = txtar.value();
         this.buttons.f2.help.txt[0] = "HELP"; this.buttons.f2.help.w = this.w*0.333-10;
 				
 				// setting up behavior of preset selector colors
@@ -169,21 +169,21 @@ class gui {           // create graphic user interface
 
         // show all buttons for the frame and check if they are clicked
         for (let i in this.buttons.f2) { this.buttons.f2[i].show(); }  
-          if (this.buttons.f2.help.clicked) { this.showhelp = true; sCode.value(glsl.library.replace(/\*\//g,'').replace(/\/\*\*/g,'').replace(/\/\*/g,'●')        ); }
-          if (this.buttons.f2.run .clicked) { this.compile(); this.frc = 2.0; }
-          if (this.buttons.f2.back.clicked) { this.frame = "F1L"; sCode.value(profile.code); }
-          if (this.buttons.f2.new .clicked) sCode.value(glsl.default);
+          if (this.buttons.f2.help.clicked) { this.showhelp = true; txtar.value(glsl.library.replace(/\*\//g,'').replace(/\/\*\*/g,'').replace(/\/\*/g,'●')        ); }
+          if (this.buttons.f2.run .clicked) { this.compile(); this.frc = 0.0; }
+          if (this.buttons.f2.back.clicked) { this.frame = "F1L"; txtar.value(profile.code); }
+          if (this.buttons.f2.new .clicked) txtar.value(glsl.default);
           if (this.buttons.f2.load.clicked) document.getElementById('myInput').click();
           if (this.buttons.f2.save.clicked) this.saveFilter(); 
 
       } else {  // text area is in the help (library) mode
 
         // change text field and buttons according to mode
-        document.getElementById("sCode").disabled=true; pre_sel.style('visibility:hidden'); 
-        sCode.size(this.w-15,this.h*0.9-15); 
+        document.getElementById("txtar").disabled=true; pre_sel.style('visibility:hidden'); 
+        txtar.size(this.w-15,this.h*0.9-15); 
         this.buttons.f2.help.show(); 
         this.buttons.f2.help.txt[0] = "BACK"; this.buttons.f2.help.w = this.w-10; 
-          if (this.buttons.f2.help.clicked) { this.showhelp = false; sCode.value(profile.code); }
+          if (this.buttons.f2.help.clicked) { this.showhelp = false; txtar.value(profile.code); }
 
       }
     }
@@ -278,9 +278,9 @@ class gui {           // create graphic user interface
     
   }
 
-  getName()     { return sCode.value().split(char(10))[0].split('@')[0]; }                      // get the name of current filter
-  saveFilter()  { save([sCode.value()], "[+] "+sketch+" - "+this.getName()+".txt");  }          // export filter as .txt file
-  saveProfile() { profile.code = sCode.value(); storeItem('settings_profile', profile);  }      // save settings profile to the browser memory
+  getName()     { return txtar.value().split(char(10))[0].split('@')[0]; }                      // get the name of current filter
+  saveFilter()  { save([txtar.value()], "[+] "+sketch+" - "+this.getName()+".txt");  }          // export filter as .txt file
+  saveProfile() { profile.code = txtar.value(); storeItem('settings_profile', profile);  }      // save settings profile to the browser memory
   
   saveImage()   {  // saving the graphic file
     
@@ -302,21 +302,21 @@ class gui {           // create graphic user interface
   unisend(i) {  // sending uniforms to shaders
     
     // checking of what textures are used in shader code to send them as uniforms
-    if(str(sCode.value()).search(/TXC/)>0) this.stream.shader[i].setUniform( 'TXC' , this.stream.camera ); 
-    if(str(sCode.value()).search(/TXP/)>0) this.stream.shader[i].setUniform( 'TXP' , i == 0 ? this.stream.camera : this.stream.imgx ); 
-    if(str(sCode.value()).search(/TXF/)>0) this.stream.shader[i].setUniform( 'TXF' , this.frc <= 1 ? this.stream.camera : this.stream.stack ); 
-    if(str(sCode.value()).search(/TXB/)>0) {
+    if(str(glsl.code).search(/TXC/)>0) this.stream.shader[i].setUniform( 'TXC' , this.stream.camera ); 
+    if(str(glsl.code).search(/TXP/)>0) this.stream.shader[i].setUniform( 'TXP' , i == 0 ? this.stream.camera : this.stream.imgx ); 
+    if(str(glsl.code).search(/TXF/)>0) this.stream.shader[i].setUniform( 'TXF' , this.frc <= 1 ? this.stream.camera : this.stream.stack ); 
+    if(str(glsl.code).search(/TXB/)>0) {
       this.stream.imgb.image(i == 0 ? this.stream.camera : this.stream.imgx,0,0,this.stream.imgb.width,this.stream.imgb.height);
       this.stream.imgb.filter(BLUR, this.stream.stack.width*0.002); this.stream.shader[i].setUniform( 'TXB' , this.stream.imgb ); }
     
     // checking of what control coordinates are used in shader code to send them as uniforms
-    if(str(sCode.value()).search(/MX/)>0)  this.stream.shader[i].setUniform( 'MX' , this.buttons.f1.play.xm ); 
-    if(str(sCode.value()).search(/MY/)>0)  this.stream.shader[i].setUniform( 'MY' , this.buttons.f1.play.ym ); 
+    if(str(glsl.code).search(/MX/)>0)  this.stream.shader[i].setUniform( 'MX' , this.buttons.f1.play.xm ); 
+    if(str(glsl.code).search(/MY/)>0)  this.stream.shader[i].setUniform( 'MY' , this.buttons.f1.play.ym ); 
     
     // sending random and noise uniforms
     for (let n = 1; n<=5; n++) {
-      if(str(sCode.value()).search('R'+n)>0) this.stream.shader[i].setUniform( 'R'+n , Math.random() ); 
-      if(str(sCode.value()).search('N'+n)>0) this.stream.shader[i].setUniform( 'N'+n , 1.0-abs(1.0 - abs(noise(frameCount*(0.003*n)+n*1000)*2.0-0.5)) ); 
+      if(str(glsl.code).search('R'+n)>0) this.stream.shader[i].setUniform( 'R'+n , Math.random() ); 
+      if(str(glsl.code).search('N'+n)>0) this.stream.shader[i].setUniform( 'N'+n , 1.0-abs(1.0 - abs(noise(frameCount*(0.003*n)+n*1000)*2.0-0.5)) ); 
     }
     
     // sending image size as uniforms

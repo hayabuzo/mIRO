@@ -1,5 +1,11 @@
 /*
 
+v.220609: added code attachment via [# presetName #] macros;
+v.220609: added control rebinding via [ABC #] macros;
+v.220609: added "Random Mix" of presets;
+
+v.220608: preset Meanderthals⇨v8;
+
 v.220607: added new Aeroplane preset;
 v.220607: added new Enduser preset;
 v.220607: added new Gas preset;

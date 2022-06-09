@@ -198,7 +198,7 @@ vec4  imb = texture2D(TXB, uv);
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
-Goto80 
+Goto80
 @ // v8.2
 
 vec2  uv = vTexCoord; 
@@ -333,7 +333,7 @@ float e = f2slit(img2bw(img),0.5,0.01,0.05);
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
-Locussolus 
+Locussolus
 @ // v3
 
 vec2  uv = vTexCoord;
@@ -787,18 +787,18 @@ float f;
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
 Meanderthals
-@ // v4
+@ // v8
 
 vec2  uv = vTexCoord; 
       uv.y = 1.0 - uv.y;
-vec2  uve = uv2exp(uv,-0.8,0.0,0.0);
+vec2  uve = uv2exp(uv,-1.0-3.0*R3,f2z(R1),f2z(R2));
 vec2  uvs = uv2rot(uv2exp(uv,-0.1,0.0,0.0),R4*PI)+vec2(R1);
-      if (A==1.0) uvs = cnv2abs(uvs);
+      if (A==0.0) uvs = cnv2abs(uvs);
       else        uvs = cnv2mod(uvs);
 vec4  ime = texture2D(TXP, uve);
 vec4  ims = texture2D(TXF, uvs);
 float a = f2slit(ime.g,R2,0.5*R3,0.1);
-vec4  imo = mix(ims,ime,a2cnv(uve)*mix(a,1.0,B));
+vec4  imo = mix(ims,ime,a2cnv(uve)*mix(1.0,a,B));
       gl_FragColor = imo; 
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`

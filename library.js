@@ -4,11 +4,23 @@ glsl.library += `/**`+sketch+` `+ver+`
 
 LIST OF FUNCTIONS
 
-  @ - Add a shader into filter
+┌—————————————————————————————————┐
+│                                 │
+│          mIRO))) Macros         │
+│                                 │
+└—————————————————————————————————┘
+
+  @          - Add a new shader into filter
+  # prName # - Attach full code of preset into filter
+  ABC #      - Change preset controls from ABC to another combination
+
+  Example (see «Random Mix» preset):
+  @ # Jetone # BCA # - Add a shader with "Jetone" preset code and 
+	                     rebind controls from ABC to BCA order
 
 ┌—————————————————————————————————┐
 │                                 │
-│             Uniforms            │
+│         mIRO))) Uniforms        │
 │                                 │
 └—————————————————————————————————┘
 
@@ -70,7 +82,7 @@ LIST OF FUNCTIONS
 
 ┌—————————————————————————————————┐
 │                                 │
-│            Shortcuts            │
+│           GLSL Macros           │
 │                                 │
 └—————————————————————————————————┘*/
 
