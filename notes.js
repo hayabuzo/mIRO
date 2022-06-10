@@ -1,5 +1,7 @@
 /*
 
+v.220610: added presets shuffle in settings 
+
 v.220609: added code attachment via [# presetName #] macros;
 v.220609: added control rebinding via [ABC #] macros;
 v.220609: added "Random Mix" of presets;

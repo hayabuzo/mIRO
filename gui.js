@@ -5,14 +5,12 @@ class gui {           // create graphic user interface
     // check if the sketch is running on a mobile device
     this.mobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) ? true : false;
     
-    // set default values for some object variables and create camera
+    // set default values for object variables
     this.w = w;        this.stream  = {};        this.showhelp = false;        this.x0 = (width-this.w)*0.5;        this.kfps = 1.0;      this.compiled = false;
     this.h = h;        this.buttons = {};        this.timestamp = '';          this.horient = false;                this.frc = 0.0;       this.trig = [0,0,0];
     
-    // set camera stabilization values
-    this.shake = {};     this.shake.array = [];     this.shake.average = 0;     this.shake.steps = 10; 
-		
-		this.createCamera();
+    // set stabilization values and create camera
+    this.shake = {};     this.shake.array = [];     this.shake.average = 0;     this.shake.steps = 10;          		this.createCamera();
 
   }
   
@@ -89,8 +87,8 @@ class gui {           // create graphic user interface
         this.buttons.f1.dir  = new button( this.x0, this.h*0.9, this.h*0.1, this.h*0.1 , 10); this.buttons.f1.dir .txt[0] = this.horient?"→":"↑"; this.buttons.f1.dir.tsize = 30;
         this.buttons.f1.mode = new button( this.x0+this.h*0.1,  this.h*0.9, this.h*0.1, this.h*0.1 , 10); this.buttons.f1.mode.txt[0]=profile.clicking?">":">>>";
 			  this.buttons.f1.edit = new button( this.x0,             this.h*0.0, this.h*0.1, this.h*0.1 , 10); this.buttons.f1.edit.txt[0] = "</>";
-			  this.buttons.f1.pres = new button( this.x0+this.h*0.1, this.h*0.0, this.w-this.h*(glsl.n*0.1+0.1), this.h*0.1 , 10); this.buttons.f1.pres.txt[0] = (this.getName()=="myShaderName"?"Load Preset":this.getName().substring(0,12)+(this.getName().length>12?"…":"") );
-        this.buttons.f1.set  = new button( this.x0+this.h*0.2, this.h*0.9, this.w-this.h*0.2, this.h*0.1 , 10); this.buttons.f1.set .txt[4] = "SETTINGS";
+			  this.buttons.f1.pres = new button( this.x0+this.h*0.1,  this.h*0.0, this.w-this.h*(glsl.n*0.1+0.1), this.h*0.1 , 10); this.buttons.f1.pres.txt[0] = (this.getName()=="myShaderName"?"Load Preset":this.getName().substring(0,12)+(this.getName().length>12?"…":"") );
+        this.buttons.f1.set  = new button( this.x0+this.h*0.2,  this.h*0.9, this.w-this.h*0.2, this.h*0.1 , 10); this.buttons.f1.set .txt[4] = "SETTINGS";
         this.buttons.f1.a    = new button( this.x0+this.w-this.h*0.1*glsl.n              , glsl.a ? 0.0 : - this.h , this.h*0.1, this.h*0.1 , 10); this.buttons.f1.a.txt[0] = "A";  this.buttons.f1.a.tsize = this.trig[0] ? 30 : 15;
         this.buttons.f1.b    = new button( this.x0+this.w-this.h*0.1*(glsl.n-int(glsl.a)), glsl.b ? 0.0 : - this.h , this.h*0.1, this.h*0.1 , 10); this.buttons.f1.b.txt[0] = "B";  this.buttons.f1.b.tsize = this.trig[1] ? 30 : 15;
         this.buttons.f1.c    = new button( this.x0+this.w-this.h*0.1                     , glsl.c ? 0.0 : - this.h , this.h*0.1, this.h*0.1 , 10); this.buttons.f1.c.txt[0] = "C";  this.buttons.f1.c.tsize = this.trig[2] ? 30 : 15;
@@ -128,6 +126,17 @@ class gui {           // create graphic user interface
         if (this.buttons.f1.b   .clicked) { this.trig[1] = !this.trig[1]; this.buttons.f1.b.tsize = this.trig[1] ? 30 : 15; }
         if (this.buttons.f1.c   .clicked) { this.trig[2] = !this.trig[2]; this.buttons.f1.c.tsize = this.trig[2] ? 30 : 15; }
         if (this.buttons.f1.mode.clicked) { profile.clicking = !profile.clicking; this.buttons.f1.mode.txt[0]=profile.clicking?">":">>>"; this.saveProfile(); }
+			
+			// do the presets shuffle if the setting is on
+			if (profile.shuffle > 0) this.shuffle();
+
+			if (isKey(" ")) { this.process(); this.stream.stack.image(this.stream.imgx,0,0); }
+			if (isKey("r")) this.shuffle(true, true);
+			if (isKey("c")) this.shuffle(false,true);
+			
+			print(keyboard);
+
+			
     }
     
     // ----------------------------------------------------------- F2
@@ -195,7 +204,7 @@ class gui {           // create graphic user interface
       // create all buttons for the frame
       this.frame = "F3"; textFont('Monospace');
 			pre_sel.style('visibility:hidden');
-        this.buttons.f3 = {head:0,auto:0,camr:0,canv:0,fron:0,stab:0,ftyp:0,floa:0,live:0,wind:0,skin:0,okay:0}; let n=0;
+        this.buttons.f3 = {head:0,auto:0,camr:0,canv:0,fron:0,stab:0,ftyp:0,floa:0,live:0,shuf:0,wind:0,skin:0,okay:0}; let n=0;
         for (let i in this.buttons.f3) { 
           this.buttons.f3[i] = new button( this.x0, 15+this.h*0.07*n, this.w, this.h*0.07 , 10);  
           this.buttons.f3[i].showborder = false; 
@@ -224,6 +233,7 @@ class gui {           // create graphic user interface
         this.buttons.f3.ftyp.txt[1] = "         File Type: " + profile.filetype.toUpperCase();                  
         this.buttons.f3.floa.txt[1] = "     Force Loading: " + (profile.forcing  ? "ON" : "OFF"); 
         this.buttons.f3.live.txt[1] = "       Live Coding: " + (profile.livecode  ? "ON" : "OFF"); 
+        this.buttons.f3.shuf.txt[1] = "   Presets Shuffle: " + (profile.shuffle > 0 ? profile.shuffle + " frames" : "OFF");  
         this.buttons.f3.wind.txt[1] = "      Preview Size: " + nfs(profile.window,1,2).slice(1);   
         this.buttons.f3.skin.txt[1] = "             Theme: " + (profile.theme == 0 ? "Dark" : "Light");    
         this.buttons.f3.okay.txt[0] = "OK";
@@ -237,6 +247,7 @@ class gui {           // create graphic user interface
         if (this.buttons.f3.ftyp.clicked) profile.filetype   = profile.filetype == 'jpg' ? 'png' : 'jpg';
         if (this.buttons.f3.floa.clicked) profile.forcing    = !profile.forcing;
         if (this.buttons.f3.live.clicked) profile.livecode   = !profile.livecode;
+        if (this.buttons.f3.shuf.clicked) profile.shuffle    = profile.shuffle >= 64 ? 0 : profile.shuffle += 16;
         if (this.buttons.f3.wind.clicked) profile.window     = profile.window >= 1.0 ? 0.25 : profile.window += 0.25;
 
         if (this.buttons.f3.okay.clicked) {  // recreate camera or rescale window if needed and return to frame #1
@@ -322,7 +333,7 @@ class gui {           // create graphic user interface
     // sending image size as uniforms
     this.stream.shader[i].setUniform( 'WIDTH'  , this.stream.stack.width  ); 
     this.stream.shader[i].setUniform( 'HEIGHT' , this.stream.stack.height ); 
-    this.stream.shader[i].setUniform( 'H2W'    , this.stream.stack.width/this.stream.stack.height); //min(this.stream.stack.width,this.stream.stack.height) / max(this.stream.stack.width,this.stream.stack.height) ); 
+    this.stream.shader[i].setUniform( 'H2W'    , this.stream.stack.width/this.stream.stack.height);
     
     // sending time uniforms
     this.stream.shader[i].setUniform( 'MLS' , (millis()/1000) ); 
@@ -335,5 +346,30 @@ class gui {           // create graphic user interface
     this.stream.shader[i].setUniform( 'C' , this.trig[2] ? 1.0 : 0.0 ); 
 
   }
+	
+	shuffle(f=false,c=false) { 
+		
+		if ((this.frc % profile.shuffle == 0) || f) {                     // do the shuffle every N frames
+			
+			randomMix();   this.compile();                           // create random mix of presets and compile it
+			
+		  // resize and move buttons according to the new filter
+			this.buttons.f1.pres.txt[0] = (this.getName()=="myShaderName"?"Load Preset":this.getName().substring(0,12)+(this.getName().length>12?"…":"") );
+      pre_sel.position(this.x0+this.h*0.1+5, this.h*0.0+6).size(this.w-this.h*(glsl.n*0.1+0.1)-10, this.h*0.1-9); 
+			this.buttons.f1.pres.w = this.w-this.h*(glsl.n*0.1+0.1) - 10;
+			this.buttons.f1.a.x = 5 + this.x0+this.w-this.h*0.1*glsl.n;               			this.buttons.f1.a.y = 5 + (glsl.a ? 0.0 : - this.h);
+      this.buttons.f1.b.x = 5 + this.x0+this.w-this.h*0.1*(glsl.n-int(glsl.a));       this.buttons.f1.b.y = 5 + (glsl.b ? 0.0 : - this.h);
+      this.buttons.f1.c.x = 5 + this.x0+this.w-this.h*0.1;                            this.buttons.f1.c.y = 5 + (glsl.c ? 0.0 : - this.h);
+			
+		}  if ((this.frc % (profile.shuffle/4) == 0) || c) {
+		
+	    // set random controls
+			if(random() < 0.5) this.trig[0] = !this.trig[0]; this.buttons.f1.a.tsize = this.trig[0] ? 30 : 15;
+      if(random() < 0.5) this.trig[1] = !this.trig[1]; this.buttons.f1.b.tsize = this.trig[1] ? 30 : 15;
+      if(random() < 0.5) this.trig[2] = !this.trig[2]; this.buttons.f1.c.tsize = this.trig[2] ? 30 : 15;
+			
+		}
+			
+  }	
   
 }

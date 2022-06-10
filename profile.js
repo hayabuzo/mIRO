@@ -16,7 +16,8 @@ function getProfile() {          // load profile with program settings
     livecode:   true,            // livecoding enabled;
     window:     1,               // do not reduce window size
     code:       glsl.default,    // load default shader code
-    theme:      0                // load dark skin
+    theme:      0,               // load dark skin
+	  shuffle:    0,               // presets shuffle off
   };
 
   // if URL ends with "?r=1" do the profile reset

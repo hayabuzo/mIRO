@@ -289,8 +289,7 @@ float k2 = (1.0-MY)*0.2;
 vec2  uv2 = uv2p(uv,k2);
 vec4  img2 = texture2D(TXP, uv2);
 
-vec2  uv3 = uv2p(uv,sin(uv2.x+MX)*cos(uv2.y+MY)*k2);
-      uv3 = uv2p(uv,  mod(img2.r,0.1)*10.0*k2+0.02);
+vec2  uv3 = uv2p(uv,  mod(img2.r,0.1)*10.0*k2+0.02);
       uv3.y = mix(uv3.y,uv.y,A);
 vec4  img3 = texture2D(TXP, uv3);
 

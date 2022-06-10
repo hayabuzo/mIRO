@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 
 const sketch = 'mIRO'
-const ver    = 'v.220609' 
+const ver    = 'v.220610' 
 
 function setup() {                                           // preparing sketch
   
@@ -38,12 +38,12 @@ function createHtml() {                                                         
   pre_sel.id('mySel');                                                                 // set the element id, to find it later
 
   pre_sel.option('> Load Preset');                                                                 // create first line of selector
-  pre_sel.option('> Random Mix');  
+  pre_sel.option('> Random Mix');                                                                  // add "random mix" in selector
 	glsl.parray = glsl.presets.split("###").slice(1);                                                // create array of presets
   glsl.parray.sort(function(a,b){return a.toLowerCase().localeCompare(b.toLowerCase());});         // sort it case-insensetive
-  for(let i=0; i<glsl.parray.length; i++) { 
-		glsl.names[i] = glsl.parray[i].split(char(10))[2]; 
-		pre_sel.option(glsl.names[i]);                                                                 // put presets names into selector
+  for(let i=0; i<glsl.parray.length; i++) {                                                        // for each element in array of presets
+		glsl.names[i] = glsl.parray[i].split(char(10))[2];                                             // take preset name and put in the array of names
+		pre_sel.option(glsl.names[i]);                                                                 // put preset name into selector as option
 	}
 	
 }
@@ -53,7 +53,7 @@ function draw() {  background(color(skin[profile.theme].bgr)); gui.run(); }     
 function load_preset() {                                        // when loading a preset via selector
   glsl.parray[-1] = 'xx'+profile.code;                          // we need to store current shader text with 2 extra characters          
   txtar.value(glsl.parray[mySel.selectedIndex-2].slice(2));     // because we will delete first 2 symbols of preset text which used for better formating   
-	if (mySel.selectedIndex==1) randomMix();
+	if (mySel.selectedIndex == 1) randomMix();                    // if Random Mix option is selcted, run the function
   gui.compile();                                                // compile preset
 	mySel.selectedIndex = 0;                                      // reset selector in shader editor
 	if (gui.frame=="F1") gui.frame="F1L";                         // recalculate buttons size to align controls
@@ -67,3 +67,9 @@ function open_file(file) {                                      // when opening 
   gui.compile();                                                // compile filter after loading
 	file_input.value('');	                                        // clear file input to allow reopen the same file
 } 
+
+keyboard = [];
+
+function isKey(k)      {	return keyboard.includes(k);          }
+function keyPressed()  {	if (keyIsPressed) keyboard.push(key); }
+function keyReleased() {  let indexOfObject = keyboard.findIndex(object => { return keyboard === key }); keyboard.splice(indexOfObject, 1); }

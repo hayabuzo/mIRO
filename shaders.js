@@ -27,43 +27,35 @@ vec4  img = texture2D(TXP, uv);
 // add some lines after the code to simplify navigation
 for (let i=0; i<10; i++) { glsl.default +='\n'; }
 
-function buildShader() {                      // function that builds array of fragment shaders from the text
+function buildShader() {                                         // function that builds array of fragment shaders from the text
 
-  glsl.code = txtar.value();                  // get current filter code from textarea
-
-	let ctrl_reg = new RegExp("[ABC][ABC][ABC]"+" #","g"); 
-	let ctrl_arr = [];
-	ctrl_arr = glsl.code.match(ctrl_reg);
-	glsl.code = glsl.code.replace(ctrl_reg,"");
+  glsl.code = txtar.value();                                     // get current filter code from textarea
+	let ctrl_reg = new RegExp("[ABC][ABC][ABC]"+" #","g");         // create regEx for controls
+	let ctrl_arr = [];                                             // create array for controls rebinds in code
+	ctrl_arr = glsl.code.match(ctrl_reg);                          // search for rebinds and make array of it
+	glsl.code = glsl.code.replace(ctrl_reg,"");                    // delete rebinds from code
 	
-	for (let i=0; i<glsl.names.length; i++) { 
-		let name = new RegExp("# "+glsl.names[i]+" #","g"); 
-		let code = glsl.parray[i].split("@")[1];
-		glsl.code = glsl.code.replace(name," // "+glsl.names[i]+" "+code);
+	for (let i=0; i<glsl.names.length; i++) {                               // for every name of preset
+		let name = new RegExp("# "+glsl.names[i]+" #","g");                   // create regEx with macro syntax
+		let code = glsl.parray[i].split("@")[1];                              // take the preset code
+		glsl.code = glsl.code.replace(name," // "+glsl.names[i]+" "+code);    // and replace preset macro with code
 	}
-	
-	 print(glsl.code);
 
-  // split the code with @ symbols to separate fragment shaders
-  let shaders_array = glsl.code.split("@");
-
-  // generate array of fragment shaders
-	glsl.frags = []; for (let i=1; i<shaders_array.length; i++) {
-		if (ctrl_arr!=null) if (ctrl_arr[i-1]!=null)
-			shaders_array[i] = shaders_array[i]
+  let shaders_array = glsl.code.split("@");                               // split the code with @ symbols to separate fragment shaders
+	glsl.frags = []; for (let i=1; i<shaders_array.length; i++) {           // generate array of fragment shaders
+		if (ctrl_arr!=null) if (ctrl_arr[i-1]!=null)                          // if this shader have control rebinds
+			shaders_array[i] = shaders_array[i]                                 // replace control chars in code with new ones
 			.replace(/\bA\b/,"replace_a")
 		  .replace(/\bB\b/,"replace_b")
 		  .replace(/\bC\b/,"replace_c")
 			.replace(/\breplace_a\b/,ctrl_arr[i-1].charAt(0))
 		  .replace(/\breplace_b\b/,ctrl_arr[i-1].charAt(1))
 		  .replace(/\breplace_c\b/,ctrl_arr[i-1].charAt(2));
-		glsl.frags.push(glsl.uniforms + glsl.library + ` void main() { ` + shaders_array[i] + ` } `);  
+		glsl.frags.push(glsl.uniforms + glsl.library + ` void main() { ` + shaders_array[i] + ` } `);  // build the shader
 	}
-	//print(shaders_array)
-	
-	shaders_array = shaders_array.join('');
 	
   // if there are shader control variables in the code, turn on these controls in gui
+	shaders_array = shaders_array.join('');
   glsl.mx = str(shaders_array).search(/\bMX\b/) > 0 ? true : false;
   glsl.my = str(shaders_array).search(/\bMY\b/) > 0 ? true : false;
   glsl.a  = str(shaders_array).search(/\bA\b/)  > 0 ? true : false;
@@ -73,12 +65,12 @@ function buildShader() {                      // function that builds array of f
 
 }
 
-function randomMix() {
-	let name = "";  let txt = "";
-	for (let i=0; i<random([2,3]); i++) {	
-		let r = random(glsl.names);
-		let c = random(["ABC","CAB","BCA","CBA","ACB","BAC"]);
-		txt += "@ # "+r+" # "+c+" #\n"; 
-		name += "-"+r.substring(0,3);
-	}	txtar.value(name.substring(1)+"\n"+txt);
+function randomMix() {                                        // to mix random presets in new filter
+	let name = "";  let code = "";                              // we need to create name and code for it
+	for (let i=0; i<random([2,3]); i++) {	                      // for the random number of shaders in filter
+		let r = random(glsl.names);                               // select random preset name
+		let c = random(["ABC","CAB","BCA","CBA","ACB","BAC"]);    // select random control rebind
+		code += "@ # "+r+" # "+c+" #\n";                          // combine the code
+		name += "-"+r.substring(0,3);                             // combine the name
+	}	txtar.value(name.substring(1)+"\n"+code);                 // and put it all together in the text area
 }
