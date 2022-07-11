@@ -17,7 +17,7 @@ function getProfile() {          // load profile with program settings
     window:     1,               // do not reduce window size
     code:       glsl.default,    // load default shader code
     theme:      0,               // load dark skin
-	  shuffle:    0,               // presets shuffle off
+		keymode:    false,           // keymode off
   };
 
   // if URL ends with "?r=1" do the profile reset
@@ -30,10 +30,10 @@ function getProfile() {          // load profile with program settings
   if (p_temp.autoload) profile = getItem('settings_profile');
   
   // if there are no profile in memory load the defaults
-  else { profile = default_profile;  }
+  else { profile = default_profile; }
   
   // check if there are missing variables in loaded profile
-  for (let i in default_profile) { if (profile[i] === undefined || profile[i] === null) profile[i] = default_profile[i];  }
+  for (let i in default_profile) { if (profile[i] === undefined || profile[i] === null) profile[i] = default_profile[i]; }
   
   // force loading is needed to allow the browser to save multiple files at startup
   if (profile.forcing) { save('','?.txt'); save('','?.txt'); }

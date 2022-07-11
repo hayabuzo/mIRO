@@ -1,7 +1,5 @@
 glsl.presets = `
 
-`+/* ============================================ FIRST PACK ============================================ */`
-
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
 Autechre
@@ -49,7 +47,7 @@ vec4  imb = texture2D(TXB, uv);
 vec2  uvp = cnv2abs(uv2p(
         uv2dspmd(uv,imb.r*k,imb.g*k),
         MY*0.5 ));
-vec4  img = texture2D(TXP, uvp);
+vec4  img = texture2D(TXP, uvp); 
 
       k*=0.5;
 vec4  imp = texture2D(TXP, cnv2abs(uv2p(
@@ -62,12 +60,12 @@ vec2  uvo = mix(
         cnv2mod(uv2exp(uv,f2z(imp.r),f2z(imp.g),f2z(imp.b))),
         cnv2mod(uv2mrr(uv,imp.rgb,f2z(imp.g),f2z(imp.b))), A);
 vec4  imo = texture2D(TXP,uvo);
-      if (C==1.0) imo = mix(tx2d(TXF,uvo),tx2d(TXP,uv),step(f2rand(img.g),0.1+R5*0.1));
+      if (C>0.5) imo = mix(tx2d(TXF,uvo),tx2d(TXP,uv),step(f2rand(img.g),0.1+R5*0.1));
 
 vec4  imj = texture2D(TXP, uv);
       imj.g = f2f(sin( imj.g * TWO_PI * (0.5+MY) ));
-      if (B==1.0 && (C==0.0 || R4>0.5)) imo = mix2scr(imj.ggga,imo,1.0);
-      else if (B==1.0 && C==1.0) imo = mix2dfr(imj.ggga,imo,1.0);
+      if (B>0.5 && (C<0.5 || R4>0.5)) imo = mix2scr(imj.ggga,imo,1.0);
+      else if (B>0.5 && C>0.5) imo = mix2dfr(imj.ggga,imo,1.0);
   
       gl_FragColor = imo;
       
@@ -150,14 +148,14 @@ vec4  img_output;
 
 vec4  qt = 1.0-(1.0-q1)*(1.0-q2)*(1.0-q3)*(1.0-q4);
 
-      if (A == 1.0 && B == 1.0 && C == 1.0) img_output = max(max(q1,q2),max(q3,q4));
-else  if (A == 1.0 && B == 1.0 && C == 0.0) img_output = mix(q1,q2,max(q3,q4));
-else  if (A == 1.0 && B == 0.0 && C == 1.0) img_output = mix(q1,q2,smoothstep(0.4,0.6,vec4(q3.r,q3.r,q3.r,1.0)));
-else  if (A == 1.0 && B == 0.0 && C == 0.0) img_output = max(max(w1,w3),max(w2,w4));
-else  if (A == 0.0 && B == 1.0 && C == 1.0) img_output = mix(w1,w2,max(w3,w4));
-else  if (A == 0.0 && B == 1.0 && C == 0.0) img_output = mix(w1,w2,smoothstep(0.4,0.6,vec4(w3.r,w3.r,w3.r,1.0)));
-else  if (A == 0.0 && B == 0.0 && C == 1.0) img_output = qt;
-else  if (A == 0.0 && B == 0.0 && C == 0.0) img_output = dot(qt.rgb, vec3(0.33333))>0.5 ? (qt-0.01)*(qt-0.01)*(qt-0.01) : 1.0 - 3.0*(1.0-qt)*(1.0-qt)*(1.0-qt);
+      if (A > 0.5 && B > 0.5 && C > 0.5) img_output = max(max(q1,q2),max(q3,q4));
+else  if (A > 0.5 && B > 0.5 && C < 0.5) img_output = mix(q1,q2,max(q3,q4));
+else  if (A > 0.5 && B < 0.5 && C > 0.5) img_output = mix(q1,q2,smoothstep(0.4,0.6,vec4(q3.r,q3.r,q3.r,1.0)));
+else  if (A > 0.5 && B < 0.5 && C < 0.5) img_output = max(max(w1,w3),max(w2,w4));
+else  if (A < 0.5 && B > 0.5 && C > 0.5) img_output = mix(w1,w2,max(w3,w4));
+else  if (A < 0.5 && B > 0.5 && C < 0.5) img_output = mix(w1,w2,smoothstep(0.4,0.6,vec4(w3.r,w3.r,w3.r,1.0)));
+else  if (A < 0.5 && B < 0.5 && C > 0.5) img_output = qt;
+else  if (A < 0.5 && B < 0.5 && C < 0.5) img_output = dot(qt.rgb, vec3(0.33333))>0.5 ? (qt-0.01)*(qt-0.01)*(qt-0.01) : 1.0 - 3.0*(1.0-qt)*(1.0-qt)*(1.0-qt);
 
       gl_FragColor = img_output;
 
@@ -272,8 +270,8 @@ vec2  pos = vec2(mod(c.r+MX,1.0),1.0-c.b);
 vec2  uvs = uv+r-pos;
 vec4  img = texture2D(TXP, cnv2abs(uvs));
 
-           if (A==0.0) img.a = fg2rect(uv,pos,s,mix(0.01,1.0,B));
-      else if (A==1.0) img.a = fg2circ(uv,pos,s,mix(0.01,1.0,B));
+           if (A < 0.5) img.a = fg2rect(uv,pos,s,mix(0.01,1.0,B));
+      else if (A > 0.5) img.a = fg2circ(uv,pos,s,mix(0.01,1.0,B));
 
       gl_FragColor = img; 
 
@@ -708,12 +706,6 @@ vec4  imo = mix(img,imf.ggga,A);
 
       gl_FragColor = imo;
 
-`+/* ===================================================================================================== */`
-`+/* ===================================================================================================== */`
-`+/* ============================================ SECOND PACK ============================================ */`
-`+/* ===================================================================================================== */`
-`+/* ===================================================================================================== */`
-
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
 Aeroplane
@@ -749,14 +741,14 @@ float a = step(pow(1.0-MY,2.0),hsb.r*hsb.g*abs(sin(hsb.b*PI-PI/6.0)));
 
 vec4  bgr = vec4(0.941, 0.866, 0.835, 1.0);
       bgr.rgb *= 1.0+f2z(uv2frand(uv-R2))*0.05;
-      if (A==1.0) img = mix(bgr,img,a);
+      if (A>0.5) img = mix(bgr,img,a);
 
       hsb = rgb2hsb(imf.rgb);
       hsb.r = mod(hsb.r+MX,1.0);
       a = step(pow(1.0-MY,2.0),hsb.r*hsb.g*abs(sin(hsb.b*PI-PI/6.0)));
 
-      if (B==1.0) imf.rgb = rgb2ht(imf.rgb,-0.01);
-      if (C==1.0) imf.rgb -= (imf.rgb-vec3(1.0))*0.05;
+      if (B>0.5) imf.rgb = rgb2ht(imf.rgb,-0.01);
+      if (C>0.5) imf.rgb -= (imf.rgb-vec3(1.0))*0.05;
       imf.rgb = clamp(imf.rgb,vec3(0.0),vec3(2.0));
       img = mix(img,imf,a);
       gl_FragColor = img; 
@@ -773,11 +765,11 @@ vec2  uve = uv2exp(uv,-3.0,0.0,0.0);
 vec4  img = texture2D(TXP, uve);
 
 vec2  uvf = uv2exp(uv,MY*0.1,0.0,0.0);
-      if(C==1.0) uvf = uv2rot(uvf,0.05);
+      if(C>0.5) uvf = uv2rot(uvf,0.05);
 vec4  imf = texture2D(TXF, uvf);
 
 float f;
-      if (B==0.0) f = fg2circ(uve,vec2(0.5) ,0.9,A*0.5+0.01);
+      if (B<0.5) f = fg2circ(uve,vec2(0.5) ,0.9,A*0.5+0.01);
       else        f = fg2rect(uve,vec2(0.5) ,0.9,A*0.5+0.01);
 			
       img = mix(imf,img,f);
@@ -792,7 +784,7 @@ vec2  uv = vTexCoord;
       uv.y = 1.0 - uv.y;
 vec2  uve = uv2exp(uv,-1.0-3.0*R3,f2z(R1),f2z(R2));
 vec2  uvs = uv2rot(uv2exp(uv,-0.1,0.0,0.0),R4*PI)+vec2(R1);
-      if (A==0.0) uvs = cnv2abs(uvs);
+      if (A<0.5) uvs = cnv2abs(uvs);
       else        uvs = cnv2mod(uvs);
 vec4  ime = texture2D(TXP, uve);
 vec4  ims = texture2D(TXF, uvs);
@@ -811,7 +803,7 @@ vec2  uv = vTexCoord;
 float l = img2bw(texture2D(TXB, uv));
 
 vec2  uvr = uv;
-      if (A==1.0) uvr = uv2rot(uv,f2z(mix(N4,R4,B))*PI);
+      if (A>0.5) uvr = uv2rot(uv,f2z(mix(N4,R4,B))*PI);
 
 vec2  uve = uv2exp(uvr,-5.0*R1,f2z(R2),f2z(R3));
       uve = uv2wav(uve,0.015,R2,R3);
@@ -877,7 +869,7 @@ vec4  imf = tx2d(TXF,mix(cnv2abs(uvr),cnv2mod(uvr),B));
 vec2  m = vec2(f2z(MX)*0.3,f2z(MY)*0.3);
 float k = 0.3;
 float a = clamp(fg2circ(uv,vec2(0.5)+m,1.2+distance(vec2(0.5),vec2(MX,MY)),k*A),0.0,1.0);
-      if (C==1.0) a -= clamp(fg2circ(uv,vec2(0.5),0.4,k*A),0.0,1.0);
+      if (C>0.5) a -= clamp(fg2circ(uv,vec2(0.5),0.4,k*A),0.0,1.0);
       img = mix(img,imf,a);
       gl_FragColor = img; 
 

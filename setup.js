@@ -1,17 +1,20 @@
 // Copyright 2022, Sergey Egorov
-// Licensed under the Apache License, Version 2.0
+// Licensed under the Apache License, Version 2.0 
 
-const sketch = 'mIRO'
-const ver    = 'v.220610' 
+const sketch = 'mIRO' 
+const ver    = 'v.220630' 
 
 function setup() {                                           // preparing sketch
   
-  pixelDensity(1);                                           // set the same density for all devices to prevert over-resolution
+  pixelDensity(1);                                           // set the same density for all devices to prevent over-resolution
   cnv = createCanvas(windowWidth, windowHeight);             // create canvas with full window size
   getProfile();                                              // load program settings profile
-  gui = new gui(min(width,height),height);                   // create graphic user interface with limited width
+  gui = new Gui(min(width,height),height);                   // create graphic user interface with limited width
+	ear = new Ear();                                           // create sound analyzer with 16 bins
   createHtml();                                              // create html elements
   buildShader();                                             // build shaders from the text
+	txn = createNoiseField();                                  // create texture with noise field
+	textFont('Monospace');                                     // change standard font
 
 }
 
@@ -38,13 +41,7 @@ function createHtml() {                                                         
   pre_sel.id('mySel');                                                                 // set the element id, to find it later
 
   pre_sel.option('> Load Preset');                                                                 // create first line of selector
-  pre_sel.option('> Random Mix');                                                                  // add "random mix" in selector
-	glsl.parray = glsl.presets.split("###").slice(1);                                                // create array of presets
-  glsl.parray.sort(function(a,b){return a.toLowerCase().localeCompare(b.toLowerCase());});         // sort it case-insensetive
-  for(let i=0; i<glsl.parray.length; i++) {                                                        // for each element in array of presets
-		glsl.names[i] = glsl.parray[i].split(char(10))[2];                                             // take preset name and put in the array of names
-		pre_sel.option(glsl.names[i]);                                                                 // put preset name into selector as option
-	}
+  update_presets();
 	
 }
 
@@ -52,8 +49,7 @@ function draw() {  background(color(skin[profile.theme].bgr)); gui.run(); }     
 
 function load_preset() {                                        // when loading a preset via selector
   glsl.parray[-1] = 'xx'+profile.code;                          // we need to store current shader text with 2 extra characters          
-  txtar.value(glsl.parray[mySel.selectedIndex-2].slice(2));     // because we will delete first 2 symbols of preset text which used for better formating   
-	if (mySel.selectedIndex == 1) randomMix();                    // if Random Mix option is selcted, run the function
+  txtar.value(glsl.parray[mySel.selectedIndex-1].slice(2));     // because we will delete first 2 symbols of preset text which used for better formating 
   gui.compile();                                                // compile preset
 	mySel.selectedIndex = 0;                                      // reset selector in shader editor
 	if (gui.frame=="F1") gui.frame="F1L";                         // recalculate buttons size to align controls
@@ -62,14 +58,31 @@ function load_preset() {                                        // when loading 
 }
 
 function open_file(file) {                                      // when opening a file via "load" button
-  if (file.type === 'text') txtar.value(file.data);             // we can open a text file and put it in a shader code
+  if (file.type === 'text') txtar.value(file.data);             // we can open a text file and load it as filter
   if (file.type === 'image') gui.createImage(file);             // we can open an image and put it for shader processing
   gui.compile();                                                // compile filter after loading
 	file_input.value('');	                                        // clear file input to allow reopen the same file
 } 
 
-keyboard = [];
+function update_presets() {
+	glsl.parray = glsl.presets.split("###").slice(1);                                                // create array of presets
+  glsl.parray.sort(function(a,b){return a.toLowerCase().localeCompare(b.toLowerCase());});         // sort it case-insensetive
+  for(let i=0; i<glsl.parray.length; i++) {                                                        // for each element in array of presets
+		let n = glsl.parray[i].split("\n")[2];                                                         // take preset name
+		glsl.names[i] = n;                                                                             // put it in the array of names
+		pre_sel.option(n);                                                                             // put preset name into selector as option
+	}
+}
 
-function isKey(k)      {	return keyboard.includes(k);          }
-function keyPressed()  {	if (keyIsPressed) keyboard.push(key); }
-function keyReleased() {  let indexOfObject = keyboard.findIndex(object => { return keyboard === key }); keyboard.splice(indexOfObject, 1); }
+function createNoiseField() {
+  let img = createImage(500, 500);  img.loadPixels();	let k = 150;
+  for (let i = 0; i < img.width; i++) { for (let j = 0; j < img.height; j++) { 
+		  let r = (1.0-abs(1.0-abs(noise(i/k+j*width/k+10000)*2.1-0.5)))*255; // let r = (1.0-abs(1.0-abs(noise(i/k,j/k+10000)*2.0-0.5)))*255;
+		  let g = (1.0-abs(1.0-abs(noise(i/k+j*width/k+20000)*2.1-0.5)))*255; // let g = (1.0-abs(1.0-abs(noise(i/k,j/k+20000)*2.0-0.5)))*255;
+		  let b = (1.0-abs(1.0-abs(noise(i/k+j*width/k+30000)*2.1-0.5)))*255; // let b = (1.0-abs(1.0-abs(noise(i/k,j/k+30000)*2.0-0.5)))*255;
+		  img.set(i, j, color(r,g,b)); } }   img.updatePixels();	
+  for (let i = 0; i < img.width; i++) { for (let j = 0; j < img.height; j++) { 
+		let l = 50; if (i>500-l) img.set(i, j, lerpColor(color(img.get(500-i,j)),color(img.get(i,j)),(500-i)/l) ); 
+	}  }  img.updatePixels();	
+	return img;
+}

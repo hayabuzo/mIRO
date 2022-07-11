@@ -1,7 +1,7 @@
 glsl.library = ``;
 
 glsl.library += `/**`+sketch+` `+ver+` 
-
+	
 LIST OF FUNCTIONS
 
 ┌—————————————————————————————————┐
@@ -12,11 +12,11 @@ LIST OF FUNCTIONS
 
   @          - Add a new shader into filter
   # prName # - Attach full code of preset into filter
-  ABC #      - Change preset controls from ABC to another combination
+  ABCXY #    - Change preset controls from ABC to another combination
 
   Example (see «Random Mix» preset):
-  @ # Jetone # BCA # - Add a shader with "Jetone" preset code and 
-	                     rebind controls from ABC to BCA order
+  @ # Jetone # BCAYX # - Add a shader with "Jetone" preset code and 
+	                       rebind controls from ABCXY to BCAYX order
 
 ┌—————————————————————————————————┐
 │                                 │

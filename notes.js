@@ -1,5 +1,12 @@
 /*
 
+v.220630: added noise field texture TXN;
+
+v.220622: added wide resolution in settings;
+
+v.220620: added keyboard controls (WIP);
+v.220620: added name reveal when saving mixed filter;
+
 v.220610: added presets shuffle in settings 
 
 v.220609: added code attachment via [# presetName #] macros;
