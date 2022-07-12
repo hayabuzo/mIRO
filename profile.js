@@ -18,6 +18,7 @@ function getProfile() {          // load profile with program settings
     code:       glsl.default,    // load default shader code
     theme:      0,               // load dark skin
 		keymode:    false,           // keymode off
+		pack:       0,               // select default preset pack
   };
 
   // if URL ends with "?r=1" do the profile reset

@@ -26,6 +26,7 @@ class Gui {           // create graphic user interface
     this.stream.settings.video.width.ideal  = profile.resolution == "min" ? 640 : profile.resolution == "max" ? 4000 : profile.resolution == "wide" ? 1280 : 1280;
     this.stream.settings.video.height.ideal = profile.resolution == "min" ? 480 : profile.resolution == "max" ? 3000 : profile.resolution == "wide" ? 720 : 960;         
     this.stream.camera = createCapture(this.stream.settings).hide(); this.stream.camera.loaded = false;
+		if (this.stream.camera==={}) print("no camera found");
     this.stream.camera.width = 1; // this trick allows to load both camera stream and image file as the same object
 
   }
@@ -86,7 +87,7 @@ class Gui {           // create graphic user interface
       // create all buttons for the frame
       this.frame = "F1"; this.buttons.f1 = {}; 
         this.buttons.f1.play = new button( this.x0, this.h*0.1, this.w    , this.h*0.4 , 10); this.buttons.f1.play.txt[4] = "PLAY"; this.buttons.f1.play.cross = true;
-        this.buttons.f1.save = new button( this.x0, this.h*0.5, this.w    , this.h*0.4 , 10); this.buttons.f1.save.txt[4] = "SAVE"; this.buttons.f1.save.txt[1] = this.stream.stack.width+'x'+this.stream.stack.height;
+        this.buttons.f1.save = new button( this.x0, this.h*0.5, this.w    , this.h*0.4 , 10); this.buttons.f1.save.txt[4] = "SAVE"+"\nHAHA "+millis(); this.buttons.f1.save.txt[1] = this.stream.stack.width+'x'+this.stream.stack.height;
         this.buttons.f1.dir  = new button( this.x0, this.h*0.9, this.h*0.1, this.h*0.1 , 10); this.buttons.f1.dir .txt[0] = this.horient?"→":"↑"; this.buttons.f1.dir.tsize = 30;
         this.buttons.f1.mode = new button( this.x0+this.h*0.1,  this.h*0.9, this.h*0.1, this.h*0.1 , 10); this.buttons.f1.mode.txt[0]=profile.clicking?">":">>>";
 			  this.buttons.f1.edit = new button( this.x0,             this.h*0.0, this.h*0.1, this.h*0.1 , 10); this.buttons.f1.edit.txt[0] = "</>";
@@ -97,9 +98,8 @@ class Gui {           // create graphic user interface
         this.buttons.f1.c    = new button( this.x0+this.w-this.h*0.1                     , glsl.c ? 0.0 : - this.h , this.h*0.1, this.h*0.1 , 10); this.buttons.f1.c.txt[0] = "C";
 			  this.setHead();
       
-			pre_sel.style('visibility:visible'); 
+			pre_sel.style('visibility:visible'); pack_sel.style('visibility:hidden'); 
       pre_sel.style('background-color:transparent').style('color:transparent');
-      pre_sel.position(this.x0+this.h*0.1+5, this.h*0.0+6).size(this.w-this.h*(glsl.n*0.1+0.1)-10, this.h*0.1-9); 
 			txtar.style('visibility:hidden'); 
 			
       this.process(); this.saveProfile();  // process and save the setting profile each time we enter the main frame
@@ -165,8 +165,9 @@ class Gui {           // create graphic user interface
         this.buttons.f2.load = new button( this.x0+this.w*0.333, this.h*0.9, this.w*0.333, this.h*0.1 , 10); this.buttons.f2.load.txt[0] = "LOAD";
         this.buttons.f2.save = new button( this.x0+this.w*0.666, this.h*0.9, this.w*0.333, this.h*0.1 , 10); this.buttons.f2.save.txt[0] = "SAVE";
 			  pre_sel.style('background-color:transparent').style('color',skin[profile.theme].txt);
-			  pre_sel.position(this.x0+4,this.h*0.9-40).size(this.w-8,40);
-        profile.code = txtar.value(); txtar.style('visibility:visible');
+			  pack_sel.style('visibility:visible'); pre_sel.position(this.x0+this.w/2,this.h*0.9-40).size(this.w/2-6,40);
+        profile.code = txtar.value(); txtar.style('visibility:visible'); 
+			  pack_sel.position(this.x0+4,this.h*0.9-40).size(this.w/2-8,40);
     }
 
     else if (this.frame=="F2") {  // showing frame #2 (shader editor)
@@ -181,7 +182,7 @@ class Gui {           // create graphic user interface
       if (!this.showhelp) {  // text area is in the shader edit mode
 
         // change text field and buttons according to mode
-        document.getElementById("txtar").disabled=false; pre_sel.style('visibility:visible'); 
+        document.getElementById("txtar").disabled=false; pre_sel.style('visibility:visible'); pack_sel.style('visibility:visible');  
         txtar.size(gui.w-15,this.h*0.8-50);  profile.code = txtar.value();
         this.buttons.f2.help.txt[0] = "HELP"; this.buttons.f2.help.w = this.w*0.333-10;
 				
@@ -201,7 +202,7 @@ class Gui {           // create graphic user interface
       } else {  // text area is in the help (library) mode
 
         // change text field and buttons according to mode
-        document.getElementById("txtar").disabled=true; pre_sel.style('visibility:hidden'); 
+        document.getElementById("txtar").disabled=true; pre_sel.style('visibility:hidden'); pack_sel.style('visibility:hidden'); 
         txtar.size(this.w-15,this.h*0.9-15); 
         this.buttons.f2.help.show(); 
         this.buttons.f2.help.txt[0] = "BACK"; this.buttons.f2.help.w = this.w-10; 
@@ -264,7 +265,7 @@ class Gui {           // create graphic user interface
         if (this.buttons.f3.okay.clicked) {  // recreate camera or rescale window if needed and return to frame #1
           if (p_temp.resolution!=profile.resolution || p_temp.resize!=profile.resize || p_temp.frontal != profile.frontal) this.createCamera();  
           if (p_temp.window != profile.window) this.stream.scale = profile.window * ((height*0.8/width >= this.stream.stack.height/this.stream.stack.width) ? width/this.stream.stack.width : height*0.8/this.stream.stack.height); 
-          this.frame = "F1L"; textFont('sans-serif'); }
+          this.frame = "F1L"; }
 		}
 
     // ======================================================== end of frames
@@ -368,8 +369,6 @@ class Gui {           // create graphic user interface
     this.stream.shader[i].setUniform( 'B' , this.trig[1] ? 1.0 : 0.0 ); 
     this.stream.shader[i].setUniform( 'C' , this.trig[2] ? 1.0 : 0.0 ); 
 		this.stream.shader[i].setUniform( 'alpha' , i == glsl.frags.length-1 ? controls.alpha : 1.0 ); 
-		
-		this.stream.shader[i].setUniform( 'TXN' , txn ); 
 
   }
   

@@ -1,13 +1,16 @@
 /*
 
-v.220630: added noise field texture TXN;
+v.220712: fixed font changing;
+v.220712: added noise(), mobile tested;
+v.220712: added packs selector;
+v.220712: added Disaurde-303 pack;
 
 v.220622: added wide resolution in settings;
 
 v.220620: added keyboard controls (WIP);
 v.220620: added name reveal when saving mixed filter;
 
-v.220610: added presets shuffle in settings 
+v.220610: added presets shuffle in settings;
 
 v.220609: added code attachment via [# presetName #] macros;
 v.220609: added control rebinding via [ABC #] macros;

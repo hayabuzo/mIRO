@@ -1,4 +1,4 @@
-glsl = { names:[] };   // create object for storing shader data
+glsl = { names:[], presets:[], packnames:[] };   // create object for storing shader data
 
 // vertex shader is the same for all the fragment shaders
 glsl.vert = ` attribute vec3 aPosition; attribute vec2 aTexCoord; varying vec2 vTexCoord;
@@ -78,10 +78,10 @@ function buildShader() {                                         // function tha
 
 function revealName() {
 	glsl.code = txtar.value();                                              // get current filter code from textarea
-	for (let i=0; i<glsl.names.length; i++) {                               // for every name of preset in list of names
-		let name = new RegExp("# "+glsl.names[i]+" #","g");                   // create regEx with macro syntax
-		let code = glsl.parray[i].split("@")[1];                              // take the preset code
-		glsl.code = glsl.code.replace(name," // "+glsl.names[i]+" "+code);    // and replace preset macro with code
-	}	
-	let reg = new RegExp("@","g"); return glsl.code.replace(reg,"\n@");     // add line break for saving function
+	//for (let i=0; i<glsl.names.length; i++) {                               // for every name of preset in list of names
+	//	let name = new RegExp("# "+glsl.names[i]+" #","g");                   // create regEx with macro syntax
+	//	let code = glsl.parray[i].split("@")[1];                              // take the preset code
+	//	glsl.code = glsl.code.replace(name," // "+glsl.names[i]+" "+code);    // and replace preset macro with code
+	//}	
+	//let reg = new RegExp("@","g"); return glsl.code.replace(reg,"\n@");     // add line break for saving function
 }

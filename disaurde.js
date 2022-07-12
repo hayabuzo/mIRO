@@ -1,55 +1,5 @@
-imp = 
-`/**┌—————————————————————————————————┐
-│                                 │
-│        Disaurde Functions       │
-│                                 │
-└—————————————————————————————————┘*/
-
-float EXR ( float val, float pwr, float amp ) {
-  return fract ( val * pow( 10.0, pwr ) ) * amp; }
-		
-float EXL ( float val, float pwr, float amp ) {
-  return floor ( fract ( val * pow( 10.0, pwr ) ) * (amp + 0.99) ); }
-
-float f2saw( float f ) {
-  return abs(mod(abs(f), 2.0)-1.0); }
-
-// Distortion function from Q_Layer: shadertoy.com/view/lslGRN
-vec2 uv2bar(vec2 p, float pwr, float sqz) {
-  p.x = p.x-0.5;  p.y = p.y-0.5;  p.y = p.y*(HEIGHT/WIDTH);
-  float theta  = atan(p.y*fract(sqz), p.x*floor(sqz)*0.01);
-  float radius = length(p);
-  radius = pow(radius, pow((0.5+fract(pwr)),2.0) );
-  p.x = radius * cos(theta)* floor(pwr)*0.02;
-  p.y = radius * sin(theta)* floor(pwr)*0.02;
-  p.y = p.y/(HEIGHT/WIDTH);
-  return 1.0 * (p + 0.5); }
-	
-vec4 img2blend(vec4 a, vec4 b, float mode, float mixval, float tune) {
-  vec4 m;  
-  // Normal
-  if (mode == 0.0) { m = mix(a, b, mixval); }
-  // Threshold Lighten
-  if (mode == 1.0) { float bvg = dot(b.rgb, vec3(0.33333)); m = mix(a, step(0.5,bvg) > 0.5 ? b : a , mixval); } 
-  // Zebra
-  if (mode == 2.0) { float cvg = dot(a.rgb+b.rgb, vec3(0.33333)); m = mix(a, cvg < 1.0 ? 1.0-a-b : a+b-1.0, mixval); }  
-  // Substract
-  if (mode == 3.0) m = mix( mix(a, a+b-1.0, mixval), mix(a, abs(1.0-a+b), mixval), tune);
-  // Screen  
-  if (mode == 4.0) m = mix(a, pow(1.0-(1.0-a)*(1.0-b),vec4(4.0)), mixval);    
-  // Difference
-  if (mode == 5.0) m = mix(a, abs(b-a), 50.0);
-  // Divide
-  if (mode == 6.0) m = mix( mix(a, a/b, mixval), mix(a, a/(b/a), mixval), tune);
-  return m; }
-
-float f2next(float n) {
-  return fract(pow(n,abs(sin(n)))); }
-`
-
-+`[function/filter separator]`+
-
-`
+glsl.packnames.push('Disaurde v.303');    
+glsl.presets.push(`
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
@@ -1613,9 +1563,4 @@ img_output = (pow((uv.x-rndX),2.0)+pow((uv.y-rndY)*wink,2.0) < pow(avg*0.1+avg*k
 
       gl_FragColor = img_output;
 
-`+/* -------------------------- END OF PRESETS LIST -------------------------- */``;
-
-console.log(imp);
-
-//glsl.library += imp.split("[function/filter separator]")[0];
-//glsl.presets = imp.split("[function/filter separator]")[1];
+`+/* -------------------------- END OF PRESETS LIST -------------------------- */``);

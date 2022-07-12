@@ -1,4 +1,5 @@
-glsl.presets = `
+glsl.packnames.push('mIRO)))');    
+glsl.presets.push(`
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
@@ -873,4 +874,5 @@ float a = clamp(fg2circ(uv,vec2(0.5)+m,1.2+distance(vec2(0.5),vec2(MX,MY)),k*A),
       img = mix(img,imf,a);
       gl_FragColor = img; 
 
-`+/* -------------------------- END OF PRESETS LIST -------------------------- */``;
+
+`+/* -------------------------- END OF PRESETS LIST -------------------------- */``);

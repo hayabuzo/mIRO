@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0 
 
 const sketch = 'mIRO' 
-const ver    = 'v.220630' 
+const ver    = 'v.220712' 
 
 function setup() {                                           // preparing sketch
   
@@ -13,9 +13,8 @@ function setup() {                                           // preparing sketch
 	ear = new Ear();                                           // create sound analyzer with 16 bins
   createHtml();                                              // create html elements
   buildShader();                                             // build shaders from the text
-	txn = createNoiseField();                                  // create texture with noise field
-	textFont('Monospace');                                     // change standard font
-
+	textFont('Monospace');                                     // change standard sans-serif font to monospace
+	
 }
 
 function createHtml() {                                                                // create text area and file input elements
@@ -39,8 +38,18 @@ function createHtml() {                                                         
   pre_sel.style('text-align:left');     pre_sel.style('white-space:pre');              // set preset selector align
   pre_sel.style('visibility:hidden');   pre_sel.changed(load_preset);                  // hide preset selector until we need it
   pre_sel.id('mySel');                                                                 // set the element id, to find it later
-
-  pre_sel.option('> Load Preset');                                                                 // create first line of selector
+  pre_sel.option('> Load Preset');                                                     // create first line of selector
+	
+  pack_sel = createSelect();                                                            // create preset selector
+	pack_sel.position(0,0);   
+	pack_sel.style('background-color',skin[profile.theme].bgr);
+  pack_sel.style('color:'+skin[profile.theme].txt);                                     // set preset selector text color
+  pack_sel.style('font-size', 14+'px');  pack_sel.style('font-family:monospace');       // set preset selector size and font
+  pack_sel.style('text-align:left');     pack_sel.style('white-space:pre');             // set preset selector align
+  pack_sel.style('visibility:hidden');   pack_sel.changed(load_pack);                   // hide preset selector until we need it
+  pack_sel.id('myPack');                                                                // set the element id, to find it later
+  pack_sel.option('> Select Pack');                                                     // create first line of selector
+	
   update_presets();
 	
 }
@@ -57,6 +66,12 @@ function load_preset() {                                        // when loading 
 	document.getElementById('mySel').blur();                      // set the focus out of selector
 }
 
+function load_pack() {
+	profile.pack = myPack.selectedIndex-1;
+	update_presets();
+	myPack.selectedIndex = 0;
+}
+
 function open_file(file) {                                      // when opening a file via "load" button
   if (file.type === 'text') txtar.value(file.data);             // we can open a text file and load it as filter
   if (file.type === 'image') gui.createImage(file);             // we can open an image and put it for shader processing
@@ -65,24 +80,16 @@ function open_file(file) {                                      // when opening 
 } 
 
 function update_presets() {
-	glsl.parray = glsl.presets.split("###").slice(1);                                                // create array of presets
+	while (mySel.options.length > 1) { mySel.remove(1); }
+	glsl.parray = glsl.presets[profile.pack].split("###").slice(1);                                  // create array of presets
   glsl.parray.sort(function(a,b){return a.toLowerCase().localeCompare(b.toLowerCase());});         // sort it case-insensetive
+	glsl.names = [];
   for(let i=0; i<glsl.parray.length; i++) {                                                        // for each element in array of presets
 		let n = glsl.parray[i].split("\n")[2];                                                         // take preset name
 		glsl.names[i] = n;                                                                             // put it in the array of names
 		pre_sel.option(n);                                                                             // put preset name into selector as option
 	}
-}
-
-function createNoiseField() {
-  let img = createImage(500, 500);  img.loadPixels();	let k = 150;
-  for (let i = 0; i < img.width; i++) { for (let j = 0; j < img.height; j++) { 
-		  let r = (1.0-abs(1.0-abs(noise(i/k+j*width/k+10000)*2.1-0.5)))*255; // let r = (1.0-abs(1.0-abs(noise(i/k,j/k+10000)*2.0-0.5)))*255;
-		  let g = (1.0-abs(1.0-abs(noise(i/k+j*width/k+20000)*2.1-0.5)))*255; // let g = (1.0-abs(1.0-abs(noise(i/k,j/k+20000)*2.0-0.5)))*255;
-		  let b = (1.0-abs(1.0-abs(noise(i/k+j*width/k+30000)*2.1-0.5)))*255; // let b = (1.0-abs(1.0-abs(noise(i/k,j/k+30000)*2.0-0.5)))*255;
-		  img.set(i, j, color(r,g,b)); } }   img.updatePixels();	
-  for (let i = 0; i < img.width; i++) { for (let j = 0; j < img.height; j++) { 
-		let l = 50; if (i>500-l) img.set(i, j, lerpColor(color(img.get(500-i,j)),color(img.get(i,j)),(500-i)/l) ); 
-	}  }  img.updatePixels();	
-	return img;
+  for(let i=0; i<glsl.packnames.length; i++) {                                                        
+		pack_sel.option(glsl.packnames[i]);                                                                
+	}
 }

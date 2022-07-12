@@ -10,13 +10,7 @@ LIST OF FUNCTIONS
 │                                 │
 └—————————————————————————————————┘
 
-  @          - Add a new shader into filter
-  # prName # - Attach full code of preset into filter
-  ABCXY #    - Change preset controls from ABC to another combination
-
-  Example (see «Random Mix» preset):
-  @ # Jetone # BCAYX # - Add a shader with "Jetone" preset code and 
-	                       rebind controls from ABCXY to BCAYX order
+  @ - Add a new shader into filter
 
 ┌—————————————————————————————————┐
 │                                 │
@@ -118,6 +112,12 @@ float f2rand( float f ) {
   f = floor(sin(f)*9462.7)*0.0136;
   f = floor(cos(f)*7294.6)*0.0178;
   return fract(f); }
+	
+/* Float to Noise */
+float f2noise(float f){
+  f = f*10.0;
+	float fl = floor(f);
+	return mix(f2rand(fl), f2rand(fl + 1.0), fract(f)); }
   
 /* Float to Slit */
 float f2slit ( float f, float lvl, float len, float smt ) { 
@@ -457,6 +457,53 @@ vec2 uv2mrr( vec2 uv, vec3 rgb, float m, float d) {
   uv = md2xy(vec2(t2.x,t2.y + angle*d*PI) + shift);
   uv.y = uv.y * (WIDTH/HEIGHT);  
   return uv; }
+	
+/**┌—————————————————————————————————┐
+│                                 │
+│        Disaurde Functions       │
+│                                 │
+└—————————————————————————————————┘*/
+
+float EXR ( float val, float pwr, float amp ) {
+  return fract ( val * pow( 10.0, pwr ) ) * amp; }
+		
+float EXL ( float val, float pwr, float amp ) {
+  return floor ( fract ( val * pow( 10.0, pwr ) ) * (amp + 0.99) ); }
+
+float f2saw( float f ) {
+  return abs(mod(abs(f), 2.0)-1.0); }
+
+// Distortion function from Q_Layer: shadertoy.com/view/lslGRN
+vec2 uv2bar(vec2 p, float pwr, float sqz) {
+  p.x = p.x-0.5;  p.y = p.y-0.5;  p.y = p.y*(HEIGHT/WIDTH);
+  float theta  = atan(p.y*fract(sqz), p.x*floor(sqz)*0.01);
+  float radius = length(p);
+  radius = pow(radius, pow((0.5+fract(pwr)),2.0) );
+  p.x = radius * cos(theta)* floor(pwr)*0.02;
+  p.y = radius * sin(theta)* floor(pwr)*0.02;
+  p.y = p.y/(HEIGHT/WIDTH);
+  return 1.0 * (p + 0.5); }
+	
+vec4 img2blend(vec4 a, vec4 b, float mode, float mixval, float tune) {
+  vec4 m;  
+  // Normal
+  if (mode == 0.0) { m = mix(a, b, mixval); }
+  // Threshold Lighten
+  if (mode == 1.0) { float bvg = dot(b.rgb, vec3(0.33333)); m = mix(a, step(0.5,bvg) > 0.5 ? b : a , mixval); } 
+  // Zebra
+  if (mode == 2.0) { float cvg = dot(a.rgb+b.rgb, vec3(0.33333)); m = mix(a, cvg < 1.0 ? 1.0-a-b : a+b-1.0, mixval); }  
+  // Substract
+  if (mode == 3.0) m = mix( mix(a, a+b-1.0, mixval), mix(a, abs(1.0-a+b), mixval), tune);
+  // Screen  
+  if (mode == 4.0) m = mix(a, pow(1.0-(1.0-a)*(1.0-b),vec4(4.0)), mixval);    
+  // Difference
+  if (mode == 5.0) m = mix(a, abs(b-a), 50.0);
+  // Divide
+  if (mode == 6.0) m = mix( mix(a, a/b, mixval), mix(a, a/(b/a), mixval), tune);
+  return m; }
+
+float f2next(float n) {
+  return fract(pow(n,abs(sin(n)))); }
 
 `;
 
