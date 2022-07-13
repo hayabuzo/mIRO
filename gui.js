@@ -87,7 +87,7 @@ class Gui {           // create graphic user interface
       // create all buttons for the frame
       this.frame = "F1"; this.buttons.f1 = {}; 
         this.buttons.f1.play = new button( this.x0, this.h*0.1, this.w    , this.h*0.4 , 10); this.buttons.f1.play.txt[4] = "PLAY"; this.buttons.f1.play.cross = true;
-        this.buttons.f1.save = new button( this.x0, this.h*0.5, this.w    , this.h*0.4 , 10); this.buttons.f1.save.txt[4] = "SAVE"+"\nHAHA "+millis(); this.buttons.f1.save.txt[1] = this.stream.stack.width+'x'+this.stream.stack.height;
+        this.buttons.f1.save = new button( this.x0, this.h*0.5, this.w    , this.h*0.4 , 10); this.buttons.f1.save.txt[4] = "SAVE"; this.buttons.f1.save.txt[1] = this.stream.stack.width+'x'+this.stream.stack.height;
         this.buttons.f1.dir  = new button( this.x0, this.h*0.9, this.h*0.1, this.h*0.1 , 10); this.buttons.f1.dir .txt[0] = this.horient?"→":"↑"; this.buttons.f1.dir.tsize = 30;
         this.buttons.f1.mode = new button( this.x0+this.h*0.1,  this.h*0.9, this.h*0.1, this.h*0.1 , 10); this.buttons.f1.mode.txt[0]=profile.clicking?">":">>>";
 			  this.buttons.f1.edit = new button( this.x0,             this.h*0.0, this.h*0.1, this.h*0.1 , 10); this.buttons.f1.edit.txt[0] = "</>";

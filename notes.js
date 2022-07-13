@@ -1,5 +1,7 @@
 /*
 
+v.220713: added 
+
 v.220712: fixed font changing;
 v.220712: added noise(), mobile tested;
 v.220712: added packs selector;
