@@ -52,13 +52,17 @@ function buildShader() {                                         // function tha
 				if (ctrl_arr[i-1][j]=="y") ctrl_arr[i-1][j] = "(1.0-MY)";
 			}
 			shaders_array[i] = shaders_array[i]                                 // replace control chars in code with new ones
-			.replaceAll(/\bA\b/g,"replace_a")
-		  .replaceAll(/\bB\b/g,"replace_b")
-		  .replaceAll(/\bC\b/g,"replace_c")
-			.replaceAll(/replace_a/g,ctrl_arr[i-1][0])
-		  .replaceAll(/replace_b/g,ctrl_arr[i-1][1])
-		  .replaceAll(/replace_c/g,ctrl_arr[i-1][2]);
+			.replace(/\bA\b/g,"replace_a")
+		  .replace(/\bB\b/g,"replace_b")
+		  .replace(/\bC\b/g,"replace_c")
+			.replace(/replace_a/g,ctrl_arr[i-1][0])
+		  .replace(/replace_b/g,ctrl_arr[i-1][1])
+		  .replace(/replace_c/g,ctrl_arr[i-1][2])
+		  .replace(/MX/g,ctrl_arr[i-1][3])
+		  .replace(/MY/g,ctrl_arr[i-1][4])
+			;
 		}
+		print(shaders_array[i]);
 		glsl.frags.push(glsl.uniforms + glsl.library + ` void main() { ` + shaders_array[i] + `gl_FragColor.a *= alpha;` + ` } `);  // build the shader
 	}
 	
