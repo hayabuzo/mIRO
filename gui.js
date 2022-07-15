@@ -216,7 +216,7 @@ class Gui {           // create graphic user interface
       // create all buttons for the frame
       this.frame = "F3"; // textFont('Monospace');
 			pre_sel.style('visibility:hidden');
-        this.buttons.f3 = {head:0,auto:0,camr:0,canv:0,fron:0,stab:0,ftyp:0,floa:0,live:0,wind:0,skin:0,okay:0}; let n=0;
+        this.buttons.f3 = {head:0,camr:0,canv:0,fron:0,stab:0,ftyp:0,floa:0,live:0,wind:0,skin:0,okay:0}; let n=0;
         for (let i in this.buttons.f3) { 
           this.buttons.f3[i] = new button( this.x0, 15+this.h*0.07*n, this.w, this.h*0.07 , 10);  
           this.buttons.f3[i].showborder = false; 
@@ -236,8 +236,7 @@ class Gui {           // create graphic user interface
       // show all buttons for the frame and check if they are clicked
       for (let i in this.buttons.f3) { this.buttons.f3[i].show(); }  
       
-        this.buttons.f3.head.txt[0] = "SETTINGS";
-        this.buttons.f3.auto.txt[1] = " Remember Settings: " + (profile.autoload ? "ON" : "OFF");            
+        this.buttons.f3.head.txt[0] = "SETTINGS";     
         this.buttons.f3.camr.txt[1] = " Camera Resolution: " + (profile.resolution == 'min' ? '640x480' : profile.resolution == 'med' ? '1280x960' : profile.resolution == 'wide' ? '1280x720' : '4000x3000');                  
         this.buttons.f3.canv.txt[1] = "     Canvas Resize: " + nfs(profile.resize,1,1).slice(1);                  
         this.buttons.f3.fron.txt[1] = "    Frontal Camera: " + (profile.frontal  ? "ON" : "OFF");                  
@@ -249,7 +248,6 @@ class Gui {           // create graphic user interface
         this.buttons.f3.skin.txt[1] = "             Theme: " + (profile.theme == 0 ? "Dark" : "Light");    
         this.buttons.f3.okay.txt[0] = "OK";
       
-        if (this.buttons.f3.auto.clicked) profile.autoload   = !profile.autoload ;
         if (this.buttons.f3.skin.clicked) { profile.theme    = (profile.theme + 1.0) % 2.0 ; createHtml(); }
         if (this.buttons.f3.camr.clicked) profile.resolution = profile.resolution == 'min' ? 'wide' : profile.resolution == 'wide' ? 'med' : profile.resolution == 'med' ? 'max' : 'min';
         if (this.buttons.f3.canv.clicked) profile.resize     = profile.resize >= 3.0 ? 0.5 : profile.resize + 0.5;

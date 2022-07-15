@@ -62,7 +62,7 @@ function buildShader() {                                         // function tha
 		  .replace(/MY/g,ctrl_arr[i-1][4])
 			;
 		}
-		print(shaders_array[i]);
+		//print(shaders_array[i]);
 		glsl.frags.push(glsl.uniforms + glsl.library + ` void main() { ` + shaders_array[i] + `gl_FragColor.a *= alpha;` + ` } `);  // build the shader
 	}
 	
