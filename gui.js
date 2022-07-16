@@ -216,7 +216,7 @@ class Gui {           // create graphic user interface
       // create all buttons for the frame
       this.frame = "F3"; // textFont('Monospace');
 			pre_sel.style('visibility:hidden');
-        this.buttons.f3 = {head:0,camr:0,canv:0,fron:0,stab:0,ftyp:0,floa:0,live:0,wind:0,skin:0,okay:0}; let n=0;
+        this.buttons.f3 = {head:0,camr:0,canv:0,fron:0,stab:0,ftyp:0,floa:0,live:0,skin:0,okay:0}; let n=0;
         for (let i in this.buttons.f3) { 
           this.buttons.f3[i] = new button( this.x0, 15+this.h*0.07*n, this.w, this.h*0.07 , 10);  
           this.buttons.f3[i].showborder = false; 
@@ -227,7 +227,7 @@ class Gui {           // create graphic user interface
       
       // save the previous setting to temporary profile to compare it with new setting
       p_temp.resize = profile.resize;     p_temp.resolution = profile.resolution;    
-      p_temp.window = profile.window;     p_temp.frontal = profile.frontal;   
+      p_temp.frontal = profile.frontal;   
       
     }
     
@@ -244,11 +244,10 @@ class Gui {           // create graphic user interface
         this.buttons.f3.ftyp.txt[1] = "         File Type: " + profile.filetype.toUpperCase();                  
         this.buttons.f3.floa.txt[1] = "     Force Loading: " + (profile.forcing  ? "ON" : "OFF"); 
         this.buttons.f3.live.txt[1] = "       Live Coding: " + (profile.livecode  ? "ON" : "OFF"); 
-        this.buttons.f3.wind.txt[1] = "      Preview Size: " + nfs(profile.window,1,2).slice(1);   
         this.buttons.f3.skin.txt[1] = "             Theme: " + (profile.theme == 0 ? "Dark" : "Light");    
         this.buttons.f3.okay.txt[0] = "OK";
       
-        if (this.buttons.f3.skin.clicked) { profile.theme    = (profile.theme + 1.0) % 2.0 ; createHtml(); }
+        if (this.buttons.f3.skin.clicked) { profile.theme    = (profile.theme + 1.0) % 2.0 ; set_style(); }
         if (this.buttons.f3.camr.clicked) profile.resolution = profile.resolution == 'min' ? 'wide' : profile.resolution == 'wide' ? 'med' : profile.resolution == 'med' ? 'max' : 'min';
         if (this.buttons.f3.canv.clicked) profile.resize     = profile.resize >= 3.0 ? 0.5 : profile.resize + 0.5;
         if (this.buttons.f3.fron.clicked) profile.frontal    = !profile.frontal;
@@ -256,11 +255,9 @@ class Gui {           // create graphic user interface
         if (this.buttons.f3.ftyp.clicked) profile.filetype   = profile.filetype == 'jpg' ? 'png' : 'jpg';
         if (this.buttons.f3.floa.clicked) profile.forcing    = !profile.forcing;
         if (this.buttons.f3.live.clicked) profile.livecode   = !profile.livecode;
-        if (this.buttons.f3.wind.clicked) profile.window     = profile.window >= 1.0 ? 0.25 : profile.window += 0.25;
 
         if (this.buttons.f3.okay.clicked) {  // recreate camera or rescale window if needed and return to frame #1
           if (p_temp.resolution!=profile.resolution || p_temp.resize!=profile.resize || p_temp.frontal != profile.frontal) this.createCamera();  
-          if (p_temp.window != profile.window) this.stream.scale = profile.window * ((height*0.8/width >= this.stream.stack.height/this.stream.stack.width) ? width/this.stream.stack.width : height*0.8/this.stream.stack.height); 
           this.frame = "F1L"; }
 		}
 

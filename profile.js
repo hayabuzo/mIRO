@@ -28,9 +28,6 @@ function getProfile() {          // load profile with program settings
 
   // load profile of settings
   profile = getItem('settings_profile');
-	
-	print(default_profile);
-	print(profile);
   
   // check if there are missing variables in loaded profile
 	if (profile == null) profile = [];

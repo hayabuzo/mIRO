@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0 
 
 const sketch = 'mIRO' 
-const ver    = 'v.220715' 
+const ver    = 'v.220716' 
 
 function setup() {                                           // preparing sketch
   
@@ -21,11 +21,6 @@ function createHtml() {                                                         
 
   txtar = createElement('textarea', profile.code);                                     // create text area for shader code 
   txtar.position(gui.x0+4,gui.h*0.1).size(gui.w-15,gui.h*0.8-50);                      // set area position and size
-  txtar.style('color:'+skin[profile.theme].txt);                                       // set text color
-  txtar.style('background-color', 'transparent');                                      // set text area background transparent
-  txtar.style('font-size', 14+'px');  txtar.style('font-family:monospace');            // set text size and font
-  txtar.style('text-align:left');     txtar.style('white-space:pre');                  // set text align
-  txtar.style('visibility:hidden');   txtar.id('txtar');                               // hide text area until we need it
 
   file_input = createFileInput(open_file);                                             // create file input button
   file_input.style('visibility:hidden');                                               // hide this button
@@ -33,25 +28,21 @@ function createHtml() {                                                         
 
   pre_sel = createSelect();                                                            // create preset selector
   pre_sel.position(gui.x0+4,gui.h*0.9-40).size(gui.w-8,40);                            // set preset selector position and size
-  pre_sel.style('color:'+skin[profile.theme].txt);                                     // set preset selector text color
-  pre_sel.style('font-size', 14+'px');  pre_sel.style('font-family:monospace');        // set preset selector size and font
-  pre_sel.style('text-align:left');     pre_sel.style('white-space:pre');              // set preset selector align
   pre_sel.style('visibility:hidden');   pre_sel.changed(load_preset);                  // hide preset selector until we need it
   pre_sel.id('mySel');                                                                 // set the element id, to find it later
   pre_sel.option('> Load Preset');                                                     // create first line of selector
 	
   pack_sel = createSelect();                                                            // create preset selector
 	pack_sel.position(0,0);
-  pack_sel.style('color:'+skin[profile.theme].txt);                                     // set preset selector text color
-  pack_sel.style('font-size', 14+'px');  pack_sel.style('font-family:monospace');       // set preset selector size and font
-  pack_sel.style('text-align:left');     pack_sel.style('white-space:pre');             // set preset selector align
   pack_sel.style('visibility:hidden');   pack_sel.changed(load_pack);                   // hide preset selector until we need it
   pack_sel.id('myPack');                                                                // set the element id, to find it later
+	
   for(let i=0; i<glsl.packnames.length; i++) {                                                        
 		pack_sel.option(glsl.packnames[i]);                                                                
 	}
 	myPack.selectedIndex = profile.pack;
 	
+	set_style();
   update_presets();
 	
 }
@@ -90,4 +81,22 @@ function update_presets() {
 		glsl.names[i] = n;                                                                             // put it in the array of names
 		pre_sel.option(n);                                                                             // put preset name into selector as option
 	}
+}
+
+function set_style() {
+
+  txtar.style('color:'+skin[profile.theme].txt);                                       // set text color
+  txtar.style('background-color', 'transparent');                                      // set text area background transparent
+  txtar.style('font-size', 14+'px');  txtar.style('font-family:monospace');            // set text size and font
+  txtar.style('text-align:left');     txtar.style('white-space:pre');                  // set text align
+  txtar.style('visibility:hidden');   txtar.id('txtar');                               // hide text area until we need it
+	
+  pre_sel.style('color:'+skin[profile.theme].txt);                                     // set preset selector text color
+  pre_sel.style('font-size', 14+'px');  pre_sel.style('font-family:monospace');        // set preset selector size and font
+  pre_sel.style('text-align:left');     pre_sel.style('white-space:pre');              // set preset selector align
+	
+  pack_sel.style('color:'+skin[profile.theme].txt);                                     // set preset selector text color
+  pack_sel.style('font-size', 14+'px');  pack_sel.style('font-family:monospace');       // set preset selector size and font
+  pack_sel.style('text-align:left');     pack_sel.style('white-space:pre');             // set preset selector align
+	
 }

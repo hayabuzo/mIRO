@@ -1,5 +1,9 @@
 /*
 
+v.220716: fixed black screen (profile loading) bug;
+v.220716: fixed skin selection bug;
+v.220716: removed "preview resize" setting;
+
 v.220715: settings now always saved in browser memory;
 
 v.220713: added two packs with mixes;

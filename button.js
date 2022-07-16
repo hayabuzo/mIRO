@@ -33,7 +33,7 @@ class button {                     // here is a button class
     // set the text appearance on the button, there are 5 possible positions
     push();  textSize(this.tsize); noStroke(); 
 		for (let i=0; i<2; i++) {
-		  fill(skin[profile.theme].btn); if (i==0) fill(0);  
+		  fill(skin[profile.theme].btn); if (i==0) fill(skin[profile.theme].bgr);  
       if(this.txt[0]!=null) textAlign(CENTER, CENTER).text(this.txt[0],i+this.x+this.w/2,  i+this.y+this.h/2               ); 
       if(this.txt[1]!=null) textAlign(LEFT,   TOP   ).text(this.txt[1],i+this.x+10,        i+this.y+10                     ); 
       if(this.txt[2]!=null) textAlign(RIGHT,  TOP   ).text(this.txt[2],i+this.x+this.w-10, i+this.y+10                     ); 
