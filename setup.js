@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0 
 
 const sketch = 'mIRO' 
-const ver    = 'v.220715' 
+const ver    = 'v.220713' 
 
 function setup() {                                           // preparing sketch
   
@@ -68,9 +68,10 @@ function load_preset() {                                        // when loading 
 	document.getElementById('mySel').blur();                      // set the focus out of selector
 }
 
-function load_pack() {	
-	profile.pack = myPack.selectedIndex;	
-	update_presets(); 
+function load_pack() {
+	profile.pack = myPack.selectedIndex;
+	update_presets();
+	//myPack.selectedIndex = 0;
 }
 
 function open_file(file) {                                      // when opening a file via "load" button
@@ -84,7 +85,7 @@ function update_presets() {
 	while (mySel.options.length > 1) { mySel.remove(1); }
 	glsl.parray = glsl.presets[profile.pack].split("###").slice(1);                                  // create array of presets
   glsl.parray.sort(function(a,b){return a.toLowerCase().localeCompare(b.toLowerCase());});         // sort it case-insensetive
-	glsl.names = [];                                                                                 // reset names array
+	glsl.names = [];
   for(let i=0; i<glsl.parray.length; i++) {                                                        // for each element in array of presets
 		let n = glsl.parray[i].split("\n")[2];                                                         // take preset name
 		glsl.names[i] = n;                                                                             // put it in the array of names

@@ -1,7 +1,5 @@
 /*
 
-v.220715: settings now always saved in browser memory;
-
 v.220713: added two packs with mixes;
 
 v.220712: fixed font changing;
