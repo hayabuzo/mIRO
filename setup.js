@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0 
 
 const sketch = 'mIRO' 
-const ver    = 'v.220713' 
+const ver    = 'v.220715' 
 
 function setup() {                                           // preparing sketch
   
@@ -41,14 +41,16 @@ function createHtml() {                                                         
   pre_sel.option('> Load Preset');                                                     // create first line of selector
 	
   pack_sel = createSelect();                                                            // create preset selector
-	pack_sel.position(0,0);   
-	pack_sel.style('background-color',skin[profile.theme].bgr);
+	pack_sel.position(0,0);
   pack_sel.style('color:'+skin[profile.theme].txt);                                     // set preset selector text color
   pack_sel.style('font-size', 14+'px');  pack_sel.style('font-family:monospace');       // set preset selector size and font
   pack_sel.style('text-align:left');     pack_sel.style('white-space:pre');             // set preset selector align
   pack_sel.style('visibility:hidden');   pack_sel.changed(load_pack);                   // hide preset selector until we need it
   pack_sel.id('myPack');                                                                // set the element id, to find it later
-  pack_sel.option('> Select Pack');                                                     // create first line of selector
+  for(let i=0; i<glsl.packnames.length; i++) {                                                        
+		pack_sel.option(glsl.packnames[i]);                                                                
+	}
+	myPack.selectedIndex = profile.pack;
 	
   update_presets();
 	
@@ -66,10 +68,9 @@ function load_preset() {                                        // when loading 
 	document.getElementById('mySel').blur();                      // set the focus out of selector
 }
 
-function load_pack() {
-	profile.pack = myPack.selectedIndex-1;
-	update_presets();
-	myPack.selectedIndex = 0;
+function load_pack() {	
+	profile.pack = myPack.selectedIndex;	
+	update_presets(); 
 }
 
 function open_file(file) {                                      // when opening a file via "load" button
@@ -83,13 +84,10 @@ function update_presets() {
 	while (mySel.options.length > 1) { mySel.remove(1); }
 	glsl.parray = glsl.presets[profile.pack].split("###").slice(1);                                  // create array of presets
   glsl.parray.sort(function(a,b){return a.toLowerCase().localeCompare(b.toLowerCase());});         // sort it case-insensetive
-	glsl.names = [];
+	glsl.names = [];                                                                                 // reset names array
   for(let i=0; i<glsl.parray.length; i++) {                                                        // for each element in array of presets
 		let n = glsl.parray[i].split("\n")[2];                                                         // take preset name
 		glsl.names[i] = n;                                                                             // put it in the array of names
 		pre_sel.option(n);                                                                             // put preset name into selector as option
-	}
-  for(let i=0; i<glsl.packnames.length; i++) {                                                        
-		pack_sel.option(glsl.packnames[i]);                                                                
 	}
 }

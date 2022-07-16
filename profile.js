@@ -5,7 +5,6 @@ function getProfile() {          // load profile with program settings
   skin[1] = { bgr: '#F8F9F9', btn: '#5D5F61', txt: '#000000', run: '#D5F5E3', err: '#FADBD8' };   // light theme
 
   default_profile = {            // default profile setting are:
-    autoload:   false,           // do not autoload setting
     resolution: "min",           // set minimal resolution
     resize:     1,               // do not enlarge image size
     frontal:    false,           // use main camera
@@ -27,14 +26,15 @@ function getProfile() {          // load profile with program settings
   // create temporary profile and try to load data into it from the browser's memory
   p_temp = {}; if (getItem('settings_profile')!=null) p_temp = getItem('settings_profile');
 
-  // if we found in memory that autoload is on then load full profile of settings
-  if (p_temp.autoload) profile = getItem('settings_profile');
-  
-  // if there are no profile in memory load the defaults
-  else { profile = default_profile; }
+  // load profile of settings
+  profile = getItem('settings_profile');
+	
+	print(default_profile);
+	print(profile);
   
   // check if there are missing variables in loaded profile
-  for (let i in default_profile) { if (profile[i] === undefined || profile[i] === null) profile[i] = default_profile[i]; }
+	if (profile == null) profile = [];
+  for (let i in default_profile) { if (profile[i] == undefined || profile[i] == null) profile[i] = default_profile[i]; }
   
   // force loading is needed to allow the browser to save multiple files at startup
   if (profile.forcing) { save('','?.txt'); save('','?.txt'); }

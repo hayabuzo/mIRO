@@ -99,7 +99,6 @@ class Gui {           // create graphic user interface
 			  this.setHead();
       
 			pre_sel.style('visibility:visible'); pack_sel.style('visibility:hidden'); 
-      pre_sel.style('background-color:transparent').style('color:transparent');
 			txtar.style('visibility:hidden'); 
 			
       this.process(); this.saveProfile();  // process and save the setting profile each time we enter the main frame
@@ -129,7 +128,6 @@ class Gui {           // create graphic user interface
         if ((profile.clicking ? this.buttons.f1.play.clicked : this.buttons.f1.play.pressed || (profile.stablevel > 0 && this.shake.average >= profile.stablevel) )) { this.update(); }
         if (this.buttons.f1.dir .clicked) { this.horient = !this.horient; this.buttons.f1.dir .txt[0] = this.horient?"→":"↑"; }
         if (this.buttons.f1.edit.clicked)   this.frame = "F2L";
-        if (this.buttons.f1.pres.clicked) { pre_sel.style('background-color',skin[profile.theme].bgr).style('color',skin[profile.theme].txt); }
         if (this.buttons.f1.save.clicked)   this.saveImage();
         if (this.buttons.f1.set .clicked)   this.frame = "F3L";
         if (this.buttons.f1.a   .clicked)   this.trig[0] = !this.trig[0]; this.buttons.f1.a.tsize = this.trig[0] ? 30 : 15;
@@ -164,7 +162,7 @@ class Gui {           // create graphic user interface
         this.buttons.f2.new  = new button( this.x0+this.w*0.000, this.h*0.9, this.w*0.333, this.h*0.1 , 10); this.buttons.f2.new .txt[0] = "NEW";
         this.buttons.f2.load = new button( this.x0+this.w*0.333, this.h*0.9, this.w*0.333, this.h*0.1 , 10); this.buttons.f2.load.txt[0] = "LOAD";
         this.buttons.f2.save = new button( this.x0+this.w*0.666, this.h*0.9, this.w*0.333, this.h*0.1 , 10); this.buttons.f2.save.txt[0] = "SAVE";
-			  pre_sel.style('background-color:transparent').style('color',skin[profile.theme].txt);
+			  pre_sel.style('color',skin[profile.theme].txt);
 			  pack_sel.style('visibility:visible'); pre_sel.position(this.x0+this.w/2,this.h*0.9-40).size(this.w/2-6,40);
         profile.code = txtar.value(); txtar.style('visibility:visible'); 
 			  pack_sel.position(this.x0+4,this.h*0.9-40).size(this.w/2-8,40);
@@ -187,8 +185,8 @@ class Gui {           // create graphic user interface
         this.buttons.f2.help.txt[0] = "HELP"; this.buttons.f2.help.w = this.w*0.333-10;
 				
 				// setting up behavior of preset selector colors
-      	if (document.getElementById('mySel') === document.activeElement) pre_sel.style('background-color',skin[profile.theme].bgr);
-				else pre_sel.style('background-color:transparent');
+      	if (document.getElementById('mySel')  === document.activeElement) pre_sel.style('background-color',skin[profile.theme].bgr);  else pre_sel.style('background-color:transparent');
+      	if (document.getElementById('myPack') === document.activeElement) pack_sel.style('background-color',skin[profile.theme].bgr); else pack_sel.style('background-color:transparent');
 
         // show all buttons for the frame and check if they are clicked
         for (let i in this.buttons.f2) { this.buttons.f2[i].show(); }  
@@ -218,7 +216,7 @@ class Gui {           // create graphic user interface
       // create all buttons for the frame
       this.frame = "F3"; // textFont('Monospace');
 			pre_sel.style('visibility:hidden');
-        this.buttons.f3 = {head:0,auto:0,camr:0,canv:0,fron:0,stab:0,ftyp:0,floa:0,live:0,wind:0,skin:0,okay:0}; let n=0;
+        this.buttons.f3 = {head:0,camr:0,canv:0,fron:0,stab:0,ftyp:0,floa:0,live:0,wind:0,skin:0,okay:0}; let n=0;
         for (let i in this.buttons.f3) { 
           this.buttons.f3[i] = new button( this.x0, 15+this.h*0.07*n, this.w, this.h*0.07 , 10);  
           this.buttons.f3[i].showborder = false; 
@@ -238,8 +236,7 @@ class Gui {           // create graphic user interface
       // show all buttons for the frame and check if they are clicked
       for (let i in this.buttons.f3) { this.buttons.f3[i].show(); }  
       
-        this.buttons.f3.head.txt[0] = "SETTINGS";
-        this.buttons.f3.auto.txt[1] = " Remember Settings: " + (profile.autoload ? "ON" : "OFF");            
+        this.buttons.f3.head.txt[0] = "SETTINGS";     
         this.buttons.f3.camr.txt[1] = " Camera Resolution: " + (profile.resolution == 'min' ? '640x480' : profile.resolution == 'med' ? '1280x960' : profile.resolution == 'wide' ? '1280x720' : '4000x3000');                  
         this.buttons.f3.canv.txt[1] = "     Canvas Resize: " + nfs(profile.resize,1,1).slice(1);                  
         this.buttons.f3.fron.txt[1] = "    Frontal Camera: " + (profile.frontal  ? "ON" : "OFF");                  
@@ -251,7 +248,6 @@ class Gui {           // create graphic user interface
         this.buttons.f3.skin.txt[1] = "             Theme: " + (profile.theme == 0 ? "Dark" : "Light");    
         this.buttons.f3.okay.txt[0] = "OK";
       
-        if (this.buttons.f3.auto.clicked) profile.autoload   = !profile.autoload ;
         if (this.buttons.f3.skin.clicked) { profile.theme    = (profile.theme + 1.0) % 2.0 ; createHtml(); }
         if (this.buttons.f3.camr.clicked) profile.resolution = profile.resolution == 'min' ? 'wide' : profile.resolution == 'wide' ? 'med' : profile.resolution == 'med' ? 'max' : 'min';
         if (this.buttons.f3.canv.clicked) profile.resize     = profile.resize >= 3.0 ? 0.5 : profile.resize + 0.5;
