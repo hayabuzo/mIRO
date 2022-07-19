@@ -728,6 +728,39 @@ float a = 1.0-fg2rect(uve,vec2(0.5),vec2(1.0),A*0.3+0.01);
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
+Goldie
+@ // v10
+
+vec2  uv = vTexCoord; 
+      uv.y = 1.0 - uv.y;
+vec2  uvd;
+float dist = 1.0;
+vec2  uvo = vec2(1.0);
+vec4  n;
+float s;
+
+for (float i=0.0;i<0.5;i+=0.1) {
+      s = 8.0+5.0*f2rand(R1+i);
+      uvd = uv * 3.0 - vec2(f2rand(R2+i),f2rand(R3+i))*3.0;
+      uvd.x *= WIDTH/HEIGHT;
+      dist *= (dot(uvd,uvd));
+      uvo *= (1.0-cnv2abs(uvd/dist));
+      uvo*=2.0*MY;
+}
+
+      uvo = (uvo*(1.0+MY));
+      if (A==1.0) uvo = 1.0-uvo;
+      if (B==1.0 && A==0.0) uvo = cnv2mod(uvo);
+      if (B==1.0 && A==1.0) uvo = cnv2abs(uvo);
+
+vec4  img = texture2D(TXP, uvo);
+
+      if (C==1.0) img = mix(tx2d(TXB,uv),img,clamp(dist,0.0,1.0));
+
+      gl_FragColor = img;
+
+`+/*-------------------------------------------------------------------------------------------------------*/`###`+`
+
 Enduser
 @ // v10
 
@@ -775,7 +808,77 @@ float f;
 			
       img = mix(imf,img,f);
       gl_FragColor = img;
+			
+`+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
+Infadels
+@ //v8
+
+vec2  uv = vTexCoord; 
+      uv.y = 1.0 - uv.y;
+
+float f = 0.0;
+if (A==1.0) f = 1.0;
+    for (float i=0.0; i<0.5; i+=0.1) {
+      float s = 0.3*f2rand(R1+i)+0.1;
+      float n = s*fg2circ(uv,vec2(f2rand(R2+i),f2rand(R3+i)), s , 1.0 );
+      if (A==0.0) f += n;
+      else if (A==1.0) f *= 1.0-n;
+    }
+      if (A==0.0) f = pow(f,2.0);
+      else if (A==1.0) f = 1.0-f;
+
+float d = 0.0;
+if (A==1.0) d = 1.0;
+    for (float i=0.5; i<1.0; i+=0.1) {
+      float s = 0.3*f2rand(R1+i)+0.1;
+      float n = s*fg2circ(uv,vec2(f2rand(R2+i),f2rand(R3+i)), s , 1.0 );
+      if (A==0.0) d += n;
+      else if (A==1.0) d *= 1.0-n;
+    }
+      if (A==0.0) d = pow(d,2.0);
+      else if (A==1.0) d = 1.0-d;
+
+vec2  df = vec2(d,f);
+vec4  img = tx2d(TXP,cnv2abs(df*(1.0+MY*5.0)));
+
+      gl_FragColor = img; 
+
+`+/*-------------------------------------------------------------------------------------------------------*/`###`+`
+
+Material
+@ // v16
+
+vec2  uv = vTexCoord; 
+      uv.y = 1.0 - uv.y;
+vec4  imc = texture2D(TXP, uv);
+
+vec2  uvd = uv * 2.0 - vec2(MX,MY)*2.0;
+
+      uvd.x *= WIDTH/HEIGHT;
+
+float dist = dot(uvd,uvd*(1.0+MY*4.0));
+
+float d = clamp(dist,0.0,1.0);
+
+float t = FRC*0.1;
+      t = MX*2.0;
+
+      uvd = (t+uvd/dist);
+
+      uvd = cnv2abs(uv2rot(uvd,FRC*0.1));
+
+vec4  imf = texture2D(TXF, uvd);
+vec4  img = texture2D(TXP, uvd);
+
+      if (A==1.0) imc = mix2ovr(imc,imc,0.7);
+      if (B==1.0) imf.a *= img2bw(imf);
+
+      if (A==1.0) img = mix2ovr(imf,img,(d)*f2scrv(img2bw(imc),0.5,0.0));
+      if (C==0.0) img = mix(img,imc,f2scrv( (1.0-d),0.8,0.0));
+
+      gl_FragColor = img; 
+			
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
 Meanderthals

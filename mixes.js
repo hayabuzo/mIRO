@@ -183,169 +183,6 @@ vec4  imd = texture2D(TXP, uv2dspmd(cnv2abs(uv),imc.r*k,imc.g*k));
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
-Dee-Hex-Roy
-
-@ // Deerhoof  // v1
-
-vec2  vtc = vTexCoord;
-vec2  uv  = vec2(vtc.x, 1.0-vtc.y);
-
-vec4  ims = texture2D(TXP, uv);
-vec4  img = texture2D(TXP, 
-      cnv2mod(uv2brl(
-        uv2mrr(uv,ims.rgb,0.0,MX),
-        (1.0-MX)*3.0)
-      *3.0*MY));
-        
-vec4  imo = texture2D(TXP, uv);
-      imo.g = sin(imo.g * TWO_PI*(0.5+MX));
-      imo.g = mix(imo.g,abs(imo.g),A);
-      imo = mix(ims,img,imo.g);
-      
-      img = texture2D(TXP, uv2p(uv,0.01*(1.0-MY)));
-vec4  imr = texture2D(TXP, 
-      cnv2mod(uv2p(uv2brl(
-          uv2mrr(uv,img.rgb,0.0,MX),
-          (1.0-MX)*3.0),
-        0.03) ));
-      
-vec4  imc = texture2D(TXP, uv);
-float k = 1.0+(1.0-MY)*3.0;
-vec4  imd = texture2D(TXP, uv2dspmd(cnv2abs(uv),imc.r*k,imc.g*k));
-      imd = mix2sfl(imd,imr,1.0);
-      imo = mix(imo,imd,B);
-
-      gl_FragColor = imo;
-
-@ // Hexstatic  // v2
-
-vec2  uv  = vec2(vTexCoord.x, (1.0-vTexCoord.y));
-vec4  img = texture2D(TXP, uv);
-
-float speed = 0.01*mix(-MY,MY,A);
-float k = mix(0.0,0.01*(1.0-MX),B);
-vec2  uvf = uv2exp(uv, speed, f2z(N1)*speed, f2z(N2)*speed );
-
-      uvf = mix(
-        uvf, 
-        vec2(0.0,0.0),
-        f2f( 
-          step(uvf.x,0.0)+step(uvf.y,0.0)+
-          step(1.0,uvf.x)+step(1.0,uvf.y)) );
-
-vec4  imf = texture2D( TXF, uv2dspmd(uvf,sin(img.r*TWO_PI)*k,sin(img.b*TWO_PI)*k) );
-
-vec2  uva = uv+vec2(f2z(R2),f2z(R3))*R1*0.3;
-      uva = cnv2mod(uva);
-vec4  ima = texture2D( TXP,  uva );
-
-float mask = f2slit ( img2avg(ima), R1, R2*0.05, R2*0.05 );
-      mask += mix( 0.0, step(0.97, f2rand(img.r+N1))*N2, 1.0);
-  
-      img.rgb = mix(imf.rgb,img.rgb,mask);
-      img.a = mix(1.0,mask,C);
-  
-      gl_FragColor = img;
-      
-@ // Royksopp  // v8
-
-vec2  uv = vTexCoord; 
-      uv.y = 1.0 - uv.y;
-vec4  img = texture2D(TXP, uv);
-vec4  imb = tx2d(TXB, uv);
-
-float k = 0.02;
-vec2  uvf = uv2dspmd(uv, f2z(imb.r)*k, imb.b*PI);
-      uvf = cnv2abs(uvf);
-
-vec4  imf = tx2d(TXF, uvf);
-      imf.rgb = imf.rgb*mix(1.0,mix(0.9,1.1,B),A);
-
-float b = img2bw(img);
-float a = smoothstep(0.3,0.6,b);
-
-vec4  imo = mix(imf,img,mix(a,1.0-a,B));
-      gl_FragColor = imo; 
-
-`+/*-------------------------------------------------------------------------------------------------------*/`###`+`
-
-Gas-Vib-Roy
-
-@  // Gas  // v4
-
-vec2  uv = vTexCoord; 
-      uv.y = 1.0 - uv.y;
-
-vec2  uve = uv2exp(uv,-3.0,0.0,0.0);
-vec4  img = texture2D(TXP, uve);
-
-vec2  uvf = uv2exp(uv,MY*0.1,0.0,0.0);
-      if(C>0.5) uvf = uv2rot(uvf,0.05);
-vec4  imf = texture2D(TXF, uvf);
-
-float f;
-      if (B<0.5) f = fg2circ(uve,vec2(0.5) ,0.9,A*0.5+0.01);
-      else        f = fg2rect(uve,vec2(0.5) ,0.9,A*0.5+0.01);
-			
-      img = mix(imf,img,f);
-      gl_FragColor = img;
-
- ABCXY #
-
-@  // Vibravoid  // v1
-
-vec2  vtc = vTexCoord;
-vec2  uv  = vec2(vtc.x, 1.0-vtc.y);
-
-vec4  img = texture2D(TXP, uv);
-float pwr = 1.0-clamp(MY*2.0,0.0,1.0);
-      img = texture2D(TXP, uv2dspmd(uv, img.r*pwr, img.b));
-vec4  im2 = img;
-
-      img.rgb = abs(img.rgb-vec3(0.5));
-      img.rgb*= vec3(4.0);
-      img.rgb = mod(img.rgb,vec3(1.0));
-      img.rgb = rgb2hsb(img.rgb);
-
-      im2.rgb = rgb2hsb(im2.rgb);
-      im2.rgb = sin(im2.rgb*vec3(PI));
-
-float mxv = im2.g;
-
-vec4  imf = texture2D(TXF,uv);
-      imf.g = 1.0-step(0.5,imf.g);
-      img = mix(img,imf.ggga,mxv).rgba;
-      img.rgb = rgb2ht(img.rgb,MX);
-      img.rgb = mix(img.rgb,abs(vec3(0.5)-img.rgb)*vec3(2.0),A);
-      
-      gl_FragColor = img;
-
- CBAXY #
-
-@  // Royksopp  // v8
-
-vec2  uv = vTexCoord; 
-      uv.y = 1.0 - uv.y;
-vec4  img = texture2D(TXP, uv);
-vec4  imb = tx2d(TXB, uv);
-
-float k = 0.02;
-vec2  uvf = uv2dspmd(uv, f2z(imb.r)*k, imb.b*PI);
-      uvf = cnv2abs(uvf);
-
-vec4  imf = tx2d(TXF, uvf);
-      imf.rgb = imf.rgb*mix(1.0,mix(0.9,1.1,B),A);
-
-float b = img2bw(img);
-float a = smoothstep(0.3,0.6,b);
-
-vec4  imo = mix(imf,img,mix(a,1.0-a,B));
-      gl_FragColor = imo; 
-
- BACXY #
-
-`+/*-------------------------------------------------------------------------------------------------------*/`###`+`
-
 Got-Loc
 
 @  // Goto80  // v8.2
@@ -870,6 +707,169 @@ float f;
       gl_FragColor = img;
 
  aBcXY # 
+
+`+/*-------------------------------------------------------------------------------------------------------*/`###`+`
+
+Dee-Hex-Roy
+
+@ // Deerhoof  // v1
+
+vec2  vtc = vTexCoord;
+vec2  uv  = vec2(vtc.x, 1.0-vtc.y);
+
+vec4  ims = texture2D(TXP, uv);
+vec4  img = texture2D(TXP, 
+      cnv2mod(uv2brl(
+        uv2mrr(uv,ims.rgb,0.0,MX),
+        (1.0-MX)*3.0)
+      *3.0*MY));
+        
+vec4  imo = texture2D(TXP, uv);
+      imo.g = sin(imo.g * TWO_PI*(0.5+MX));
+      imo.g = mix(imo.g,abs(imo.g),A);
+      imo = mix(ims,img,imo.g);
+      
+      img = texture2D(TXP, uv2p(uv,0.01*(1.0-MY)));
+vec4  imr = texture2D(TXP, 
+      cnv2mod(uv2p(uv2brl(
+          uv2mrr(uv,img.rgb,0.0,MX),
+          (1.0-MX)*3.0),
+        0.03) ));
+      
+vec4  imc = texture2D(TXP, uv);
+float k = 1.0+(1.0-MY)*3.0;
+vec4  imd = texture2D(TXP, uv2dspmd(cnv2abs(uv),imc.r*k,imc.g*k));
+      imd = mix2sfl(imd,imr,1.0);
+      imo = mix(imo,imd,B);
+
+      gl_FragColor = imo;
+
+@ // Hexstatic  // v2
+
+vec2  uv  = vec2(vTexCoord.x, (1.0-vTexCoord.y));
+vec4  img = texture2D(TXP, uv);
+
+float speed = 0.01*mix(-MY,MY,A);
+float k = mix(0.0,0.01*(1.0-MX),B);
+vec2  uvf = uv2exp(uv, speed, f2z(N1)*speed, f2z(N2)*speed );
+
+      uvf = mix(
+        uvf, 
+        vec2(0.0,0.0),
+        f2f( 
+          step(uvf.x,0.0)+step(uvf.y,0.0)+
+          step(1.0,uvf.x)+step(1.0,uvf.y)) );
+
+vec4  imf = texture2D( TXF, uv2dspmd(uvf,sin(img.r*TWO_PI)*k,sin(img.b*TWO_PI)*k) );
+
+vec2  uva = uv+vec2(f2z(R2),f2z(R3))*R1*0.3;
+      uva = cnv2mod(uva);
+vec4  ima = texture2D( TXP,  uva );
+
+float mask = f2slit ( img2avg(ima), R1, R2*0.05, R2*0.05 );
+      mask += mix( 0.0, step(0.97, f2rand(img.r+N1))*N2, 1.0);
+  
+      img.rgb = mix(imf.rgb,img.rgb,mask);
+      img.a = mix(1.0,mask,C);
+  
+      gl_FragColor = img;
+      
+@ // Royksopp  // v8
+
+vec2  uv = vTexCoord; 
+      uv.y = 1.0 - uv.y;
+vec4  img = texture2D(TXP, uv);
+vec4  imb = tx2d(TXB, uv);
+
+float k = 0.02;
+vec2  uvf = uv2dspmd(uv, f2z(imb.r)*k, imb.b*PI);
+      uvf = cnv2abs(uvf);
+
+vec4  imf = tx2d(TXF, uvf);
+      imf.rgb = imf.rgb*mix(1.0,mix(0.9,1.1,B),A);
+
+float b = img2bw(img);
+float a = smoothstep(0.3,0.6,b);
+
+vec4  imo = mix(imf,img,mix(a,1.0-a,B));
+      gl_FragColor = imo; 
+
+`+/*-------------------------------------------------------------------------------------------------------*/`###`+`
+
+Gas-Vib-Roy
+
+@  // Gas  // v4
+
+vec2  uv = vTexCoord; 
+      uv.y = 1.0 - uv.y;
+
+vec2  uve = uv2exp(uv,-3.0,0.0,0.0);
+vec4  img = texture2D(TXP, uve);
+
+vec2  uvf = uv2exp(uv,MY*0.1,0.0,0.0);
+      if(C>0.5) uvf = uv2rot(uvf,0.05);
+vec4  imf = texture2D(TXF, uvf);
+
+float f;
+      if (B<0.5) f = fg2circ(uve,vec2(0.5) ,0.9,A*0.5+0.01);
+      else        f = fg2rect(uve,vec2(0.5) ,0.9,A*0.5+0.01);
+			
+      img = mix(imf,img,f);
+      gl_FragColor = img;
+
+ ABCXY #
+
+@  // Vibravoid  // v1
+
+vec2  vtc = vTexCoord;
+vec2  uv  = vec2(vtc.x, 1.0-vtc.y);
+
+vec4  img = texture2D(TXP, uv);
+float pwr = 1.0-clamp(MY*2.0,0.0,1.0);
+      img = texture2D(TXP, uv2dspmd(uv, img.r*pwr, img.b));
+vec4  im2 = img;
+
+      img.rgb = abs(img.rgb-vec3(0.5));
+      img.rgb*= vec3(4.0);
+      img.rgb = mod(img.rgb,vec3(1.0));
+      img.rgb = rgb2hsb(img.rgb);
+
+      im2.rgb = rgb2hsb(im2.rgb);
+      im2.rgb = sin(im2.rgb*vec3(PI));
+
+float mxv = im2.g;
+
+vec4  imf = texture2D(TXF,uv);
+      imf.g = 1.0-step(0.5,imf.g);
+      img = mix(img,imf.ggga,mxv).rgba;
+      img.rgb = rgb2ht(img.rgb,MX);
+      img.rgb = mix(img.rgb,abs(vec3(0.5)-img.rgb)*vec3(2.0),A);
+      
+      gl_FragColor = img;
+
+ CBAXY #
+
+@  // Royksopp  // v8
+
+vec2  uv = vTexCoord; 
+      uv.y = 1.0 - uv.y;
+vec4  img = texture2D(TXP, uv);
+vec4  imb = tx2d(TXB, uv);
+
+float k = 0.02;
+vec2  uvf = uv2dspmd(uv, f2z(imb.r)*k, imb.b*PI);
+      uvf = cnv2abs(uvf);
+
+vec4  imf = tx2d(TXF, uvf);
+      imf.rgb = imf.rgb*mix(1.0,mix(0.9,1.1,B),A);
+
+float b = img2bw(img);
+float a = smoothstep(0.3,0.6,b);
+
+vec4  imo = mix(imf,img,mix(a,1.0-a,B));
+      gl_FragColor = imo; 
+
+ BACXY #
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
