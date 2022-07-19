@@ -7,6 +7,8 @@
 
 💬 [Supporting Chat](https://t.me/mIRO_support)
 
+🎲 [Video Instructions](https://www.youtube.com/playlist?list=PL9YRqkke7vn3_DWwI2e5Vy3MyPGFQD7Iv)
+
 ## Features
 - 📝 Shader editor to write and compile filters
 - 📺 Real-time processing of the camera stream 
