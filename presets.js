@@ -728,36 +728,37 @@ float a = 1.0-fg2rect(uve,vec2(0.5),vec2(1.0),A*0.3+0.01);
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
-Goldie
-@ // v10
+Dungen 
+@ // v18
 
 vec2  uv = vTexCoord; 
       uv.y = 1.0 - uv.y;
-vec2  uvd;
-float dist = 1.0;
-vec2  uvo = vec2(1.0);
-vec4  n;
-float s;
 
-for (float i=0.0;i<0.5;i+=0.1) {
-      s = 8.0+5.0*f2rand(R1+i);
-      uvd = uv * 3.0 - vec2(f2rand(R2+i),f2rand(R3+i))*3.0;
-      uvd.x *= WIDTH/HEIGHT;
-      dist *= (dot(uvd,uvd));
-      uvo *= (1.0-cnv2abs(uvd/dist));
-      uvo*=2.0*MY;
-}
+vec4  imc = texture2D(TXP, uv);
+vec4  imb = texture2D(TXB, mix( uv, md2xy(uv),B*0.5));
+      
+float k = 2.0;
+vec2  uvd = uv2dspmd(uv,imb.r*k,imb.b*k);
+vec4  img = texture2D(TXP, cnv2abs(vec2(0.0,1.0)-uvd));
 
-      uvo = (uvo*(1.0+MY));
-      if (A==1.0) uvo = 1.0-uvo;
-      if (B==1.0 && A==0.0) uvo = cnv2mod(uvo);
-      if (B==1.0 && A==1.0) uvo = cnv2abs(uvo);
+float a = distance(vec2(0.5),uvd)*0.5;
+      a = 1.0-a;
+float v = (1.0-MY)*0.5+0.5;
+float b = a;
+      a = smoothstep(v-0.01, v ,a);
+float d = fg2drop(uv,R1,1.0,0.1,0.2);
+      a = max(a,d);
 
-vec4  img = texture2D(TXP, uvo);
+      imc.rgb =  vec3(f2scrv(img2bw(imc),0.2,0.0));
+      imc.rgb += vec3(f2z(uv2frand(uv+vec2(R1,R2)))*0.1);
 
-      if (C==1.0) img = mix(tx2d(TXB,uv),img,clamp(dist,0.0,1.0));
+      img.rgb += f2z((b-0.5)*2.0)*0.5;
+      if (A==0.0) img = mix2ovr(img,imb,1.0);
 
-      gl_FragColor = img;
+      img = mix(imc,img,a);
+      if (C==1.0) img.a = a;
+
+      gl_FragColor = img; 
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
@@ -808,7 +809,40 @@ float f;
 			
       img = mix(imf,img,f);
       gl_FragColor = img;
-			
+
+`+/*-------------------------------------------------------------------------------------------------------*/`###`+`
+
+Goldie
+@ // v10
+
+vec2  uv = vTexCoord; 
+      uv.y = 1.0 - uv.y;
+vec2  uvd;
+float dist = 1.0;
+vec2  uvo = vec2(1.0);
+vec4  n;
+float s;
+
+for (float i=0.0;i<0.5;i+=0.1) {
+      s = 8.0+5.0*f2rand(R1+i);
+      uvd = uv * 3.0 - vec2(f2rand(R2+i),f2rand(R3+i))*3.0;
+      uvd.x *= WIDTH/HEIGHT;
+      dist *= (dot(uvd,uvd));
+      uvo *= (1.0-cnv2abs(uvd/dist));
+      uvo*=2.0*MY;
+}
+
+      uvo = (uvo*(1.0+MY));
+      if (A==1.0) uvo = 1.0-uvo;
+      if (B==1.0 && A==0.0) uvo = cnv2mod(uvo);
+      if (B==1.0 && A==1.0) uvo = cnv2abs(uvo);
+
+vec4  img = texture2D(TXP, uvo);
+
+      if (C==1.0) img = mix(tx2d(TXB,uv),img,clamp(dist,0.0,1.0));
+
+      gl_FragColor = img;
+
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
 Infadels
@@ -846,7 +880,7 @@ vec4  img = tx2d(TXP,cnv2abs(df*(1.0+MY*5.0)));
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
-Material
+Mastodon
 @ // v16
 
 vec2  uv = vTexCoord; 

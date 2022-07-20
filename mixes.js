@@ -532,6 +532,83 @@ vec2  uv4 = uv2exp(uv, kz, f2z(img3.r)*k4, f2z(img3.b)*k4*0.5);
 
  ACBXY #
 
+`+/*-------------------------------------------------------------------------------------------------------*/`###`+`
+
+Wor-Vib-Kla 
+// v8
+
+@  // Workshop  // v1
+
+vec2  uv = vec2(vTexCoord.x, 1.0-vTexCoord.y);
+
+vec2  uvt = vec2(R1<0.4 ? uv.x : mod(uv.x,R4*0.1    )+R2,
+      R1>0.6 ? uv.y : mod(uv.y,R4*0.1*H2W)+R3);
+vec4  img = texture2D( TXP, uvt );
+float s = R4*0.05 + 0.01;
+vec2  uvp = vec2(uv.x-mod(uv.x,s), uv.y-mod(uv.y,s*H2W));
+float imp = img2avg(texture2D( TXP, uvp ));
+float lvl = img2avg(texture2D( TXP, vec2(R2,R3) ));
+      s = R5*0.15;
+      img.a = f2slit ( imp, lvl, s, s );
+      img.a = clamp( img.a - f2slit ( img2avg(img), lvl, s, s ), 0.0,1.0);
+
+ if (C>0.5) img = texture2D( TXP, uv );
+
+      gl_FragColor = img;
+
+
+
+@ // Vibravoid  // v1
+
+vec2  vtc = vTexCoord;
+vec2  uv  = vec2(vtc.x, 1.0-vtc.y);
+
+vec4  img = texture2D(TXP, uv);
+float pwr = 1.0-clamp(MY*2.0,0.0,1.0);
+      img = texture2D(TXP, uv2dspmd(uv, img.r*pwr, img.b));
+vec4  im2 = img;
+
+      img.rgb = abs(img.rgb-vec3(0.5));
+      img.rgb*= vec3(4.0);
+      img.rgb = mod(img.rgb,vec3(1.0));
+      img.rgb = rgb2hsb(img.rgb);
+
+      im2.rgb = rgb2hsb(im2.rgb);
+      im2.rgb = sin(im2.rgb*vec3(PI));
+
+float mxv = im2.g;
+
+vec4  imf = texture2D(TXF,uv);
+
+ if (B>0.5) imf = texture2D(TXP,uv);
+
+      imf.g = 1.0-step(0.5,imf.g);
+      img = mix(img,imf.ggga,mxv).rgba;
+      img.rgb = rgb2ht(img.rgb,MX);
+      
+ if (A>0.5) img = mix(texture2D(TXP,uv),vec4(vec3(img2bw(img)),1.0),MX);
+
+      gl_FragColor = img;
+
+
+
+@ // Klaxons  // v1
+
+vec2  vtc = vTexCoord;
+vec2  uv  = vec2(vtc.x, 1.0-vtc.y);
+float k = MY*0.25;
+vec4  img = texture2D(TXF, uv);
+
+ if (B>0.5) img = texture2D(TXP,uv);
+
+vec4  imb = texture2D(TXB, cnv2abs(uv2exp(uv,f2z(img.g)*k,f2z(img.r)*k,f2z(img.b)*k)));
+      k = (1.0-MX)*0.5;
+vec4  imn = texture2D(TXP, cnv2abs(uv2wtr(uv,f2z(imb.r)*k,f2z(imb.b)*k,MLS)));
+float e = f2slit(img2bw(img),0.5,0.01,0.05);
+      gl_FragColor = mix2scr(imn,vec4(vec3(e),1.0),1.0);
+
+
+
 `+/* -------------------------- END OF PRESETS LIST -------------------------- */``);
 
 glsl.packnames.push('Mixes Motion');    

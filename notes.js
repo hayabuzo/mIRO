@@ -1,8 +1,10 @@
 /*
 
+v.220720: added new Dungen preset;
+
 v.220719: added new Goldie preset;
 v.220719: added new Infadels preset;
-v.220719: added new Material preset;
+v.220719: added new Mastodon preset;
 
 v.220716: fixed black screen (profile loading) bug;
 v.220716: fixed skin selection bug;

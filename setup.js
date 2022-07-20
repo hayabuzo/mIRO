@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0 
 
 const sketch = 'mIRO' 
-const ver    = 'v.220719' 
+const ver    = 'v.220720' 
 
 function setup() {                                           // preparing sketch
   
