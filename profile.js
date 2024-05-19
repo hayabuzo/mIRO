@@ -30,8 +30,15 @@ function getProfile() {          // load profile with program settings
   profile = getItem('settings_profile');
   
   // check if there are missing variables in loaded profile
-	if (profile == null) profile = [];
-  for (let i in default_profile) { if (profile[i] == undefined || profile[i] == null) profile[i] = default_profile[i]; }
+	if (profile === null) {
+    profile = [];
+  }
+
+  for (let i in default_profile) { 
+    if (profile[i] == undefined || profile[i] == null) {
+      profile[i] = default_profile[i];
+    }
+   }
   
   // force loading is needed to allow the browser to save multiple files at startup
   if (profile.forcing) { save('','?.txt'); save('','?.txt'); }

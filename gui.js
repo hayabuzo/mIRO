@@ -302,7 +302,10 @@ class Gui {           // create graphic user interface
 	update()      { this.process(); this.stream.stack.image(this.stream.imgx,0,0); }              // update processed image on screen
   getName()     { return txtar.value().split(char(10))[0].split('@')[0]; }                      // get the name of current filter
   saveFilter()  { save([revealName()], "[+] "+sketch+" - "+this.getName()+".txt");  }           // export filter as .txt file
-  saveProfile() { profile.code = txtar.value(); storeItem('settings_profile', profile);  }      // save settings profile to the browser memory
+  saveProfile() { 
+    profile.code = txtar.value(); 
+    storeItem('settings_profile', {...profile});  
+  }      // save settings profile to the browser memory
   
   saveImage()   {  // saving the graphic file
     
