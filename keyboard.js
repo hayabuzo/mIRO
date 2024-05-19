@@ -37,7 +37,6 @@ if (controls.record==-1 && profile.keymode) {
 	
 	if (isKey("n")) gui.stream.stack.image(gui.stream.camera,0,0,gui.stream.stack.width,gui.stream.stack.height);
 	if (onKey("m")) controls.play = !controls.play;
-	if (onKey("o")) { ear.detection = !ear.detection; toLog("beat detection: "+ear.detection); }
 	if (onKey("i")) controls.record = 0 ;
 	
 	for (let i=0; i<=9; i++) { if (onKey(str(i))) {
@@ -91,14 +90,6 @@ if (controls.record==-1 && profile.keymode) {
 	controls.alpha += (controls.am - controls.alpha)/20;
 	
 	if (!keyIsPressed) keyboard = [];
-	
-	for (let n=mbeat.length; n>=0; n--) {
-		if (ear.b[n] && mbeat[n]!="") { 
-			for (let i in mbeat[n]) { 
-				if (mbeat[n][i]!="") keyDown(mbeat[n][i]);
-			} 
-		}
-	}	
 	
 	//print(keyboard, controls.recChan);	
 	

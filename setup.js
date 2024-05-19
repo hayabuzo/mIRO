@@ -10,7 +10,6 @@ function setup() {                                           // preparing sketch
   cnv = createCanvas(windowWidth, windowHeight);             // create canvas with full window size
   getProfile();                                              // load program settings profile
   gui = new Gui(min(width,height),height);                   // create graphic user interface with limited width
-	ear = new Ear();                                           // create sound analyzer with 16 bins
   createHtml();                                              // create html elements
   buildShader();                                             // build shaders from the text
 	textFont('Monospace');                                     // change standard sans-serif font to monospace

@@ -110,7 +110,6 @@ class Gui {           // create graphic user interface
       // in each frame we update the main image, in every second we recount and update the FPS value 
       this.preview();
       if (frameCount%floor(frameRate())==0) this.kfps = 60 / frameRate();
-			this.buttons.f1.play.txt[1] = (profile.keymode && ear.beatDelay>0 ? ear.txt+"\n"+int(60000/ear.beatDelay)+":" : "") + nfs(60/this.kfps,2,2);
       this.buttons.f1.play.txt[3] = (profile.keymode && txtar.value().length<250) ? txtar.value().substring(0,txtar.value().length-1) : profile.clicking ? "" : profile.stablevel > 0 ? nfs(this.shake.average,1,2) : "";
 			
 			// setting up behavior of preset selector colors
@@ -139,14 +138,7 @@ class Gui {           // create graphic user interface
 			
 			
 			// check keyboard buttons;
-      keyCheck();
-			
-			// check audio analyzer
-			ear.listen();
-
-			//if (ear.b[3]) { keyDown("t"); }
-			//if (ear.b[2]) { keyDown("y"); }
-			
+      keyCheck();			
 			
     }
     
