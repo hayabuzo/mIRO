@@ -13,6 +13,8 @@ function setup() {                                           // preparing sketch
   createHtml();                                              // create html elements
   buildShader();                                             // build shaders from the text
 	textFont('Monospace');                                     // change standard sans-serif font to monospace
+
+  controls =  { play:false, alpha:1.0, xm:-1.0, ym:-1.0, am:1.0};
 	
 }
 

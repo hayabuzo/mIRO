@@ -138,7 +138,9 @@ class Gui {           // create graphic user interface
 			
 			
 			// check keyboard buttons;
-      keyCheck();			
+      // keyCheck();		
+      
+      if (controls.play) gui.update();
 			
     }
     
