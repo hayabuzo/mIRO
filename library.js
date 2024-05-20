@@ -84,6 +84,7 @@ LIST OF FUNCTIONS
 #define TWO_PI 6.28318530718
 #define tx2d texture2D
 #define uv2d vec2 uv=vec2(vTexCoord.x,(1.0-vTexCoord.y))
+#define output fragColor
 
 /**┌—————————————————————————————————┐
 │                                 │

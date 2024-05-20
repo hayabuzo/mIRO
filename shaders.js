@@ -27,11 +27,9 @@ uniform float       WIDTH,    HEIGHT,   H2W,
 // default code for a new filter
 glsl.default = 
 `myShaderName
-@
-vec2  uv = vTexCoord; 
-      uv.y = 1.0 - uv.y;
+@ uv2d;
 vec4  img = texture2D(TXP, uv);
-      gl_FragColor = img; `;
+      output = img;`;
 
 // add some lines after the code to simplify navigation
 for (let i=0; i<10; i++) { glsl.default +='\n'; }
