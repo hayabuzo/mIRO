@@ -1,5 +1,5 @@
-glsl.packnames.push('mIRO)))');    
-glsl.presets.push(`
+glsl.packNames.push('mIRO)))');    
+glsl.presetsText.push(`
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
@@ -1014,8 +1014,8 @@ float a = clamp(fg2circ(uv,vec2(0.5)+m,1.2+distance(vec2(0.5),vec2(MX,MY)),k*A),
 
 `+/* -------------------------- END OF PRESETS LIST -------------------------- */``);
 
-glsl.packnames.push('Disaurde v.303');    
-glsl.presets.push(`
+glsl.packNames.push('Disaurde v.303');    
+glsl.presetsText.push(`
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
@@ -2581,8 +2581,8 @@ img_output = (pow((uv.x-rndX),2.0)+pow((uv.y-rndY)*wink,2.0) < pow(avg*0.1+avg*k
 
 `+/* -------------------------- END OF PRESETS LIST -------------------------- */``);
 
-glsl.packnames.push('Mixes Still');    
-glsl.presets.push(`
+glsl.packNames.push('Mixes Still');    
+glsl.presetsText.push(`
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
@@ -3117,8 +3117,8 @@ vec2  uv4 = uv2exp(uv, kz, f2z(img3.r)*k4, f2z(img3.b)*k4*0.5);
 
 `+/* -------------------------- END OF PRESETS LIST -------------------------- */``);
 
-glsl.packnames.push('Mixes Motion');    
-glsl.presets.push(`
+glsl.packNames.push('Mixes Motion');    
+glsl.presetsText.push(`
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 

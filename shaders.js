@@ -1,4 +1,4 @@
-glsl = { names:[], presets:[], packnames:[] };   // create object for storing shader data
+glsl = { names:[], presetsText:[], packNames:[] };   // create object for storing shader data
 
 // vertex shader is the same for all the fragment shaders
 glsl.vert = `#version 300 es 

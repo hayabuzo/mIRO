@@ -75,8 +75,6 @@ class Gui {           // create graphic user interface
     // set default values for object variables
     this.w = w;        this.stream  = {};        this.showhelp = false;        this.x0 = (width-this.w)*0.5;        this.kfps = 1.0;      this.compiled = false;
     this.h = h;        this.buttons = {};        this.timestamp = '';          this.horient = false;                this.frc = 0.0;       this.trig = [0,0,0];
-		
-		//profile.keymode = false;
     
     // set stabilization values and create camera
     this.shake = {};     this.shake.array = [];     this.shake.average = 0;     this.shake.steps = 10;          		this.createCamera();
@@ -118,7 +116,7 @@ class Gui {           // create graphic user interface
     this.stream.camera.loaded = true;  this.createShader();  this.frame = "F1L";
     
 		// check URL parameters if there are filter name to load
-		if (getURLParams().f!=null) { document.getElementById("mySel").value = getURLParams().f; load_preset(); }
+		if (getURLParams().f!=null) { document.getElementById("presetSelectorId").value = getURLParams().f; loadPreset(); }
 		
   }
   
@@ -165,8 +163,8 @@ class Gui {           // create graphic user interface
         this.buttons.f1.c    = new Button( this.x0+this.w-this.h*0.1                     , glsl.c ? 0.0 : - this.h , this.h*0.1, this.h*0.1 , 10); this.buttons.f1.c.txt[0] = "C";
 			  this.setHead();
       
-			pre_sel.style('visibility:visible'); pack_sel.style('visibility:hidden'); 
-			txtar.style('visibility:hidden'); 
+			presetSelectorEl.style('visibility:visible'); packSelectorEl.style('visibility:hidden'); 
+			codeAreaEl.style('visibility:hidden'); 
 			
       this.process(); this.saveProfile();  // process and save the setting profile each time we enter the main frame
       
@@ -177,16 +175,16 @@ class Gui {           // create graphic user interface
       // in each frame we update the main image, in every second we recount and update the FPS value 
       this.preview();
       if (frameCount%floor(frameRate())==0) this.kfps = 60 / frameRate();
-      this.buttons.f1.play.txt[3] = (profile.keymode && txtar.value().length<250) ? txtar.value().substring(0,txtar.value().length-1) : profile.clicking ? "" : profile.stablevel > 0 ? nfs(this.shake.average,1,2) : "";
+      this.buttons.f1.play.txt[3] = profile.clicking ? "" : profile.stablevel > 0 ? nfs(this.shake.average,1,2) : "";
 			
 			// setting up behavior of preset selector colors
-      if (document.getElementById('mySel') === document.activeElement) pre_sel.style('background-color',skin.bgr).style('color',skin.txt);
-			else pre_sel.style('background-color:transparent').style('color:transparent');
+      if (document.getElementById('presetSelectorId') === document.activeElement) presetSelectorEl.style('background-color',skin.bgr).style('color',skin.txt);
+			else presetSelectorEl.style('background-color:transparent').style('color:transparent');
       
-			this.buttons.f1.play.txt[4] = profile.keymode ? keylog : "PLAY";
-		  this.buttons.f1.save.y = this.h*0.5+5 +int(profile.keymode)*1000;
-		  this.buttons.f1.play.h = this.h*0.4-10+int(profile.keymode)*this.h*0.4;
-		  this.buttons.f1.play.cross = !profile.keymode;
+			this.buttons.f1.play.txt[4] = "PLAY";
+		  this.buttons.f1.save.y = this.h*0.5+5;
+		  this.buttons.f1.play.h = this.h*0.4-10;
+		  this.buttons.f1.play.cross = true;
 			
       // show all buttons for the frame and check if they are clicked
       for (let i in this.buttons.f1) { this.buttons.f1[i].show(); }  
@@ -223,10 +221,10 @@ class Gui {           // create graphic user interface
         this.buttons.f2.new  = new Button( this.x0+this.w*0.000, this.h*0.9, this.w*0.333, this.h*0.1 , 10); this.buttons.f2.new .txt[0] = "NEW";
         this.buttons.f2.load = new Button( this.x0+this.w*0.333, this.h*0.9, this.w*0.333, this.h*0.1 , 10); this.buttons.f2.load.txt[0] = "LOAD";
         this.buttons.f2.save = new Button( this.x0+this.w*0.666, this.h*0.9, this.w*0.333, this.h*0.1 , 10); this.buttons.f2.save.txt[0] = "SAVE";
-			  pre_sel.style('color',skin.txt);
-			  pack_sel.style('visibility:visible'); pre_sel.position(this.x0+this.w/2,this.h*0.9-40).size(this.w/2-6,40);
-        profile.code = txtar.value(); txtar.style('visibility:visible'); 
-			  pack_sel.position(this.x0+4,this.h*0.9-40).size(this.w/2-8,40);
+			  presetSelectorEl.style('color',skin.txt);
+			  packSelectorEl.style('visibility:visible'); presetSelectorEl.position(this.x0+this.w/2,this.h*0.9-40).size(this.w/2-6,40);
+        profile.code = codeAreaEl.value(); codeAreaEl.style('visibility:visible'); 
+			  packSelectorEl.position(this.x0+4,this.h*0.9-40).size(this.w/2-8,40);
     }
 
     else if (this.frame=="F2") {  // showing frame #2 (shader editor)
@@ -241,31 +239,31 @@ class Gui {           // create graphic user interface
       if (!this.showhelp) {  // text area is in the shader edit mode
 
         // change text field and buttons according to mode
-        document.getElementById("txtar").disabled=false; pre_sel.style('visibility:visible'); pack_sel.style('visibility:visible');  
-        txtar.size(gui.w-15,this.h*0.8-50);  profile.code = txtar.value();
+        document.getElementById("codeAreaEl").disabled=false; presetSelectorEl.style('visibility:visible'); packSelectorEl.style('visibility:visible');  
+        codeAreaEl.size(gui.w-15,this.h*0.8-50);  profile.code = codeAreaEl.value();
         this.buttons.f2.help.txt[0] = "HELP"; this.buttons.f2.help.w = this.w*0.333-10;
 				
 				// setting up behavior of preset selector colors
-      	if (document.getElementById('mySel')  === document.activeElement) pre_sel.style('background-color',skin.bgr);  else pre_sel.style('background-color:transparent');
-      	if (document.getElementById('myPack') === document.activeElement) pack_sel.style('background-color',skin.bgr); else pack_sel.style('background-color:transparent');
+      	if (document.getElementById('presetSelectorId')  === document.activeElement) presetSelectorEl.style('background-color',skin.bgr);  else presetSelectorEl.style('background-color:transparent');
+      	if (document.getElementById('packSelectorId') === document.activeElement) packSelectorEl.style('background-color',skin.bgr); else packSelectorEl.style('background-color:transparent');
 
         // show all buttons for the frame and check if they are clicked
         for (let i in this.buttons.f2) { this.buttons.f2[i].show(); }  
-          if (this.buttons.f2.help.clicked) { this.showhelp = true; txtar.value(glsl.library.replace(/\*\//g,'').replace(/\/\*\*/g,'').replace(/\/\*/g,'●')        ); }
+          if (this.buttons.f2.help.clicked) { this.showhelp = true; codeAreaEl.value(glsl.library.replace(/\*\//g,'').replace(/\/\*\*/g,'').replace(/\/\*/g,'●')        ); }
           if (this.buttons.f2.run .clicked) { this.compile(); this.frc = 0.0; }
-          if (this.buttons.f2.back.clicked) { this.frame = "F1L"; txtar.value(profile.code); }
-          if (this.buttons.f2.new .clicked) txtar.value(glsl.default);
-          if (this.buttons.f2.load.clicked) document.getElementById('myInput').click();
+          if (this.buttons.f2.back.clicked) { this.frame = "F1L"; codeAreaEl.value(profile.code); }
+          if (this.buttons.f2.new .clicked) codeAreaEl.value(glsl.default);
+          if (this.buttons.f2.load.clicked) document.getElementById('fileInputId').click();
           if (this.buttons.f2.save.clicked) this.saveFilter(); 
 
       } else {  // text area is in the help (library) mode
 
         // change text field and buttons according to mode
-        document.getElementById("txtar").disabled=true; pre_sel.style('visibility:hidden'); pack_sel.style('visibility:hidden'); 
-        txtar.size(this.w-15,this.h*0.9-15); 
+        document.getElementById("codeAreaEl").disabled=true; presetSelectorEl.style('visibility:hidden'); packSelectorEl.style('visibility:hidden'); 
+        codeAreaEl.size(this.w-15,this.h*0.9-15); 
         this.buttons.f2.help.show(); 
         this.buttons.f2.help.txt[0] = "BACK"; this.buttons.f2.help.w = this.w-10; 
-          if (this.buttons.f2.help.clicked) { this.showhelp = false; txtar.value(profile.code); }
+          if (this.buttons.f2.help.clicked) { this.showhelp = false; codeAreaEl.value(profile.code); }
 
       }
     }
@@ -276,7 +274,7 @@ class Gui {           // create graphic user interface
       
       // create all buttons for the frame
       this.frame = "F3"; // textFont('Monospace');
-			pre_sel.style('visibility:hidden');
+			presetSelectorEl.style('visibility:hidden');
         this.buttons.f3 = {head:0,camr:0,canv:0,fron:0,stab:0,ftyp:0,floa:0,live:0,okay:0}; let n=0;
         for (let i in this.buttons.f3) { 
           this.buttons.f3[i] = new Button( this.x0, 15+this.h*0.07*n, this.w, this.h*0.07 , 10);  
@@ -359,7 +357,7 @@ class Gui {           // create graphic user interface
 	setHead()     { 
 		let l = this.mobile ? 12 : 24; 
 		this.buttons.f1.pres.txt[0] = (this.getName()=="myShaderName"?"Load Preset":this.getName().substring(0,l)+(this.getName().length>l?"…":"") ); 
-    pre_sel.position(this.x0+this.h*0.1+5, this.h*0.0+6).size(this.w-this.h*(glsl.n*0.1+0.1)-10, this.h*0.1-9); 
+    presetSelectorEl.position(this.x0+this.h*0.1+5, this.h*0.0+6).size(this.w-this.h*(glsl.n*0.1+0.1)-10, this.h*0.1-9); 
 		this.buttons.f1.pres.w = this.w-this.h*(glsl.n*0.1+0.1) - 10;
 		this.buttons.f1.a.x = 5 + this.x0+this.w-this.h*0.1*glsl.n;               			this.buttons.f1.a.y = 5 + (glsl.a ? 0.0 : - this.h);
     this.buttons.f1.b.x = 5 + this.x0+this.w-this.h*0.1*(glsl.n-int(glsl.a));       this.buttons.f1.b.y = 5 + (glsl.b ? 0.0 : - this.h);
@@ -367,10 +365,10 @@ class Gui {           // create graphic user interface
 	}
 		
 	update()      { this.process(); this.stream.stack.image(this.stream.imgx,0,0); }              // update processed image on screen
-  getName()     { return txtar.value().split(char(10))[0].split('@')[0]; }                      // get the name of current filter
+  getName()     { return codeAreaEl.value().split(char(10))[0].split('@')[0]; }                      // get the name of current filter
   saveFilter()  { save([revealName()], "[+] "+sketch+" - "+this.getName()+".txt");  }           // export filter as .txt file
   saveProfile() { 
-    profile.code = txtar.value(); 
+    profile.code = codeAreaEl.value(); 
     storeItem('settings_profile', {...profile});  
   }      // save settings profile to the browser memory
   
