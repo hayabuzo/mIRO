@@ -174,13 +174,17 @@ class Gui {           // create graphic user interface
 
       // in each frame we update the main image, in every second we recount and update the FPS value 
       this.preview();
-      if (frameCount%floor(frameRate())==0) this.kfps = 60 / frameRate();
+      if (frameCount%floor(frameRate())==0) { 
+        this.kfps = 60 / frameRate();
+        this.frameRate = frameRate().toFixed(1);
+      }
       this.buttons.f1.play.txt[3] = profile.clicking ? "" : profile.stablevel > 0 ? nfs(this.shake.average,1,2) : "";
 			
 			// setting up behavior of preset selector colors
       if (document.getElementById('presetSelectorId') === document.activeElement) presetSelectorEl.style('background-color',skin.bgr).style('color',skin.txt);
 			else presetSelectorEl.style('background-color:transparent').style('color:transparent');
       
+			this.buttons.f1.play.txt[1] = this.frameRate;
 			this.buttons.f1.play.txt[4] = "PLAY";
 		  this.buttons.f1.save.y = this.h*0.5+5;
 		  this.buttons.f1.play.h = this.h*0.4-10;
