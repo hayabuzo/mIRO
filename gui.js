@@ -113,7 +113,7 @@ class Gui {           // create graphic user interface
       this.buttons.f1.play.txt[3] = (profile.keymode && txtar.value().length<250) ? txtar.value().substring(0,txtar.value().length-1) : profile.clicking ? "" : profile.stablevel > 0 ? nfs(this.shake.average,1,2) : "";
 			
 			// setting up behavior of preset selector colors
-      if (document.getElementById('mySel') === document.activeElement) pre_sel.style('background-color',skin[profile.theme].bgr).style('color',skin[profile.theme].txt);
+      if (document.getElementById('mySel') === document.activeElement) pre_sel.style('background-color',skin.bgr).style('color',skin.txt);
 			else pre_sel.style('background-color:transparent').style('color:transparent');
       
 			this.buttons.f1.play.txt[4] = profile.keymode ? keylog : "PLAY";
@@ -156,7 +156,7 @@ class Gui {           // create graphic user interface
         this.buttons.f2.new  = new button( this.x0+this.w*0.000, this.h*0.9, this.w*0.333, this.h*0.1 , 10); this.buttons.f2.new .txt[0] = "NEW";
         this.buttons.f2.load = new button( this.x0+this.w*0.333, this.h*0.9, this.w*0.333, this.h*0.1 , 10); this.buttons.f2.load.txt[0] = "LOAD";
         this.buttons.f2.save = new button( this.x0+this.w*0.666, this.h*0.9, this.w*0.333, this.h*0.1 , 10); this.buttons.f2.save.txt[0] = "SAVE";
-			  pre_sel.style('color',skin[profile.theme].txt);
+			  pre_sel.style('color',skin.txt);
 			  pack_sel.style('visibility:visible'); pre_sel.position(this.x0+this.w/2,this.h*0.9-40).size(this.w/2-6,40);
         profile.code = txtar.value(); txtar.style('visibility:visible'); 
 			  pack_sel.position(this.x0+4,this.h*0.9-40).size(this.w/2-8,40);
@@ -167,7 +167,7 @@ class Gui {           // create graphic user interface
       if (profile.livecode) {  // livecoding mode draws preview under coding textarea
 			  this.preview();
         if (this.compiled) { this.update(); }
-			  let clr = color(skin[profile.theme].bgr); clr.setAlpha(180);
+			  let clr = color(skin.bgr); clr.setAlpha(180);
 			  noStroke().fill(clr).rect(0,0,width,height);
       }
 			
@@ -179,8 +179,8 @@ class Gui {           // create graphic user interface
         this.buttons.f2.help.txt[0] = "HELP"; this.buttons.f2.help.w = this.w*0.333-10;
 				
 				// setting up behavior of preset selector colors
-      	if (document.getElementById('mySel')  === document.activeElement) pre_sel.style('background-color',skin[profile.theme].bgr);  else pre_sel.style('background-color:transparent');
-      	if (document.getElementById('myPack') === document.activeElement) pack_sel.style('background-color',skin[profile.theme].bgr); else pack_sel.style('background-color:transparent');
+      	if (document.getElementById('mySel')  === document.activeElement) pre_sel.style('background-color',skin.bgr);  else pre_sel.style('background-color:transparent');
+      	if (document.getElementById('myPack') === document.activeElement) pack_sel.style('background-color',skin.bgr); else pack_sel.style('background-color:transparent');
 
         // show all buttons for the frame and check if they are clicked
         for (let i in this.buttons.f2) { this.buttons.f2[i].show(); }  
@@ -210,7 +210,7 @@ class Gui {           // create graphic user interface
       // create all buttons for the frame
       this.frame = "F3"; // textFont('Monospace');
 			pre_sel.style('visibility:hidden');
-        this.buttons.f3 = {head:0,camr:0,canv:0,fron:0,stab:0,ftyp:0,floa:0,live:0,skin:0,okay:0}; let n=0;
+        this.buttons.f3 = {head:0,camr:0,canv:0,fron:0,stab:0,ftyp:0,floa:0,live:0,okay:0}; let n=0;
         for (let i in this.buttons.f3) { 
           this.buttons.f3[i] = new button( this.x0, 15+this.h*0.07*n, this.w, this.h*0.07 , 10);  
           this.buttons.f3[i].showborder = false; 
@@ -238,10 +238,10 @@ class Gui {           // create graphic user interface
         this.buttons.f3.ftyp.txt[1] = "         File Type: " + profile.filetype.toUpperCase();                  
         this.buttons.f3.floa.txt[1] = "     Force Loading: " + (profile.forcing  ? "ON" : "OFF"); 
         this.buttons.f3.live.txt[1] = "       Live Coding: " + (profile.livecode  ? "ON" : "OFF"); 
-        this.buttons.f3.skin.txt[1] = "             Theme: " + (profile.theme == 0 ? "Dark" : "Light");    
+        // this.buttons.f3.skin.txt[1] = "             Theme: " + (profile.theme == 0 ? "Dark" : "Light");    
         this.buttons.f3.okay.txt[0] = "OK";
       
-        if (this.buttons.f3.skin.clicked) { profile.theme    = (profile.theme + 1.0) % 2.0 ; set_style(); }
+        // if (this.buttons.f3.skin.clicked) { profile.theme    = (profile.theme + 1.0) % 2.0 ; set_style(); }
         if (this.buttons.f3.camr.clicked) profile.resolution = profile.resolution == 'min' ? 'wide' : profile.resolution == 'wide' ? 'med' : profile.resolution == 'med' ? 'max' : 'min';
         if (this.buttons.f3.canv.clicked) profile.resize     = profile.resize >= 3.0 ? 0.5 : profile.resize + 0.5;
         if (this.buttons.f3.fron.clicked) profile.frontal    = !profile.frontal;
@@ -269,11 +269,11 @@ class Gui {           // create graphic user interface
 
     try {  // we try to run the shaders and send them uniforms, then paint 'run' button with 'success' color
       for (let i = 0; i < glsl.frags.length; i++) { this.unisend(i); this.stream.imgx.shader(this.stream.shader[i]).rect(0,0,1,1); }
-      if (this.frame == "F2") this.buttons.f2.run.bgc = skin[profile.theme].run; 
+      if (this.frame == "F2") this.buttons.f2.run.bgc = skin.run; 
       if (this.frame == "F1") this.frc ++; 
 			this.compiled = true; } 
     // if we cannot run the shaders we paint 'run' button with 'error' color
-    catch(e) { if (this.frame == "F2") { this.buttons.f2.run.bgc = skin[profile.theme].err; } this.compiled = false; } 
+    catch(e) { if (this.frame == "F2") { this.buttons.f2.run.bgc = skin.err; } this.compiled = false; } 
     
     // after each processing we take the timestamp to save it as the processed image name 
     this.timestamp = year()+nf(month(),2)+nf(day(),2)+" - "+nf(hour(),2)+nf(minute(),2)+nf(second(),2);

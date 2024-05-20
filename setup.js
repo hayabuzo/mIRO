@@ -1,4 +1,4 @@
-// Copyright 2022, Sergey Egorov
+// Copyright 2024, Sergey Egorov
 // Licensed under the Apache License, Version 2.0 
 
 const sketch = 'mIRO' 
@@ -50,24 +50,6 @@ function setup() {                                           // preparing sketch
       file_input.value('');	                                        // clear file input to allow reopen the same file
     } 
 
-    const set_style = () => {
-
-      txtar.style('color:'+skin[profile.theme].txt);                                       // set text color
-      txtar.style('background-color', 'transparent');                                      // set text area background transparent
-      txtar.style('font-size', 14+'px');  txtar.style('font-family:monospace');            // set text size and font
-      txtar.style('text-align:left');     txtar.style('white-space:pre');                  // set text align
-      txtar.style('visibility:hidden');   txtar.id('txtar');                               // hide text area until we need it
-      
-      pre_sel.style('color:'+skin[profile.theme].txt);                                     // set preset selector text color
-      pre_sel.style('font-size', 14+'px');  pre_sel.style('font-family:monospace');        // set preset selector size and font
-      pre_sel.style('text-align:left');     pre_sel.style('white-space:pre');              // set preset selector align
-      
-      pack_sel.style('color:'+skin[profile.theme].txt);                                     // set preset selector text color
-      pack_sel.style('font-size', 14+'px');  pack_sel.style('font-family:monospace');       // set preset selector size and font
-      pack_sel.style('text-align:left');     pack_sel.style('white-space:pre');             // set preset selector align
-      
-    }
-
     txtar = createElement('textarea', profile.code);                                     // create text area for shader code 
     txtar.position(gui.x0+4,gui.h*0.1).size(gui.w-15,gui.h*0.8-50);                      // set area position and size
   
@@ -91,16 +73,27 @@ function setup() {                                           // preparing sketch
     }
     myPack.selectedIndex = profile.pack;
     
-    set_style();
+    txtar.style('color:'+skin.txt);                                                      // set text color
+    txtar.style('background-color', 'transparent');                                      // set text area background transparent
+    txtar.style('font-size', 14+'px');  txtar.style('font-family:monospace');            // set text size and font
+    txtar.style('text-align:left');     txtar.style('white-space:pre');                  // set text align
+    txtar.style('visibility:hidden');   txtar.id('txtar');                               // hide text area until we need it
+    
+    pre_sel.style('color:'+skin.txt);                                                    // set preset selector text color
+    pre_sel.style('font-size', 14+'px');  pre_sel.style('font-family:monospace');        // set preset selector size and font
+    pre_sel.style('text-align:left');     pre_sel.style('white-space:pre');              // set preset selector align
+    
+    pack_sel.style('color:'+skin.txt);                                                    // set preset selector text color
+    pack_sel.style('font-size', 14+'px');  pack_sel.style('font-family:monospace');       // set preset selector size and font
+    pack_sel.style('text-align:left');     pack_sel.style('white-space:pre');             // set preset selector align
+
     update_presets();
     
   }
 
   const getProfile = () => {          // load profile with program settings
 
-    skin    = [];                                                                                   // create array of visual themes
-    skin[0] = { bgr: '#424949', btn: '#CACFD2', txt: '#FFFFFF', run: '#0B5345', err: '#641E16' };   // dark theme
-    skin[1] = { bgr: '#F8F9F9', btn: '#5D5F61', txt: '#000000', run: '#D5F5E3', err: '#FADBD8' };   // light theme
+    skin    = { bgr: '#424949', btn: '#CACFD2', txt: '#FFFFFF', run: '#0B5345', err: '#641E16' };   // dark theme
   
     default_profile = {            // default profile setting are:
       resolution: "min",           // set minimal resolution
@@ -113,7 +106,6 @@ function setup() {                                           // preparing sketch
       livecode:   true,            // livecoding enabled;
       window:     1,               // do not reduce window size
       code:       glsl.default,    // load default shader code
-      theme:      0,               // load dark skin
       keymode:    false,           // keymode off
       pack:       0,               // select default preset pack
     };
@@ -156,7 +148,7 @@ function setup() {                                           // preparing sketch
 }
 
 function draw() {  
-  background(color(skin[profile.theme].bgr)); 
+  background(color(skin.bgr)); 
   gui.run(); 
 }
 
