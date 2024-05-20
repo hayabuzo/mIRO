@@ -91,7 +91,6 @@ class Gui {           // create graphic user interface
     this.stream.settings.video.width.ideal  = profile.resolution == "min" ? 640 : profile.resolution == "max" ? 4000 : profile.resolution == "wide" ? 1280 : 1280;
     this.stream.settings.video.height.ideal = profile.resolution == "min" ? 480 : profile.resolution == "max" ? 3000 : profile.resolution == "wide" ? 720 : 960;         
     this.stream.camera = createCapture(this.stream.settings).hide(); this.stream.camera.loaded = false;
-		if (this.stream.camera==={}) print("no camera found");
     this.stream.camera.width = 1; // this trick allows to load both camera stream and image file as the same object
 
   }

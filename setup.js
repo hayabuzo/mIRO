@@ -55,8 +55,19 @@ function setup() {
       fileInputEl.value('');	                                     // clear file input to allow reopen the same file
     } 
 
-    codeAreaEl = createElement('textarea', profile.code);                                     // create text area for shader code 
-    codeAreaEl.position(gui.x0+4,gui.h*0.1).size(gui.w-15,gui.h*0.8-50);                      // set area position and size
+    const generateRandomPresetMix = (numberOfElements) => {
+      console.log(glsl.packNames);
+      console.log(glsl.presetsNames);
+      let randomPreset = "";
+      let randomPresetName = "";
+      for (let i=0; i<numberOfElements; i++) {
+        const name = random(glsl.presetsNames);
+        randomPresetName += `-${name.substring(0, 3)}`
+        randomPreset += `@ # ${name} # abcxy #\n`
+      }
+      console.log(randomPreset);
+      profile.code = randomPresetName.substring(1)+'\n'+randomPreset;
+    }
   
     fileInputEl = createFileInput(openFile);                                              // create file input button
     fileInputEl.style('visibility:hidden');                                               // hide this button
@@ -79,15 +90,7 @@ function setup() {
       packSelectorEl.option(glsl.packNames[i]);                                                                
     }
     packSelectorId.selectedIndex = profile.presetPackNumber;
-    
-    codeAreaEl.style('color:'+skin.txt);                                                      // set text color
-    codeAreaEl.style('background-color', 'transparent');                                      // set text area background transparent
-    codeAreaEl.style('font-size', 14+'px');  
-    codeAreaEl.style('font-family:monospace');            // set text size and font
-    codeAreaEl.style('text-align:left');     
-    codeAreaEl.style('white-space:pre');                  // set text align
-    codeAreaEl.style('visibility:hidden');   
-    codeAreaEl.id('codeAreaEl');                               // hide text area until we need it
+  
     
     presetSelectorEl.style('color:'+skin.txt);                                                    // set preset selector text color
     presetSelectorEl.style('font-size', 14+'px');  
@@ -102,6 +105,24 @@ function setup() {
     packSelectorEl.style('white-space:pre');             // set preset selector align
 
     updatePresets();
+
+    // if URL ends with "?g=true" generate random mix
+    if (getURLParams().g) { 
+      generateRandomPresetMix(getURLParams().g);
+    }
+
+
+    codeAreaEl = createElement('textarea', profile.code);                                     // create text area for shader code 
+    codeAreaEl.position(gui.x0+4,gui.h*0.1).size(gui.w-15,gui.h*0.8-50);                      // set area position and size
+
+    codeAreaEl.style('color:'+skin.txt);                                                      // set text color
+    codeAreaEl.style('background-color', 'transparent');                                      // set text area background transparent
+    codeAreaEl.style('font-size', 14+'px');  
+    codeAreaEl.style('font-family:monospace');            // set text size and font
+    codeAreaEl.style('text-align:left');     
+    codeAreaEl.style('white-space:pre');                  // set text align
+    codeAreaEl.style('visibility:hidden');   
+    codeAreaEl.id('codeAreaEl');                               // hide text area until we need it
     
   }
 
@@ -124,7 +145,9 @@ function setup() {
     };
   
     // if URL ends with "?r=1" do the profile reset
-    if (getURLParams().r==1) removeItem('settings_profile');            
+    if (getURLParams().r==1) { 
+      removeItem('settings_profile') 
+    };
   
     // create temporary profile and try to load data into it from the browser's memory
     p_temp = {}; if (getItem('settings_profile')!=null) p_temp = getItem('settings_profile');
@@ -134,7 +157,7 @@ function setup() {
     
     // check if there are missing variables in loaded profile
     if (profile === null) {
-      profile = [];
+      profile = {};
     }
   
     for (let i in default_profile) { 
@@ -175,18 +198,18 @@ const loadPreset = () => {                                        // when loadin
 	document.getElementById('presetSelectorId').blur();                      // set the focus out of selector
 }
 
+const revealName = () => {
+  glsl.code = codeAreaEl.value();                                              // get current filter code from textarea
+  for (let i=0; i<glsl.presetsNames.length; i++) {                               // for every name of preset in list of names
+    let name = new RegExp("# "+glsl.presetsNames[i]+" #","g");                   // create regEx with macro syntax
+    let code = glsl.presetsArray[i].split("@")[1];                              // take the preset code
+    glsl.code = glsl.code.replace(name," // "+glsl.presetsNames[i]+" "+code);    // and replace preset macro with code
+  }	
+  let reg = new RegExp("@","g"); return glsl.code.replace(reg,"\n@");     // add line break for saving function
+}
+
 
 const buildShader = () => {                                         // function that builds array of fragment shaders from the text
-
-  const revealName = () => {
-    glsl.code = codeAreaEl.value();                                              // get current filter code from textarea
-    for (let i=0; i<glsl.presetsNames.length; i++) {                               // for every name of preset in list of names
-      let name = new RegExp("# "+glsl.presetsNames[i]+" #","g");                   // create regEx with macro syntax
-      let code = glsl.presetsArray[i].split("@")[1];                              // take the preset code
-      glsl.code = glsl.code.replace(name," // "+glsl.presetsNames[i]+" "+code);    // and replace preset macro with code
-    }	
-    let reg = new RegExp("@","g"); return glsl.code.replace(reg,"\n@");     // add line break for saving function
-  }
 
   revealName();
   
