@@ -4,6 +4,24 @@
 const sketch = 'mIRO' 
 const ver    = 'v.24' 
 
+// enabling webgl2 mode in p5js
+p5.RendererGL.prototype._initContext = function() {
+	try { 
+    this.drawingContext = this.canvas.getContext('webgl2', this._pInst._glAttributes) || this.canvas.getContext('experimental-webgl', this._pInst._glAttributes);
+		if (this.drawingContext === null) { 
+      throw new Error('Error creating webgl context');
+		} else { 
+      const gl = this.drawingContext; 
+      gl.enable(gl.DEPTH_TEST); 
+      gl.depthFunc(gl.LEQUAL);
+			gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+			this._viewport = this.drawingContext.getParameter(this.drawingContext.VIEWPORT);
+		}
+  } catch (er) { 
+    throw er; 
+  }
+};
+
 function setup() {                                           // preparing sketch
 
   const createHtml = () => {                                 // create text area and file input elements
