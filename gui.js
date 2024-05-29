@@ -359,7 +359,7 @@ class Gui {           // create graphic user interface
 	// set filter header
 	setHead()     { 
 		let l = this.mobile ? 12 : 24; 
-		this.buttons.f1.pres.txt[0] = (this.getName()=="myShaderName"?"Load Preset":this.getName().substring(0,l)+(this.getName().length>l?"…":"") ); 
+		this.buttons.f1.pres.txt[0] = 'Load';// (this.getName()=="myShaderName"?"Load Preset":this.getName().substring(0,l)+(this.getName().length>l?"…":"") ); 
     presetSelectorEl.position(this.x0+this.h*0.1+5, this.h*0.0+6).size(this.w-this.h*(glsl.n*0.1+0.1)-10, this.h*0.1-9); 
 		this.buttons.f1.pres.w = this.w-this.h*(glsl.n*0.1+0.1) - 10;
 		this.buttons.f1.a.x = 5 + this.x0+this.w-this.h*0.1*glsl.n;               			this.buttons.f1.a.y = 5 + (glsl.a ? 0.0 : - this.h);

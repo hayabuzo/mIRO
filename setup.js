@@ -40,6 +40,20 @@ function setup() {
       }
     }
 
+    const getAllPresets = () => {
+      glsl.allPresetsArray = [];
+      glsl.allPresetsNames = [];
+      const packs = [0, 1];
+      for (const p of packs) {
+        glsl.allPresetsArray.push(...glsl.presetsText[p].split("###").slice(1));                    // create array of presets from it's text data
+      }
+      for (let i=0; i<glsl.allPresetsArray.length; i++) {                                                          // for each element in array of presets
+        const presetName = glsl.allPresetsArray[i].split("\n")[2];                                                // take preset name
+        glsl.allPresetsNames.push(presetName);                                                                     // put it in the array of names
+      }
+    }
+
+
     const loadPack = () => {	
       profile.presetPackNumber = packSelectorId.selectedIndex;	
       updatePresets(); 
@@ -56,16 +70,14 @@ function setup() {
     } 
 
     const generateRandomPresetMix = (numberOfElements) => {
-      console.log(glsl.packNames);
-      console.log(glsl.presetsNames);
       let randomPreset = "";
       let randomPresetName = "";
       for (let i=0; i<numberOfElements; i++) {
-        const name = random(glsl.presetsNames);
+        const name = random(glsl.allPresetsNames);
         randomPresetName += `-${name.substring(0, 3)}`
-        randomPreset += `@ # ${name} # abcxy #\n`
+        const controls = random(['a','A'])+random(['b','B'])+random(['c','C'])+random(['x','X'])+random(['y','Y']);
+        randomPreset += `@ # ${name} # ${controls} #\n`
       }
-      console.log(randomPreset);
       profile.code = randomPresetName.substring(1)+'\n'+randomPreset;
     }
   
@@ -105,6 +117,7 @@ function setup() {
     packSelectorEl.style('white-space:pre');             // set preset selector align
 
     updatePresets();
+    getAllPresets();
 
     // if URL ends with "?g=true" generate random mix
     if (getURLParams().g) { 
@@ -200,10 +213,10 @@ const loadPreset = () => {                                        // when loadin
 
 const revealName = () => {
   glsl.code = codeAreaEl.value();                                              // get current filter code from textarea
-  for (let i=0; i<glsl.presetsNames.length; i++) {                               // for every name of preset in list of names
-    let name = new RegExp("# "+glsl.presetsNames[i]+" #","g");                   // create regEx with macro syntax
-    let code = glsl.presetsArray[i].split("@")[1];                              // take the preset code
-    glsl.code = glsl.code.replace(name," // "+glsl.presetsNames[i]+" "+code);    // and replace preset macro with code
+  for (let i=0; i<glsl.allPresetsNames.length; i++) {                               // for every name of preset in list of names
+    let name = new RegExp("# "+glsl.allPresetsNames[i]+" #","g");                   // create regEx with macro syntax
+    let code = glsl.allPresetsArray[i].split("@")[1];                              // take the preset code
+    glsl.code = glsl.code.replace(name," // "+glsl.allPresetsNames[i]+" "+code);    // and replace preset macro with code
   }	
   let reg = new RegExp("@","g"); return glsl.code.replace(reg,"\n@");     // add line break for saving function
 }
