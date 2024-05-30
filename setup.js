@@ -24,6 +24,18 @@ p5.RendererGL.prototype._initContext = function() {
 
 function setup() {
 
+  const openFile = (file) => {                                   // when opening a file via "load" button
+    console.log('drop');
+    if (file.type === 'text') {                                  
+      codeAreaEl.value(file.data);                               // we can open a text file and load it as a filter
+    } else if (file.type === 'image') {                          
+      gui.createImage(file);                                     // or we can open an image and put it for the shader processing
+    }
+    gui.compile();                                               // compile filter after loading
+    gui.setHead();
+    fileInputEl.value('');	                                     // clear file input to allow reopen the same file
+  } 
+
   const createHtml = () => {                                 // create text area and file input elements
 
     const updatePresets = () => {
@@ -58,16 +70,6 @@ function setup() {
       profile.presetPackNumber = packSelectorId.selectedIndex;	
       updatePresets(); 
     }
-
-    const openFile = (file) => {                                   // when opening a file via "load" button
-      if (file.type === 'text') {                                  
-        codeAreaEl.value(file.data);                               // we can open a text file and load it as a filter
-      } else if (file.type === 'image') {                          
-        gui.createImage(file);                                     // or we can open an image and put it for the shader processing
-      }
-      gui.compile();                                               // compile filter after loading
-      fileInputEl.value('');	                                     // clear file input to allow reopen the same file
-    } 
 
     const generateRandomPresetMix = (numberOfElements) => {
       let randomPreset = "";
@@ -191,6 +193,8 @@ function setup() {
   createHtml();                                              // create html elements
   buildShader();                                             // build shaders from the text
 	textFont('Monospace');                                     // change standard sans-serif font to monospace
+
+  cnv.drop(openFile);
 
   for (let element of document.getElementsByClassName("p5Canvas")) { 
     element.addEventListener("contextmenu", (e) => e.preventDefault());    
