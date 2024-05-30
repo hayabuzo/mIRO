@@ -87,7 +87,7 @@ function setup() {
   
     presetSelectorEl = createSelect();                                                            // create preset selector
     presetSelectorEl.position(gui.x0+4,gui.h*0.9-40).size(gui.w-8,40);                            // set preset selector position and size
-    presetSelectorEl.style('visibility:hidden');                                                   // hide preset selector until we need it
+    presetSelectorEl.style('visibility:hidden;');                                                   // hide preset selector until we need it
     presetSelectorEl.changed(loadPreset);                                                         
     presetSelectorEl.id('presetSelectorId');                                                       // set the element id, to find it later
     presetSelectorEl.option('> Load Preset');                                                     // create first line of selector
@@ -191,6 +191,10 @@ function setup() {
   createHtml();                                              // create html elements
   buildShader();                                             // build shaders from the text
 	textFont('Monospace');                                     // change standard sans-serif font to monospace
+
+  for (let element of document.getElementsByClassName("p5Canvas")) { 
+    element.addEventListener("contextmenu", (e) => e.preventDefault());    
+  }
 
   controls =  { play:false, alpha:1.0, xm:-1.0, ym:-1.0, am:1.0};
 	

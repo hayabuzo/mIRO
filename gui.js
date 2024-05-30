@@ -51,7 +51,7 @@ class Button {                     // here is a button class
       if (!this.over && mouseIsPressed) this.ignore = true; else if (!mouseIsPressed) this.ignore = false;
 
            // calculations to distinguish pressing and clicking on the button
-           if ( this.over && !this.ignore &&  mouseIsPressed)    this.pressed = true;   
+           if ( this.over && !this.ignore &&  mouseIsPressed && mouseButton !== RIGHT)    this.pressed = true;   
       else if ( this.over && this.pressed && !mouseIsPressed) {  this.pressed = false; this.clicked = true; } 
       else if (!this.over && this.pressed && !mouseIsPressed)    this.pressed = false;   
       else                                                       this.clicked = false;
@@ -78,6 +78,10 @@ class Gui {           // create graphic user interface
     
     // set stabilization values and create camera
     this.shake = {};     this.shake.array = [];     this.shake.average = 0;     this.shake.steps = 10;          		this.createCamera();
+
+    this.showGui = true;
+    this.controlX = 0.0;
+    this.controlY = 0.0;
 
   }
   
@@ -190,17 +194,59 @@ class Gui {           // create graphic user interface
 		  this.buttons.f1.play.cross = true;
 			
       // show all buttons for the frame and check if they are clicked
-      for (let i in this.buttons.f1) { this.buttons.f1[i].show(); }  
-        this.buttons.f1.play.txt[2] = (glsl.mx ? nfs(this.buttons.f1.play.xm,1,2)+"\n":"")+(glsl.my ? nfs(this.buttons.f1.play.ym,1,2) : "");
-        if ((profile.clicking ? this.buttons.f1.play.clicked : this.buttons.f1.play.pressed || (profile.stablevel > 0 && this.shake.average >= profile.stablevel) )) { this.update(); }
-        if (this.buttons.f1.dir .clicked) { this.horient = !this.horient; this.buttons.f1.dir .txt[0] = this.horient?"→":"↑"; }
-        if (this.buttons.f1.edit.clicked)   this.frame = "F2L";
-        if (this.buttons.f1.save.clicked)   this.saveImage();
-        if (this.buttons.f1.set .clicked)   this.frame = "F3L";
-        if (this.buttons.f1.a   .clicked)   this.trig[0] = !this.trig[0]; this.buttons.f1.a.tsize = this.trig[0] ? 30 : 15;
-        if (this.buttons.f1.b   .clicked)   this.trig[1] = !this.trig[1]; this.buttons.f1.b.tsize = this.trig[1] ? 30 : 15;
-        if (this.buttons.f1.c   .clicked)   this.trig[2] = !this.trig[2]; this.buttons.f1.c.tsize = this.trig[2] ? 30 : 15;
-        if (this.buttons.f1.mode.clicked) { profile.clicking = !profile.clicking; this.buttons.f1.mode.txt[0]=profile.clicking?">":">>>"; this.saveProfile(); }
+      if (this.showGui) {
+        for (let i in this.buttons.f1) { 
+          this.buttons.f1[i].show(); 
+        }  
+      }
+
+      this.buttons.f1.play.txt[2] = (glsl.mx ? nfs(this.buttons.f1.play.xm,1,2)+"\n":"")+(glsl.my ? nfs(this.buttons.f1.play.ym,1,2) : "");
+      if ((profile.clicking ? this.buttons.f1.play.clicked : this.buttons.f1.play.pressed || (profile.stablevel > 0 && this.shake.average >= profile.stablevel) )) { 
+        this.controlX = this.buttons.f1.play.xm;
+        this.controlY = this.buttons.f1.play.ym;
+        this.update(); 
+      }
+      if (this.buttons.f1.dir .clicked) { this.horient = !this.horient; this.buttons.f1.dir .txt[0] = this.horient?"→":"↑"; }
+      if (this.buttons.f1.edit.clicked)   this.frame = "F2L";
+      if (this.buttons.f1.save.clicked)   this.saveImage();
+      if (this.buttons.f1.set .clicked)   this.frame = "F3L";
+      if (this.buttons.f1.a   .clicked)   this.trig[0] = !this.trig[0]; this.buttons.f1.a.tsize = this.trig[0] ? 30 : 15;
+      if (this.buttons.f1.b   .clicked)   this.trig[1] = !this.trig[1]; this.buttons.f1.b.tsize = this.trig[1] ? 30 : 15;
+      if (this.buttons.f1.c   .clicked)   this.trig[2] = !this.trig[2]; this.buttons.f1.c.tsize = this.trig[2] ? 30 : 15;
+      if (this.buttons.f1.mode.clicked) { profile.clicking = !profile.clicking; this.buttons.f1.mode.txt[0]=profile.clicking?">":">>>"; this.saveProfile(); }
+
+    if (mouseIsPressed && mouseButton === RIGHT) {
+      mouseIsPressed = false;
+      this.showGui = !this.showGui;
+      if (this.showGui) {
+        presetSelectorEl.style('visibility:visible');
+      } else {
+        presetSelectorEl.style('visibility:hidden');
+      }
+    }
+
+    if (!this.showGui) {
+
+      this.controlX = mouseX/width;
+      this.controlY = mouseY/height;
+
+      if (keyIsPressed === true) {
+        keyIsPressed = false;
+        if (keyCode === 90) { // Z
+          this.trig[0] = !this.trig[0]; this.buttons.f1.a.tsize = this.trig[0] ? 30 : 15;
+        }
+        if (keyCode === 88) { // X
+          this.trig[1] = !this.trig[1]; this.buttons.f1.b.tsize = this.trig[1] ? 30 : 15;
+        }
+        if (keyCode === 67) { // C
+          this.trig[2] = !this.trig[2]; this.buttons.f1.c.tsize = this.trig[2] ? 30 : 15;
+        }
+
+      } 
+
+      this.update();
+
+    }
 			
 // <---------------
 			
@@ -208,7 +254,9 @@ class Gui {           // create graphic user interface
 			// check keyboard buttons;
       // keyCheck();		
       
-      if (controls.play) gui.update();
+      // if (controls.play) {
+      //   gui.update();
+      // }
 			
     }
     
@@ -403,8 +451,8 @@ class Gui {           // create graphic user interface
       this.stream.imgb.filter(BLUR, this.stream.stack.width*0.002); this.stream.shader[i].setUniform( 'TXB' , this.stream.imgb ); }
     
     // checking of what control coordinates are used in shader code to send them as uniforms
-    if(str(glsl.code).search(/MX/)>0)  this.stream.shader[i].setUniform( 'MX' , this.buttons.f1.play.xm ); 
-    if(str(glsl.code).search(/MY/)>0)  this.stream.shader[i].setUniform( 'MY' , this.buttons.f1.play.ym ); 
+    if(str(glsl.code).search(/MX/)>0)  this.stream.shader[i].setUniform( 'MX' , this.controlX ); 
+    if(str(glsl.code).search(/MY/)>0)  this.stream.shader[i].setUniform( 'MY' , this.controlY ); 
     
     // sending random and noise uniforms
     for (let n = 1; n<=5; n++) {
