@@ -30,6 +30,7 @@ function setup() {
       codeAreaEl.value(file.data);                               // we can open a text file and load it as a filter
     } else if (file.type === 'image') {                          
       gui.createImage(file);                                     // or we can open an image and put it for the shader processing
+      gui.fileName = "["+(file.name.split("."))[0]+"] ";
     }
     gui.compile();                                               // compile filter after loading
     gui.setHead();

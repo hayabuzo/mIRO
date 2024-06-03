@@ -83,6 +83,8 @@ class Gui {           // create graphic user interface
     this.controlX = 0.0;
     this.controlY = 0.0;
 
+    this.fileName = ""
+
   }
   
   createCamera() {  // create a connection with the camera of device
@@ -225,24 +227,35 @@ class Gui {           // create graphic user interface
       }
     }
 
+    if (keyIsPressed === true) {
+      keyIsPressed = false;
+      if (keyCode === 90) { // Z
+        this.trig[0] = !this.trig[0]; 
+        this.buttons.f1.a.tsize = this.trig[0] ? 30 : 15;
+      }
+      if (keyCode === 88) { // X
+        this.trig[1] = !this.trig[1]; 
+        this.buttons.f1.b.tsize = this.trig[1] ? 30 : 15;
+      }
+      if (keyCode === 67) { // C
+        this.trig[2] = !this.trig[2]; 
+        this.buttons.f1.c.tsize = this.trig[2] ? 30 : 15;
+      }
+      if (keyCode === 86) { // V
+        profile.clicking = !profile.clicking; 
+        this.buttons.f1.mode.txt[0]=profile.clicking?">":">>>"; 
+        this.saveProfile();
+      }
+      if (keyCode === 70) { // F
+        // this.compile(); 
+        this.frc = 0.0;
+      }
+    } 
+
     if (!this.showGui) {
 
       this.controlX = mouseX/width;
       this.controlY = mouseY/height;
-
-      if (keyIsPressed === true) {
-        keyIsPressed = false;
-        if (keyCode === 90) { // Z
-          this.trig[0] = !this.trig[0]; this.buttons.f1.a.tsize = this.trig[0] ? 30 : 15;
-        }
-        if (keyCode === 88) { // X
-          this.trig[1] = !this.trig[1]; this.buttons.f1.b.tsize = this.trig[1] ? 30 : 15;
-        }
-        if (keyCode === 67) { // C
-          this.trig[2] = !this.trig[2]; this.buttons.f1.c.tsize = this.trig[2] ? 30 : 15;
-        }
-
-      } 
 
       this.update();
 
@@ -436,7 +449,7 @@ class Gui {           // create graphic user interface
     let controls = ''+(t?' [':'')+(glsl.a && this.trig[0]?'a':'')+(glsl.b && this.trig[1]?'b':'')+(glsl.c && this.trig[2]?'c':'')+(t?']':'');
     
     // we put the the stack image into the temporary one, and save temporary image with timestamp, filter name and controls
-    simg.image(this.stream.stack, 0, 0); save(simg, sketch+" - "+this.timestamp+" - "+this.getName()+controls+'.'+profile.filetype); simg.remove();
+    simg.image(this.stream.stack, 0, 0); save(simg, sketch+" - "+this.timestamp+" - "+this.fileName+this.getName()+controls+'.'+profile.filetype); simg.remove();
     
   }
   
