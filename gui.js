@@ -227,8 +227,31 @@ class Gui {           // create graphic user interface
       }
     }
 
+
+
+    if (keyIsDown(69)) { // E
+      this.controlX = Math.random();
+      this.controlY = Math.random();
+      this.buttons.f1.play.xm = this.controlX;
+      this.buttons.f1.play.ym = this.controlY;
+    }
+
+    if (keyIsDown(82)) { // R
+      for (let i=0; i<3; i++) {
+        this.trig[i] = random([true,false]);
+      }
+    } 
+
+    if (keyIsDown(32)) { // Space
+      this.update(); 
+    } 
+
+    
+
     if (keyIsPressed === true) {
+
       keyIsPressed = false;
+
       if (keyCode === 90) { // Z
         this.trig[0] = !this.trig[0]; 
         this.buttons.f1.a.tsize = this.trig[0] ? 30 : 15;
@@ -247,9 +270,16 @@ class Gui {           // create graphic user interface
         this.saveProfile();
       }
       if (keyCode === 70) { // F
-        // this.compile(); 
         this.frc = 0.0;
+        this.update(); 
       }
+      if (keyCode === 83) { // S
+        this.saveImage();
+      }
+      if (keyCode === 65) { // A
+        this.update(); 
+      }
+      
     } 
 
     if (!this.showGui) {
