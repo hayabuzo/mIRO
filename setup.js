@@ -22,6 +22,19 @@ p5.RendererGL.prototype._initContext = function() {
   }
 };
 
+const generateRandomPresetMix = (numberOfElements) => {
+  let randomPreset = "";
+  let randomPresetName = "";
+  for (let i=0; i<numberOfElements; i++) {
+    const name = random(glsl.allPresetsNames);
+    randomPresetName += `-${name.substring(0, 3)}`
+    const controls = random(['a','A'])+random(['b','B'])+random(['c','C'])+random(['x','X'])+random(['y','Y']);
+    randomPreset += `@ # ${name} # ${controls} #\n`
+  }
+  profile.code = randomPresetName.substring(1)+'\n'+randomPreset;
+  console.log('generated', profile.code)
+}
+
 function setup() {
 
   // frameRate(18);
@@ -80,18 +93,6 @@ function setup() {
     const loadPack = () => {	
       profile.presetPackNumber = packSelectorId.selectedIndex;	
       updatePresets(); 
-    }
-
-    const generateRandomPresetMix = (numberOfElements) => {
-      let randomPreset = "";
-      let randomPresetName = "";
-      for (let i=0; i<numberOfElements; i++) {
-        const name = random(glsl.allPresetsNames);
-        randomPresetName += `-${name.substring(0, 3)}`
-        const controls = random(['a','A'])+random(['b','B'])+random(['c','C'])+random(['x','X'])+random(['y','Y']);
-        randomPreset += `@ # ${name} # ${controls} #\n`
-      }
-      profile.code = randomPresetName.substring(1)+'\n'+randomPreset;
     }
   
     // create file input button

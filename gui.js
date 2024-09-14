@@ -247,10 +247,11 @@ class Gui {
         this.buttons.f1.mode = new Button( this.x0+this.h*0.1,  this.h*0.9, this.h*0.1, this.h*0.1 , 10); this.buttons.f1.mode.txt[0]=profile.clicking?">":">>>";
         this.buttons.f1.edit = new Button( this.x0,             this.h*0.0, this.h*0.1, this.h*0.1 , 10); this.buttons.f1.edit.txt[0] = "</>";
         this.buttons.f1.pres = new Button( this.x0+this.h*0.1,  this.h*0.0, this.w-this.h*(glsl.n*0.1+0.1), this.h*0.1 , 10);
-        this.buttons.f1.set  = new Button( this.x0+this.h*0.2,  this.h*0.9, this.w-this.h*0.2, this.h*0.1 , 10); this.buttons.f1.set .txt[4] = "SETTINGS";
+        this.buttons.f1.set  = new Button( this.x0+this.h*0.3,  this.h*0.9, this.w-this.h*0.3, this.h*0.1 , 10); this.buttons.f1.set .txt[4] = "SETTINGS";
         this.buttons.f1.a    = new Button( this.x0+this.w-this.h*0.1*glsl.n              , glsl.a ? 0.0 : - this.h , this.h*0.1, this.h*0.1 , 10); this.buttons.f1.a.txt[0] = "A";
         this.buttons.f1.b    = new Button( this.x0+this.w-this.h*0.1*(glsl.n-int(glsl.a)), glsl.b ? 0.0 : - this.h , this.h*0.1, this.h*0.1 , 10); this.buttons.f1.b.txt[0] = "B";
         this.buttons.f1.c    = new Button( this.x0+this.w-this.h*0.1                     , glsl.c ? 0.0 : - this.h , this.h*0.1, this.h*0.1 , 10); this.buttons.f1.c.txt[0] = "C";
+        this.buttons.f1.r    = new Button( this.x0+this.h*0.2,  this.h*0.9, this.h*0.1, this.h*0.1 , 10); this.buttons.f1.r.txt[4]="RND";
         this.setHead();
           
         presetSelectorEl.position(this.x0+this.h*0.1+5, this.h*0.0+6).size(this.w-this.h*(glsl.n*0.1+0.1)-10, this.h*0.1-9); 
@@ -306,6 +307,13 @@ class Gui {
         if (this.buttons.f1.b   .clicked)   this.trig[1] = !this.trig[1]; this.buttons.f1.b.tsize = this.trig[1] ? 30 : 15;
         if (this.buttons.f1.c   .clicked)   this.trig[2] = !this.trig[2]; this.buttons.f1.c.tsize = this.trig[2] ? 30 : 15;
         if (this.buttons.f1.mode.clicked) { profile.clicking = !profile.clicking; this.buttons.f1.mode.txt[0]=profile.clicking?">":">>>"; this.saveProfile(); }
+        if (this.buttons.f1.r   .clicked) { 
+          generateRandomPresetMix(3); 
+          codeAreaEl.value(profile.code);
+          // buildShader(); 
+          this.compile();
+          this.frame = "F1L";
+        }
 
         if (mouseIsPressed && mouseButton === RIGHT) {
           mouseIsPressed = false;
