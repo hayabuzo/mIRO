@@ -32,7 +32,6 @@ const generateRandomPresetMix = (numberOfElements) => {
     randomPreset += `@ # ${name} # ${controls} #\n`
   }
   profile.code = randomPresetName.substring(1)+'\n'+randomPreset;
-  console.log('generated', profile.code)
 }
 
 function setup() {
@@ -315,11 +314,22 @@ const buildShader = () => {
   
   // if there are shader control variables in the code, turn on these controls in gui
   shaders_array = shaders_array.join('');
-  glsl.mx = str(shaders_array).search(/\bMX\b/) > 0 ? true : false;
-  glsl.my = str(shaders_array).search(/\bMY\b/) > 0 ? true : false;
-  glsl.a  = str(shaders_array).search(/\bA\b/)  > 0 ? true : false;
-  glsl.b  = str(shaders_array).search(/\bB\b/)  > 0 ? true : false;
-  glsl.c  = str(shaders_array).search(/\bC\b/)  > 0 ? true : false;
+  glsl.mx = str(shaders_array).search(/\bMX\b/) > 0;
+  glsl.my = str(shaders_array).search(/\bMY\b/) > 0;
+  glsl.a  = str(shaders_array).search(/\bA\b/)  > 0;
+  glsl.b  = str(shaders_array).search(/\bB\b/)  > 0;
+  glsl.c  = str(shaders_array).search(/\bC\b/)  > 0;
   glsl.n  = int(glsl.a) + int(glsl.b) + int(glsl.c);
+  glsl.TXC  = str(shaders_array).search(/\bTXC\b/)  > 0;
+  glsl.TXP  = str(shaders_array).search(/\bTXP\b/)  > 0;
+  glsl.TXF  = str(shaders_array).search(/\bTXF\b/)  > 0;
+  glsl.TXB  = str(shaders_array).search(/\bTXB\b/)  > 0;
+  glsl.R = [];
+  glsl.N = [];
+  for (let n = 1; n<=5; n++) {
+    glsl.R[n] = str(shaders_array).search('R'+n)>0;
+    glsl.N[n] = str(shaders_array).search('N'+n)>0;
+  }
+  console.log(glsl.R, glsl.N);
 
 }

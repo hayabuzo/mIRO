@@ -668,12 +668,19 @@ class Gui {
   unisend(i) {  
     
     // checking of what textures are used in shader code to send them as uniforms
-    this.stream.shader[i].setUniform( 'TXC' , this.stream.camera ); 
-    this.stream.shader[i].setUniform( 'TXP' , i == 0 ? this.stream.camera : this.stream.imgx ); 
-    this.stream.shader[i].setUniform( 'TXF' , this.frc <= 1 ? this.stream.camera : this.stream.stack ); 
-
-    this.stream.imgb.image(i == 0 ? this.stream.camera : this.stream.imgx,0,0,this.stream.imgb.width,this.stream.imgb.height);
-    this.stream.imgb.filter(BLUR, this.stream.stack.width*0.002); this.stream.shader[i].setUniform( 'TXB' , this.stream.imgb ); 
+    if (glsl.TXC) { 
+      this.stream.shader[i].setUniform( 'TXC' , this.stream.camera ); 
+    }
+    if (glsl.TXP) { 
+      this.stream.shader[i].setUniform( 'TXP' , i == 0 ? this.stream.camera : this.stream.imgx ); 
+    }
+    if (glsl.TXF) { 
+      this.stream.shader[i].setUniform( 'TXF' , this.frc <= 1 ? this.stream.camera : this.stream.stack ); 
+    }
+    if (glsl.TXB) { 
+      this.stream.imgb.image(i == 0 ? this.stream.camera : this.stream.imgx,0,0,this.stream.imgb.width,this.stream.imgb.height);
+      this.stream.imgb.filter(BLUR, this.stream.stack.width*0.002); this.stream.shader[i].setUniform( 'TXB' , this.stream.imgb ); 
+    }
     
     // checking of what control coordinates are used in shader code to send them as uniforms
     this.stream.shader[i].setUniform( 'MX' , this.controlX ); 
@@ -681,8 +688,12 @@ class Gui {
     
     // sending random and noise uniforms
     for (let n = 1; n<=5; n++) {
-      if(str(glsl.code).search('R'+n)>0) this.stream.shader[i].setUniform( 'R'+n , Math.random() ); 
-      if(str(glsl.code).search('N'+n)>0) this.stream.shader[i].setUniform( 'N'+n , 1.0-abs(1.0 - abs(noise(frameCount*(0.003*n)+n*1000)*2.0-0.5)) ); 
+      if(glsl.R[n]) {
+        this.stream.shader[i].setUniform( 'R'+n , Math.random() ); 
+      }
+      if(glsl.N[n]) {
+        this.stream.shader[i].setUniform( 'N'+n , 1.0-abs(1.0 - abs(noise(frameCount*(0.003*n)+n*1000)*2.0-0.5)) ); 
+      }
     }
     
     // sending image size as uniforms
