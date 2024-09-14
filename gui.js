@@ -166,9 +166,11 @@ class Gui {           // create graphic user interface
         this.buttons.f1.a    = new Button( this.x0+this.w-this.h*0.1*glsl.n              , glsl.a ? 0.0 : - this.h , this.h*0.1, this.h*0.1 , 10); this.buttons.f1.a.txt[0] = "A";
         this.buttons.f1.b    = new Button( this.x0+this.w-this.h*0.1*(glsl.n-int(glsl.a)), glsl.b ? 0.0 : - this.h , this.h*0.1, this.h*0.1 , 10); this.buttons.f1.b.txt[0] = "B";
         this.buttons.f1.c    = new Button( this.x0+this.w-this.h*0.1                     , glsl.c ? 0.0 : - this.h , this.h*0.1, this.h*0.1 , 10); this.buttons.f1.c.txt[0] = "C";
-			  this.setHead();
-      
-			presetSelectorEl.style('visibility:visible'); packSelectorEl.style('visibility:hidden'); 
+        this.setHead();
+        
+      presetSelectorEl.position(this.x0+this.h*0.1+5, this.h*0.0+6).size(this.w-this.h*(glsl.n*0.1+0.1)-10, this.h*0.1-9); 
+			presetSelectorEl.style('visibility:visible'); 
+      packSelectorEl.style('visibility:hidden'); 
 			codeAreaEl.style('visibility:hidden'); 
 			
       this.process(); this.saveProfile();  // process and save the setting profile each time we enter the main frame
@@ -451,7 +453,6 @@ class Gui {           // create graphic user interface
 	setHead()     { 
 		let l = this.mobile ? 12 : 24; 
 		this.buttons.f1.pres.txt[0] = this.mobile ? 'Load' : (this.getName()=="myShaderName"?"Load Preset":this.getName().substring(0,l)+(this.getName().length>l?"…":"") ); 
-    presetSelectorEl.position(this.x0+this.h*0.1+5, this.h*0.0+6).size(this.w-this.h*(glsl.n*0.1+0.1)-10, this.h*0.1-9); 
 		this.buttons.f1.pres.w = this.w-this.h*(glsl.n*0.1+0.1) - 10;
 		this.buttons.f1.a.x = 5 + this.x0+this.w-this.h*0.1*glsl.n;               			this.buttons.f1.a.y = 5 + (glsl.a ? 0.0 : - this.h);
     this.buttons.f1.b.x = 5 + this.x0+this.w-this.h*0.1*(glsl.n-int(glsl.a));       this.buttons.f1.b.y = 5 + (glsl.b ? 0.0 : - this.h);

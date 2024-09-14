@@ -24,7 +24,7 @@ p5.RendererGL.prototype._initContext = function() {
 
 function setup() {
 
-  frameRate(18);
+  // frameRate(18);
 
   const openFile = (file) => {                                   // when opening a file via "load" button
     console.log('drop');
