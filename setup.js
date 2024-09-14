@@ -168,10 +168,7 @@ function setup() {
       resize:     1,               // do not enlarge image size
       frontal:    false,           // use main camera
       clicking:   false,           // do not use clicking mode
-      stablevel:  0.0,             // stabilization off
       filetype:   "jpg",           // save files in 'jpg'
-      forcing:    false,           // do not use force loading
-      livecode:   true,            // livecoding enabled;
       window:     1,               // do not reduce window size
       code:       glsl.default,    // load default shader code
       presetPackNumber: 0,         // select default preset pack
@@ -198,11 +195,6 @@ function setup() {
         profile[i] = default_profile[i];
       }
      }
-    
-    // force loading is needed to allow the browser to save multiple files at startup
-    if (profile.forcing) { 
-      save('','?.txt'); save('','?.txt'); 
-    }
     
   }
   
@@ -330,6 +322,5 @@ const buildShader = () => {
     glsl.R[n] = str(shaders_array).search('R'+n)>0;
     glsl.N[n] = str(shaders_array).search('N'+n)>0;
   }
-  console.log(glsl.R, glsl.N);
 
 }

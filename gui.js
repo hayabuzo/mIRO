@@ -121,15 +121,9 @@ class Gui {
     this.timestamp = '';         
     this.frc = 0.0;       
     this.trig = [0,0,0];
-    this.x0 = (width-this.w)*0.5;        
-    
-    // set stabilization values and create camera
-    this.shake = {};     
-    this.shake.array = [];     
-    this.shake.average = 0;    
-     this.shake.steps = 10;          		
+    this.x0 = (width-this.w)*0.5;             		
      
-     this.createCamera();
+    this.createCamera();
 
     this.showGui = true;
     this.controlX = 0.0;
@@ -274,7 +268,7 @@ class Gui {
           this.kfps = 60 / frameRate();
           this.frameRate = frameRate().toFixed(1);
         }
-        this.buttons.f1.play.txt[3] = profile.clicking ? "" : profile.stablevel > 0 ? nfs(this.shake.average,1,2) : "";
+        // this.buttons.f1.play.txt[3] = profile.clicking ? "" : profile.stablevel > 0 ? nfs(this.shake.average,1,2) : "";
         
         // setting up behavior of preset selector colors
         if (document.getElementById('presetSelectorId') === document.activeElement) presetSelectorEl.style('background-color',skin.bgr).style('color',skin.txt);
@@ -294,7 +288,7 @@ class Gui {
         }
 
         this.buttons.f1.play.txt[2] = (glsl.mx ? nfs(this.buttons.f1.play.xm,1,2)+"\n":"")+(glsl.my ? nfs(this.buttons.f1.play.ym,1,2) : "");
-        if ((profile.clicking ? this.buttons.f1.play.clicked : this.buttons.f1.play.pressed || (profile.stablevel > 0 && this.shake.average >= profile.stablevel) )) { 
+        if (profile.clicking ? this.buttons.f1.play.clicked : this.buttons.f1.play.pressed ) { 
           this.controlX = this.buttons.f1.play.xm;
           this.controlY = this.buttons.f1.play.ym;
           this.update(); 
@@ -422,17 +416,6 @@ class Gui {
 
       // showing frame #2 (shader editor)
       case "F2": 
-
-        if (profile.livecode) {  // livecoding mode draws preview under coding textarea
-          this.preview();
-          if (this.compiled) { 
-            this.update(); 
-          }
-          let clr = color(skin.bgr); 
-          clr.setAlpha(180);
-          noStroke().fill(clr);
-          rect(0,0,width,height);
-        }
         
         if (!this.showhelp) {  // text area is in the shader edit mode
 
@@ -490,10 +473,7 @@ class Gui {
           camr:0,
           canv:0,
           fron:0,
-          stab:0,
           ftyp:0,
-          floa:0,
-          live:0,
           okay:0,
         }; 
         let n=0;
@@ -525,19 +505,13 @@ class Gui {
         this.buttons.f3.camr.txt[1] = " Camera Resolution: " + (profile.resolution == 'min' ? '640x480' : profile.resolution == 'med' ? '1280x960' : profile.resolution == 'wide' ? '1280x720' : '4000x3000');                  
         this.buttons.f3.canv.txt[1] = "     Canvas Resize: " + nfs(profile.resize,1,1).slice(1);                  
         this.buttons.f3.fron.txt[1] = "    Frontal Camera: " + (profile.frontal  ? "ON" : "OFF");                  
-        this.buttons.f3.stab.txt[1] = "     Stabilization: " + (profile.stablevel > 0 ? nfs(profile.stablevel,1,2).slice(1) : "OFF");  
         this.buttons.f3.ftyp.txt[1] = "         File Type: " + profile.filetype.toUpperCase();                  
-        this.buttons.f3.floa.txt[1] = "     Force Loading: " + (profile.forcing  ? "ON" : "OFF"); 
-        this.buttons.f3.live.txt[1] = "       Live Coding: " + (profile.livecode  ? "ON" : "OFF");   
         this.buttons.f3.okay.txt[0] = "OK";
         
         if (this.buttons.f3.camr.clicked) profile.resolution = profile.resolution == 'min' ? 'wide' : profile.resolution == 'wide' ? 'med' : profile.resolution == 'med' ? 'max' : 'min';
         if (this.buttons.f3.canv.clicked) profile.resize     = profile.resize >= 3.0 ? 0.5 : profile.resize + 0.5;
         if (this.buttons.f3.fron.clicked) profile.frontal    = !profile.frontal;
-        if (this.buttons.f3.stab.clicked) profile.stablevel  = profile.stablevel <= 0.0 ? 0.5 : ceil(profile.stablevel*100 - 5)/100;
         if (this.buttons.f3.ftyp.clicked) profile.filetype   = profile.filetype == 'jpg' ? 'png' : 'jpg';
-        if (this.buttons.f3.floa.clicked) profile.forcing    = !profile.forcing;
-        if (this.buttons.f3.live.clicked) profile.livecode   = !profile.livecode;
 
         // recreate camera or rescale window if needed and return to frame #1
         if (this.buttons.f3.okay.clicked) {  
@@ -597,17 +571,6 @@ class Gui {
     
     // after each processing we take the timestamp to save it as the processed image name 
     this.timestamp = year()+nf(month(),2)+nf(day(),2)+" - "+nf(hour(),2)+nf(minute(),2)+nf(second(),2);
-    
-    // stabilization calculations
-    this.shake.array.push(abs(accelerationX)+abs(accelerationY)+abs(accelerationZ));
-    if(this.shake.array.length>this.shake.steps) { 
-      this.shake.array = this.shake.array.slice(1); 
-      this.shake.average = 0;
-      for (let i=0; i<this.shake.steps; i++) { 
-        this.shake.average += this.shake.array[i]; 
-      }
-      this.shake.average /= this.shake.steps;
-    }
     
   }
 	
@@ -707,9 +670,9 @@ class Gui {
     this.stream.shader[i].setUniform( 'FSK' , this.kfps ); 
     
     // sending control uniforms
-    this.stream.shader[i].setUniform( 'A' , this.trig[0] ? 1.0 : 0.0 ); 
-    this.stream.shader[i].setUniform( 'B' , this.trig[1] ? 1.0 : 0.0 ); 
-    this.stream.shader[i].setUniform( 'C' , this.trig[2] ? 1.0 : 0.0 ); 
+    this.stream.shader[i].setUniform( 'A' , this.trig[0] ); 
+    this.stream.shader[i].setUniform( 'B' , this.trig[1] ); 
+    this.stream.shader[i].setUniform( 'C' , this.trig[2] ); 
 		this.stream.shader[i].setUniform( 'alpha' , i == glsl.frags.length-1 ? controls.alpha : 1.0 ); 
 
   }
