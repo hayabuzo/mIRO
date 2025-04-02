@@ -1,26 +1,26 @@
 // Copyright 2024, Sergey Egorov
 // Licensed under the Apache License, Version 2.0 
 
-const sketch = 'mIRO' 
-const ver    = 'v.24' 
+const sketch = 'mIRO)))' 
+const ver    = 'v.24 build:250402'
 
 // enabling webgl2 mode in p5js
-p5.RendererGL.prototype._initContext = function() {
-	try { 
-    this.drawingContext = this.canvas.getContext('webgl2', this._pInst._glAttributes) || this.canvas.getContext('experimental-webgl', this._pInst._glAttributes);
-		if (this.drawingContext === null) { 
-      throw new Error('Error creating webgl context');
-		} else { 
-      const gl = this.drawingContext; 
-      gl.enable(gl.DEPTH_TEST); 
-      gl.depthFunc(gl.LEQUAL);
-			gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-			this._viewport = this.drawingContext.getParameter(this.drawingContext.VIEWPORT);
-		}
-  } catch (er) { 
-    throw er; 
-  }
-};
+// p5.RendererGL.prototype._initContext = function() {
+// 	try { 
+//     this.drawingContext = this.canvas.getContext('webgl2', this._pInst._glAttributes) || this.canvas.getContext('experimental-webgl', this._pInst._glAttributes);
+// 		if (this.drawingContext === null) { 
+//       throw new Error('Error creating webgl context');
+// 		} else { 
+//       const gl = this.drawingContext; 
+//       gl.enable(gl.DEPTH_TEST); 
+//       gl.depthFunc(gl.LEQUAL);
+// 			gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+// 			this._viewport = this.drawingContext.getParameter(this.drawingContext.VIEWPORT);
+// 		}
+//   } catch (er) { 
+//     throw er; 
+//   }
+// };
 
 const generateRandomPresetMix = (numberOfElements) => {
   let randomPreset = "";
@@ -301,7 +301,7 @@ const buildShader = () => {
       ;
     }
     // build the shader
-    glsl.frags.push(glsl.uniforms + glsl.library + ` void main() { ` + shaders_array[i] + `gl_FragColor.a *= alpha;` + ` } `);
+    glsl.frags.push(glsl.uniforms + glsl.library + ` void main() { ` + shaders_array[i] + `gl_FragColor.a *= alpha; gl_FragColor.rgb *= gl_FragColor.a;` + ` } `);
   }
   
   // if there are shader control variables in the code, turn on these controls in gui
