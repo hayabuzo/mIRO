@@ -99,7 +99,7 @@ float f2z ( float f ) {
 /* Zero Centered to Float */
 float z2f ( float z ) {
   return z*0.5+0.5; }
-  
+   
 /* Float Constrain */
 float f2f ( float f ) {
   return clamp(f,0.0,1.0); }
