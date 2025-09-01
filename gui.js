@@ -134,31 +134,49 @@ class Gui {
   }
   
   createCamera() {
-
     // break the previous connection with the camera, also in case of image loading instead of camera stream
     if (typeof this.stream.camera !== 'undefined' && typeof this.stream.camera.canvas === 'undefined') {
       this.stream.camera.remove();  
     }
     
-    // create a new camera stream with user setting, hide it from the screen and set that it has not yet been completely loaded (only created) 
-    this.stream.settings = { 
+    // calculate camera size based on profile settings
+    const camSize = [
+      profile.resolution == "min" ? 640 : profile.resolution == "med" ? 1280 : profile.resolution == "wide" ? 1280 : profile.resolution == "max" ? 4000 : 1280,
+      profile.resolution == "min" ? 480 : profile.resolution == "med" ? 960 : profile.resolution == "wide" ? 720 : profile.resolution == "max" ? 3000 : 960
+    ];
+    
+    const camMode = profile.frontal ? "user" : "environment";
+    
+    console.log(`Creating camera with resolution: ${profile.resolution} (${camSize[0]}x${camSize[1]})`);
+    
+    // create camera object using modern approach
+    this.stream.camera = createCapture({
       audio: false, 
       video: { 
-        width: {
-          ideal: profile.resolution == "min" ? 640 : profile.resolution == "max" ? 4000 : profile.resolution == "wide" ? 1280 : 1280,
-        }, 
-        height: {
-          ideal: profile.resolution == "min" ? 480 : profile.resolution == "max" ? 3000 : profile.resolution == "wide" ? 720 : 960,  
-        }, 
-        facingMode: profile.frontal ? "user" : "environment" 
+        facingMode: camMode,
+        width:  { ideal: camSize[0] },
+        height: { ideal: camSize[1] },
       } 
-    };
+    });
+    
+    this.stream.camera.hide();
+    this.stream.camera.loaded = false;
+    
+    // add event listener for camera loaded metadata
+    this.stream.camera.elt.addEventListener('loadedmetadata', () => {
+      this.onCameraLoaded();
+    });
 
-    this.stream.camera = createCapture(this.stream.settings).hide(); this.stream.camera.loaded = false;
-
-    // to load both camera stream and image file as the same object
-    this.stream.camera.width = 1; 
-
+    // Set camera type flag to distinguish from image loading
+    this.stream.camera.isCamera = true;
+  }
+  
+  onCameraLoaded() {
+    // callback when camera metadata is loaded
+    if (this.stream.camera && !this.stream.camera.loaded) {
+      console.log(`Camera loaded with actual size: ${this.stream.camera.elt.videoWidth}x${this.stream.camera.elt.videoHeight}`);
+      this.loading();
+    }
   }
   
   // load an image from device instead of camera stream
@@ -166,14 +184,28 @@ class Gui {
 
     this.stream.camera = loadImage(file.data);
     this.stream.camera.loaded = false;
+    this.stream.camera.isCamera = false;
 
   }
   
   // the camera and image loading procedure
   loading() {  
 
+    // Get actual camera dimensions
+    let camWidth, camHeight;
+    
+    if (this.stream.camera.isCamera) {
+      // For camera stream, use the actual video dimensions
+      camWidth = this.stream.camera.elt ? this.stream.camera.elt.videoWidth : this.stream.camera.width;
+      camHeight = this.stream.camera.elt ? this.stream.camera.elt.videoHeight : this.stream.camera.height;
+    } else {
+      // For loaded images, use the image dimensions
+      camWidth = this.stream.camera.width;
+      camHeight = this.stream.camera.height;
+    }
+    
     // create graphics for output (stack) image, shader processing image (imgx), blurred iamge (imgb)
-    this.stream.stack = createGraphics(this.stream.camera.width * profile.resize, this.stream.camera.height * profile.resize); //.background(50);
+    this.stream.stack = createGraphics(camWidth * profile.resize, camHeight * profile.resize); //.background(50);
     this.stream.imgx  = createGraphics(this.stream.stack.width, this.stream.stack.height, WEBGL);
     this.stream.imgb  = createGraphics(this.stream.stack.width*0.025, this.stream.stack.height*0.025);
     
@@ -197,7 +229,9 @@ class Gui {
     // show the gui if camera is fully loaded, if it's not then try to load it and show the loading animation
     if (this.stream.camera.loaded) {
       this.show(); 
-    } else if ((this.stream.camera.loadedmetadata || this.stream.camera.width>1) && !this.stream.camera.loaded) {
+    } else if (this.stream.camera.isCamera ? 
+               (this.stream.camera.elt && this.stream.camera.elt.readyState >= 2 && this.stream.camera.elt.videoWidth > 0) : 
+               this.stream.camera.width > 1) {
       this.loading();    
     } else {
       push();
