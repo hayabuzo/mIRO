@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0 
 
 const sketch = 'mIRO)))' 
-const ver    = 'v.24 build:250402'
+const ver    = 'v.24 build:250911'
 
 // enabling webgl2 mode in p5js
 // p5.RendererGL.prototype._initContext = function() {

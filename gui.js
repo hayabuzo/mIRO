@@ -220,6 +220,13 @@ class Gui {
       document.getElementById("presetSelectorId").value = getURLParams().f; 
       loadPreset(); 
     }
+		// check URL parameter 'b' to activate A/B/C triggers (accepts a string like "AC" )
+		if (getURLParams().b!=null) {
+			const bparam = String(getURLParams().b).toUpperCase();
+			this.trig[0] = bparam.includes('A');
+			this.trig[1] = bparam.includes('B');
+			this.trig[2] = bparam.includes('C');
+		}
 		
   }
   
@@ -280,6 +287,10 @@ class Gui {
         this.buttons.f1.b    = new Button( this.x0+this.w-this.h*0.1*(glsl.n-int(glsl.a)), glsl.b ? 0.0 : - this.h , this.h*0.1, this.h*0.1 , 10); this.buttons.f1.b.txt[0] = "B";
         this.buttons.f1.c    = new Button( this.x0+this.w-this.h*0.1                     , glsl.c ? 0.0 : - this.h , this.h*0.1, this.h*0.1 , 10); this.buttons.f1.c.txt[0] = "C";
         this.buttons.f1.r    = new Button( this.x0+this.h*0.2,  this.h*0.9, this.h*0.1, this.h*0.1 , 10); this.buttons.f1.r.txt[4]="RND";
+        // set initial sizes to reflect active triggers from URL param 'b' if any
+        this.buttons.f1.a.tsize = this.trig[0] ? 30 : 15;
+        this.buttons.f1.b.tsize = this.trig[1] ? 30 : 15;
+        this.buttons.f1.c.tsize = this.trig[2] ? 30 : 15;
         this.setHead();
           
         presetSelectorEl.position(this.x0+this.h*0.1+5, this.h*0.0+6).size(this.w-this.h*(glsl.n*0.1+0.1)-10, this.h*0.1-9); 
