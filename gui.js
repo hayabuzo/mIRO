@@ -135,9 +135,7 @@ class Gui {
   
   createCamera() {
     // break the previous connection with the camera, also in case of image loading instead of camera stream
-    if (typeof this.stream.camera !== 'undefined' && typeof this.stream.camera.canvas === 'undefined') {
-      this.stream.camera.remove();  
-    }
+    this.cleanupCamera();
     
     // calculate camera size based on profile settings
     const camSize = [
@@ -149,26 +147,109 @@ class Gui {
     
     console.log(`Creating camera with resolution: ${profile.resolution} (${camSize[0]}x${camSize[1]})`);
     
+    // primary constraints (may fail on some devices/browsers)
+    const primaryConstraints = {
+      audio: false,
+      video: {
+        facingMode: { ideal: camMode },
+        width: { ideal: camSize[0] },
+        height: { ideal: camSize[1] }
+      }
+    };
+
+    // fallback constraints set (progressively looser)
+    const fallbackConstraints = [
+      { audio: false, video: { facingMode: { ideal: camMode } } },
+      { audio: false, video: true }
+    ];
+
     // create camera object using modern approach
-    this.stream.camera = createCapture({
-      audio: false, 
-      video: { 
-        facingMode: camMode,
-        width:  { ideal: camSize[0] },
-        height: { ideal: camSize[1] },
-      } 
-    });
+    this.stream.camera = createCapture(primaryConstraints);
     
     this.stream.camera.hide();
     this.stream.camera.loaded = false;
     
     // add event listener for camera loaded metadata
     this.stream.camera.elt.addEventListener('loadedmetadata', () => {
+      if (this._camFallbackTimer) clearTimeout(this._camFallbackTimer);
       this.onCameraLoaded();
     });
 
+    // if metadata doesn't arrive soon, retry with fallbacks to avoid hang
+    if (this._camFallbackTimer) clearTimeout(this._camFallbackTimer);
+    this._camFallbackTimer = setTimeout(() => {
+      if (!this.stream.camera || this.stream.camera.loaded) return;
+      console.warn('Camera metadata timeout. Retrying with fallback constraints...');
+      // try fallbacks sequentially
+      this.cleanupCamera();
+      let tried = false;
+      for (const c of fallbackConstraints) {
+        try {
+          this.stream.camera = createCapture(c);
+          this.stream.camera.hide();
+          this.stream.camera.loaded = false;
+          this.stream.camera.isCamera = true;
+          this.stream.camera.elt.addEventListener('loadedmetadata', () => {
+            if (this._camFallbackTimer) clearTimeout(this._camFallbackTimer);
+            this.onCameraLoaded();
+          });
+          tried = true;
+          // set another shorter timeout for next fallback
+          if (this._camFallbackTimer) clearTimeout(this._camFallbackTimer);
+          this._camFallbackTimer = setTimeout(() => {
+            if (!this.stream.camera || this.stream.camera.loaded) return;
+            console.warn('Fallback constraints also stalled. Trying minimal constraints...');
+            this.cleanupCamera();
+            this.stream.camera = createCapture({ audio: false, video: true });
+            this.stream.camera.hide();
+            this.stream.camera.loaded = false;
+            this.stream.camera.isCamera = true;
+            this.stream.camera.elt.addEventListener('loadedmetadata', () => {
+              if (this._camFallbackTimer) clearTimeout(this._camFallbackTimer);
+              this.onCameraLoaded();
+            });
+          }, 2500);
+          break;
+        } catch (e) {
+          console.error('Camera fallback constraint failed:', e);
+        }
+      }
+      if (!tried) {
+        // last resort
+        this.stream.camera = createCapture({ audio: false, video: true });
+        this.stream.camera.hide();
+        this.stream.camera.loaded = false;
+        this.stream.camera.isCamera = true;
+        this.stream.camera.elt.addEventListener('loadedmetadata', () => {
+          if (this._camFallbackTimer) clearTimeout(this._camFallbackTimer);
+          this.onCameraLoaded();
+        });
+      }
+    }, 3500);
+
     // Set camera type flag to distinguish from image loading
     this.stream.camera.isCamera = true;
+  }
+  
+  cleanupCamera() {
+    if (this._camFallbackTimer) {
+      clearTimeout(this._camFallbackTimer);
+      this._camFallbackTimer = null;
+    }
+    if (this.stream && this.stream.camera && typeof this.stream.camera !== 'undefined') {
+      try {
+        const elt = this.stream.camera.elt;
+        if (elt && elt.srcObject && typeof elt.srcObject.getTracks === 'function') {
+          const tracks = elt.srcObject.getTracks();
+          for (const tr of tracks) {
+            try { tr.stop(); } catch (e) {}
+          }
+        }
+      } catch (e) {
+        console.warn('Error stopping previous camera tracks:', e);
+      }
+      try { this.stream.camera.remove(); } catch (e) {}
+    }
   }
   
   onCameraLoaded() {
