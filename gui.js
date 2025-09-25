@@ -461,6 +461,17 @@ class Gui {
 
       // showing frame #2 (shader editor)
       case "F2": 
+
+        if (profile.livecode) {  // livecoding mode draws preview under coding textarea
+          this.preview();
+          if (this.compiled) { 
+            this.update(); 
+          }
+          let clr = color(skin.bgr); 
+          clr.setAlpha(180);
+          noStroke().fill(clr);
+          rect(0,0,width,height);
+        }
         
         if (!this.showhelp) {  // text area is in the shader edit mode
 
@@ -519,6 +530,7 @@ class Gui {
           canv:0,
           fron:0,
           ftyp:0,
+          live:0,
           okay:0,
         }; 
         let n=0;
@@ -550,13 +562,15 @@ class Gui {
         this.buttons.f3.camr.txt[1] = " Camera Resolution: " + (profile.resolution == 'min' ? '640x480' : profile.resolution == 'med' ? '1280x960' : profile.resolution == 'wide' ? '1280x720' : '4000x3000');                  
         this.buttons.f3.canv.txt[1] = "     Canvas Resize: " + nfs(profile.resize,1,1).slice(1);                  
         this.buttons.f3.fron.txt[1] = "    Frontal Camera: " + (profile.frontal  ? "ON" : "OFF");                  
-        this.buttons.f3.ftyp.txt[1] = "         File Type: " + profile.filetype.toUpperCase();                  
+        this.buttons.f3.ftyp.txt[1] = "         File Type: " + profile.filetype.toUpperCase();            
+        this.buttons.f3.live.txt[1] = "       Live Coding: " + (profile.livecode  ? "ON" : "OFF");         
         this.buttons.f3.okay.txt[0] = "OK";
         
         if (this.buttons.f3.camr.clicked) profile.resolution = profile.resolution == 'min' ? 'wide' : profile.resolution == 'wide' ? 'med' : profile.resolution == 'med' ? 'max' : 'min';
         if (this.buttons.f3.canv.clicked) profile.resize     = profile.resize >= 3.0 ? 0.5 : profile.resize + 0.5;
         if (this.buttons.f3.fron.clicked) profile.frontal    = !profile.frontal;
         if (this.buttons.f3.ftyp.clicked) profile.filetype   = profile.filetype == 'jpg' ? 'png' : 'jpg';
+        if (this.buttons.f3.live.clicked) profile.livecode   = !profile.livecode;
 
         // recreate camera or rescale window if needed and return to frame #1
         if (this.buttons.f3.okay.clicked) {  

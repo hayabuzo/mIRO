@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0 
 
 const sketch = 'mIRO)))' 
-const ver    = 'v.24 build:250911'
+const ver    = 'v.24 build:250925'
 
 // enabling webgl2 mode in p5js
 // p5.RendererGL.prototype._initContext = function() {
@@ -169,6 +169,7 @@ function setup() {
       frontal:    false,           // use main camera
       clicking:   false,           // do not use clicking mode
       filetype:   "jpg",           // save files in 'jpg'
+      livecode:   false,           // livecoding disabled
       window:     1,               // do not reduce window size
       code:       glsl.default,    // load default shader code
       presetPackNumber: 0,         // select default preset pack
