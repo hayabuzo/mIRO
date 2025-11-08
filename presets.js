@@ -846,37 +846,55 @@ vec4  img = texture2D(TXP, uvo);
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
 Infadels
-@ //v8
+@ //v9
 
 vec2  uv = vTexCoord; 
       uv.y = 1.0 - uv.y;
+vec4  img;
 
-float f = 0.0;
-if (A==1.0) f = 1.0;
-    for (float i=0.0; i<0.5; i+=0.1) {
-      float s = 0.3*f2rand(R1+i)+0.1;
-      float n = s*fg2circ(uv,vec2(f2rand(R2+i),f2rand(R3+i)), s , 1.0 );
-      if (A==0.0) f += n;
-      else if (A==1.0) f *= 1.0-n;
-    }
-      if (A==0.0) f = pow(f,2.0);
-      else if (A==1.0) f = 1.0-f;
+float f, d = 0.0;
 
-float d = 0.0;
-if (A==1.0) d = 1.0;
-    for (float i=0.5; i<1.0; i+=0.1) {
-      float s = 0.3*f2rand(R1+i)+0.1;
-      float n = s*fg2circ(uv,vec2(f2rand(R2+i),f2rand(R3+i)), s , 1.0 );
-      if (A==0.0) d += n;
-      else if (A==1.0) d *= 1.0-n;
-    }
-      if (A==0.0) d = pow(d,2.0);
-      else if (A==1.0) d = 1.0-d;
+if (B==1.0) {
 
-vec2  df = vec2(d,f);
-vec4  img = tx2d(TXP,cnv2abs(df*(1.0+MY*5.0)));
+  f = A;
+  for (float i=0.0; i<0.5; i+=0.1) {
+    float s = 0.3*f2rand(R1+i)+0.1;
+    float n = s*fg2circ(uv,vec2(f2rand(R2+i),f2rand(R3+i)), s , 1.0 );
+    f = A==0.0 ? f+n : f*(1.0-n);
+  }
+  f = A==0.0 ? pow(f,2.0) : 1.0-f;
 
-      gl_FragColor = img; 
+  d = A;
+  for (float i=0.5; i<1.0; i+=0.1) {
+    float s = 0.3*f2rand(R1+i)+0.1;
+    float n = s*fg2circ(uv,vec2(f2rand(R2+i),f2rand(R3+i)), s , 1.0 );
+    d = A==0.0 ? d+n : d*(1.0-n);
+  }
+  d = A==0.0 ? pow(d,2.0) : 1.0-d;
+
+  vec2  df = vec2(d,f);
+        img = tx2d(TXP,cnv2abs(df*(1.0+MY*5.0)));
+
+} else {
+
+  for (float i=0.0; i<0.5; i+=0.1) {
+    float s = f2rand(R3+i)+0.1;
+    f = max(f, pow( s*fg2circ(uv,vec2(f2rand(R1+i),f2rand(R2+i)), s , 1.0 ), 4.0*MY));
+  }
+
+  for (float i=0.5; i<1.0; i+=0.1) {
+    float s = f2rand(R3+i)+0.1;
+    d = max(d, pow( s*fg2circ(uv,vec2(f2rand(R1+i),f2rand(R2+i)), s , 1.0 ), 4.0*MY));
+  }
+
+  float k = distance(uv,vec2(0.5))*2.0;
+  if (A==1.0) k=1.0;
+  vec2  uvd = cnv2abs(uv2dspmd(uv,d*k,f));
+        img = texture2D(TXP, uvd);
+
+}
+
+gl_FragColor = img;
 
 `+/*-------------------------------------------------------------------------------------------------------*/`###`+`
 
