@@ -289,9 +289,11 @@ class Gui {
     this.stream.stack = createGraphics(camWidth * profile.resize, camHeight * profile.resize); //.background(50);
     this.stream.imgx  = createGraphics(this.stream.stack.width, this.stream.stack.height, WEBGL);
     this.stream.imgb  = createGraphics(this.stream.stack.width*0.025, this.stream.stack.height*0.025);
+
+    const heightScale = fullScreen ? height : 0.8 * height;
     
     // fit the output image into screen, calculate its aspect ratio, create shaders and load frame #1
-    this.stream.scale = profile.window*((height*0.8/width >= this.stream.stack.height/this.stream.stack.width) ? width/this.stream.stack.width : height*0.8/this.stream.stack.height); 
+    this.stream.scale = profile.window*((heightScale/width >= this.stream.stack.height/this.stream.stack.width) ? width/this.stream.stack.width : heightScale/this.stream.stack.height); 
     this.stream.camera.loaded = true;  
     this.createShader();  
     this.frame = "F1L";
