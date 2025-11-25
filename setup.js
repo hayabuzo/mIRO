@@ -4,6 +4,8 @@
 const sketch = 'mIRO)))' 
 const ver    = 'v.24 build:250925'
 
+let fullScreen = false;
+
 // enabling webgl2 mode in p5js
 // p5.RendererGL.prototype._initContext = function() {
 // 	try { 
@@ -178,6 +180,10 @@ function setup() {
     // if URL ends with "?r=1" do the profile reset
     if (getURLParams().r==1) { 
       removeItem('settings_profile') 
+    };
+
+    if (getURLParams().fs==1) { 
+      fullScreen = true;
     };
   
     // create temporary profile and try to load data into it from the browser's memory

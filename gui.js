@@ -445,6 +445,11 @@ class Gui {
           }
         }
 
+        if (fullScreen) {
+          this.showGui = false;
+          presetSelectorEl.style('visibility:hidden');
+        }
+
         if (keyIsDown(69)) { // E
           this.controlX = Math.random();
           this.controlY = Math.random();
